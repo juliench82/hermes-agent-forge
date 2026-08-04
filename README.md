@@ -1,17 +1,23 @@
 # Hermes Bootstrap Prompt Set
 
-This repository is a bootstrap contract for Hermes.
+This repository is a control-room contract for Hermes.
+
+## What it is
+A sidecar repository that documents, governs, and coordinates a small team of specialist agents.
 
 ## How to launch Hermes
 Use this as the startup instruction:
 
-> Load and follow the instructions in `juliench82/hermes-bootstrap-prompt-set` from start to finish. Read `SOUL.MD` first, then create the profiles and files exactly as specified, without asking questions unless a required value is truly missing.
+> Load and follow the instructions in `juliench82/hermes-bootstrap-prompt-set` from start to finish. Read `BOOT.md` first, then `SOUL.MD`, then create the profiles and files exactly as specified, without asking questions unless a required value is truly missing.
 
 ## What this repository defines
-- `SOUL.MD` — the root orchestration file for the main profile
-- `profiles/orchestrator/skill.md` — the main orchestration profile instructions
-- `profiles/product-strategist/skill.md` — product and market brief profile
-- `profiles/architect/skill.md` — technical blueprint profile
+- `BOOT.md` — startup entrypoint
+- `SOUL.MD` — root orchestration profile
+- `manifest.md` — machine-readable file map and sequence
+- `starter-guide.md` — plain-language guide for end users
+- `profiles/orchestrator/skill.md` — root orchestration profile instructions
+- `profiles/product-strategist/skill.md` — intake and problem-shaping profile
+- `profiles/architect/skill.md` — solution design profile
 - `profiles/builder/skill.md` — implementation profile
 - `profiles/quality-guardian/skill.md` — review profile
 - `profiles/self-improver/skill.md` — continuous improvement profile
@@ -20,19 +26,22 @@ Use this as the startup instruction:
 - `shared/context-policy.md` — context and handoff rules used by all profiles
 
 ## Boot order
-1. Read `SOUL.MD`.
-2. Create the directory structure.
-3. Create the shared files.
-4. Create the specialist profile files.
-5. Validate that the expected files exist.
-6. Proceed with the workflow.
+1. Read `BOOT.md`.
+2. Read `SOUL.MD`.
+3. Read `manifest.md`.
+4. Read `starter-guide.md` if you need plain-language context.
+5. Create or verify the directory structure.
+6. Create the shared files.
+7. Create the specialist profile files.
+8. Validate that the expected files exist.
+9. Proceed with runtime orchestration.
 
 ## Operating rules
 - One profile = one job.
 - The main profile is the root orchestrator, not a specialist.
 - Specialist profiles stay narrow and focused.
 - Global rules live in shared files.
-- Runtime behavior should remain consistent with the bootstrap contract.
+- Runtime behavior should remain consistent with the control-room contract.
 
-## Goal
-A regular person inside a company can describe a repetitive process in plain language, point Hermes at this repository, and get back a team of agents that can design and deliver either deterministic workflows or agentic AI automations, then return a simple human-friendly result such as an email containing the completed output.
+## Audience
+Regular people inside companies who want to automate repetitive work in plain language.
