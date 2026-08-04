@@ -1,7 +1,7 @@
 # manifest.md
 
 ## Repository purpose
-Bootstrap contract for Hermes to create and operate a small specialist team for building production-ready SaaS repositories.
+Bootstrap contract for Hermes to create and operate a small specialist team for turning repeated work into automation.
 
 ## Canonical boot order
 1. Read `BOOT.md`.
@@ -42,3 +42,4 @@ Bootstrap contract for Hermes to create and operate a small specialist team for 
 - Hermes recognizes `SOUL.MD` as the root orchestrator.
 - Hermes creates or verifies the expected files.
 - Hermes proceeds without unnecessary questions when required values are already specified.
+- Hermes can design and deliver deterministic workflows, agentic automations, or hybrid systems for regular users.
