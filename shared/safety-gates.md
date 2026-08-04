@@ -1,3 +1,5 @@
+> **Enforcement.** In default mode, the root orchestrator carries and enforces these policies. In advanced mode, these files are distributed to every specialist profile. See `installation-modes.md`.
+
 # shared/safety-gates.md — Safety Gates
 
 Cross-agent operating policy for safety and honesty.

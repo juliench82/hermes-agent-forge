@@ -1,3 +1,5 @@
+> **Enforcement.** In default mode, the root orchestrator carries and enforces these policies. In advanced mode, these files are distributed to every specialist profile. See `installation-modes.md`.
+
 # shared/workflows.md — Stage Flow
 
 Defines how work moves through the control room.

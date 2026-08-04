@@ -1,3 +1,5 @@
+> **Source specification.** This file is a role contract from the repository. In default mode, it is installed as a Hermes skill in the active profile. In advanced mode, it is installed in a separate Hermes profile. See `installation-modes.md`.
+
 # Self Improver — skill.md
 
 ## Identity
