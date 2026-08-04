@@ -35,4 +35,4 @@ Use this as the startup instruction:
 - Runtime behavior should remain consistent with the bootstrap contract.
 
 ## Goal
-A solo founder can provide a SaaS idea, and Hermes coordinates a small specialist team to turn it into a production-ready GitHub repository that can be deployed and improved over time.
+A regular person inside a company can describe a repetitive process in plain language, point Hermes at this repository, and get back a team of agents that can design and deliver either deterministic workflows or agentic AI automations, then return a simple human-friendly result such as an email containing the completed output.
