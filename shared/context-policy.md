@@ -1,16 +1,20 @@
-# Shared Context Policy
+# shared/context-policy.md — Context Policy
 
-## Purpose
-Keep each profile narrow and avoid context overload.
+Keeps context compact across profiles and prevents bloat.
 
-## Rules
-- A delegate gets only the minimum context needed for its job.
-- Do not duplicate full repo policy inside each specialist profile.
-- Keep outputs short and structured.
-- Record only the current stage, files touched, validation status, and blockers.
-- Prefer compact handoffs over long explanations.
+## Minimal context handoffs
+- Each handoff carries only what the next stage needs.
+- Drop unrelated history when moving between profiles.
 
-## Handoff discipline
-- One profile finishes its job before the next begins.
-- Do not combine unrelated tasks in one profile.
-- If the workflow grows, split it rather than bloating a prompt.
+## Compact summaries
+- Summarize stage outputs in a few lines.
+- Do not forward full transcripts between specialists.
+
+## Stage tracking
+- Track the current stage and the next stage explicitly.
+- Carry a short stage marker with each handoff.
+
+## Avoiding bloat across profiles
+- Do not re-read files already processed in the same run.
+- Do not accumulate raw logs in working context.
+- Keep each profile's working context focused on its single job.

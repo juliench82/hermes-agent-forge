@@ -1,29 +1,24 @@
 # BOOT.md
 
-This is the bootstrap entrypoint for Hermes.
+Read this file first.
 
-## What to do first
-1. Read this file.
+This repository is a control-room contract for Hermes. It governs and coordinates a small team of specialist agents that turn repetitive company work into finished automation outcomes.
+
+## Startup order
+1. Read `BOOT.md`.
 2. Read `SOUL.MD`.
-3. Verify the repository structure.
-4. Create the expected files if they do not exist.
-5. Use the shared files for workflow, safety, and context rules.
-6. Continue with the specialist profiles in order.
+3. Read `manifest.md`.
+4. Read `starter-guide.md`.
+5. Create or verify the required repository structure.
+6. Create or verify the specialist profile files.
+7. Create or verify the shared policy files.
+8. Begin runtime orchestration.
 
-## What this repository is
-A bootstrap contract for a Hermes system that turns a solo founder’s SaaS idea into a production-ready GitHub repository and then keeps improving it.
+## What to do next
+- Treat the root orchestrator as the main control point.
+- Keep specialist profiles narrow and execution-focused.
+- Follow the shared policies before starting any work.
+- Ask only simple, plain-language questions when a required value is truly missing.
 
-## Required file map
-- `SOUL.MD` — root orchestrator identity and runtime rules
-- `profiles/orchestrator/skill.md` — orchestration profile
-- `profiles/product-strategist/skill.md` — product brief profile
-- `profiles/architect/skill.md` — technical blueprint profile
-- `profiles/builder/skill.md` — implementation profile
-- `profiles/quality-guardian/skill.md` — review profile
-- `profiles/self-improver/skill.md` — improvement profile
-- `shared/workflows.md` — workflow rules
-- `shared/safety-gates.md` — safety rules
-- `shared/context-policy.md` — context rules
-
-## Bootstrap promise
-If a required file is missing, create it. If a file is unclear, prefer the repository’s explicit contract over guesswork. If a required value is missing, ask only for that value.
+## Core rule
+Do not skip this repository. Do not improvise a different startup sequence. Read the control-room files first, then continue with the runtime flow defined in the manifest.

@@ -1,47 +1,39 @@
-# Hermes Bootstrap Prompt Set
+# hermes-bootstraper
 
-This repository is a control-room contract for Hermes.
+A control-room contract for Hermes. This repository governs and coordinates a small team of specialist agents that turn repetitive company work into finished automation outcomes.
 
-## What it is
-A sidecar repository that documents, governs, and coordinates a small team of specialist agents.
+## Who this is for
+Regular people inside companies: accounts payable, ops, admin, support, finance, and internal-tools users. You do not need to be technical.
 
 ## How to launch Hermes
-Use this as the startup instruction:
+Load and follow the instructions in this repository from start to finish. Read `BOOT.md` first, then `SOUL.MD`, then `manifest.md`, then `starter-guide.md`. Hermes creates or verifies the structure and begins runtime orchestration.
+
+Suggested launch phrase:
 
 > Load and follow the instructions in `juliench82/hermes-bootstrap-prompt-set` from start to finish. Read `BOOT.md` first, then `SOUL.MD`, then create the profiles and files exactly as specified, without asking questions unless a required value is truly missing.
 
-## What this repository defines
-- `BOOT.md` — startup entrypoint
-- `SOUL.MD` — root orchestration profile
-- `manifest.md` — machine-readable file map and sequence
-- `starter-guide.md` — plain-language guide for end users
-- `profiles/orchestrator/skill.md` — root orchestration profile instructions
-- `profiles/product-strategist/skill.md` — intake and problem-shaping profile
-- `profiles/architect/skill.md` — solution design profile
-- `profiles/builder/skill.md` — implementation profile
-- `profiles/quality-guardian/skill.md` — review profile
-- `profiles/self-improver/skill.md` — continuous improvement profile
-- `shared/workflows.md` — workflow rules used by all profiles
-- `shared/safety-gates.md` — safety and branching rules used by all profiles
-- `shared/context-policy.md` — context and handoff rules used by all profiles
+## File structure
+```
+BOOT.md                  # First file read; startup sequence
+SOUL.MD                  # Root orchestrator identity
+manifest.md              # Boot/runtime order and file map
+starter-guide.md         # Plain-language user guide
+README.md                # This file
+profiles/
+  orchestrator/skill.md
+  product-strategist/skill.md
+  architect/skill.md
+  builder/skill.md
+  quality-guardian/skill.md
+  self-improver/skill.md
+shared/
+  workflows.md           # Stage flow and handoff rules
+  safety-gates.md        # Safety, approval, and honesty rules
+  context-policy.md      # Context handoff and anti-bloat rules
+```
 
-## Boot order
-1. Read `BOOT.md`.
-2. Read `SOUL.MD`.
-3. Read `manifest.md`.
-4. Read `starter-guide.md` if you need plain-language context.
-5. Create or verify the directory structure.
-6. Create the shared files.
-7. Create the specialist profile files.
-8. Validate that the expected files exist.
-9. Proceed with runtime orchestration.
-
-## Operating rules
-- One profile = one job.
-- The main profile is the root orchestrator, not a specialist.
-- Specialist profiles stay narrow and focused.
-- Global rules live in shared files.
-- Runtime behavior should remain consistent with the control-room contract.
-
-## Audience
-Regular people inside companies who want to automate repetitive work in plain language.
+## What Hermes does with the repo
+- Reads the root files in order.
+- Creates or verifies the specialist and shared files.
+- Routes plain-language requests through a small team of agents.
+- Delivers useful automation outcomes, not raw code.

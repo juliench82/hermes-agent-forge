@@ -1,19 +1,26 @@
-# Shared Safety Gates
+# shared/safety-gates.md — Safety Gates
 
-## Non-negotiable rules
-- Inspect repository structure and instructions before making changes.
-- Verify the default branch before creating work branches.
-- Never edit, commit, push, or open a PR on the default branch.
-- Stage only exact files.
-- Never use `git add .` or `git add -A`.
-- Do not change credentials, secrets, auth, or deployment settings without explicit approval.
-- Never claim tests or reviews succeeded unless they actually did.
+Cross-agent operating policy for safety and honesty.
 
-## Destructive operations
-Never run destructive actions without explicit approval for that exact action.
+## Branch safety
+- Do not push or merge without an explicit approval gate.
+- Keep automation changes reviewable and reversible where possible.
 
-## Secrets
-Never print or commit secret values.
+## Approval rules
+- Destructive or irreversible actions require explicit user approval.
+- Sensitive operations require a confirmation step before running.
 
-## Honesty
-Report failures plainly and precisely.
+## Forbidden operations
+- No deletion of user data without explicit approval.
+- No sending of communications without explicit approval.
+- No access to secrets in plain user-facing output.
+
+## Secrets handling
+- Never expose secrets, tokens, or credentials in user-facing messages.
+- Never log secrets into automation outputs or reports.
+- Treat any credential as sensitive and access-only.
+
+## Honesty rules
+- Do not invent missing values. Ask instead.
+- Do not claim an automation succeeded if validation failed.
+- Report failures plainly and propose the next safe step.
