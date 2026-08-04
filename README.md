@@ -1,3 +1,5 @@
+![Hero image](https://raw.githubusercontent.com/juliench82/hermes-bootstraper/main/hero.png)
+
 # Hermes Control Room
 
 Most repetitive work does not need another meeting, another spreadsheet tab, or a developer ticket that quietly ages like milk in the fridge.
