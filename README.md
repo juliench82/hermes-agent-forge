@@ -148,6 +148,10 @@ Hermes should:
 - Keep specialist roles focused on one job each.
 - Deliver a useful result instead of stopping at raw code.
 
+## What's next
+
+The default skill-routed mode is live and tested. The next major step is wiring the advanced isolated-profile mode with **Buzz**, Hermes' native multi-agent messaging layer, so separate specialist profiles can talk to each other through a real task bus instead of sharing one agent context. That work is planned for an upcoming PR.
+
 ## In one sentence
 
 Hermes Control Room is a practical way to turn "I do this every week and I hate it" into "it is handled."
