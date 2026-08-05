@@ -8,9 +8,12 @@ Machine-readable map of the repository. This file makes the boot order, runtime 
 3. `manifest.md`
 4. `starter-guide.md`
 5. `installation-modes.md`
-6. Install specialist roles (as skills or profiles, depending on mode).
-7. Install shared policy files.
-8. Begin runtime orchestration.
+6. Bootstrap Hermes core.
+7. Bootstrap the Obsidian brain as the persistent memory layer.
+8. Bootstrap BUZZ as the messaging layer.
+9. Install specialist roles (as skills or profiles, depending on mode).
+10. Install shared policy files.
+11. Begin runtime orchestration.
 
 ## Canonical runtime order
 1. **Intake** — root orchestrator receives a plain-language request.
@@ -29,8 +32,9 @@ Machine-readable map of the repository. This file makes the boot order, runtime 
 | Native Hermes profiles | One (the active profile) |
 | Specialist roles installed as | Six `SKILL.md` skills under `.hermes/skills/hermes-bootstraper/` |
 | Shared policies installed as | Reference files under the orchestrator skill |
-| Root orchestrator | Active profile with augmented `SOUL.md` |
+| Root orchestrator | Active profile with augmented `SOUL.MD` |
 | Inter-agent communication | Internal skill routing within one agent |
+| BUZZ dependency | Not required |
 | Status | Tested and supported |
 
 ### Advanced: isolated-profile (design target)
@@ -40,7 +44,8 @@ Machine-readable map of the repository. This file makes the boot order, runtime 
 | Specialist roles installed as | Separate Hermes profiles, each with its own skill, config, memory, sessions |
 | Shared policies installed as | Distributed to every profile |
 | Root orchestrator | Dedicated orchestrator profile |
-| Inter-agent communication | Task bus with explicit handoff contract |
+| Inter-agent communication | BUZZ transport with explicit handoff contract |
+| BUZZ dependency | Required |
 | Status | Not automated by the bootstrap prompt; requires manual provisioning |
 
 See `installation-modes.md` for the full decision guide and advanced-mode contract.
