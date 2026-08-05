@@ -4,6 +4,14 @@
 
 Hermes Control Room turns recurring company work into finished automation outcomes through a team of focused, isolated Hermes profiles.
 
+## Goal prompt
+
+The cleanest way to start is:
+
+> `/goal Read and follow `juliench82/hermes-bootstraper` from start to finish. Set up the isolated-profile control room, install BUZZ and the Obsidian brain, create the isolated profiles, install each role's skill and shared policies, and make hermes-orchestrator the default user-facing profile. Ask me only for values that cannot be discovered safely.`
+
+This keeps the user experience simple while still telling Hermes exactly what needs to be completed.
+
 ## Start with one prompt
 
 Non-technical users do not run commands or configure agents. Give Hermes this:

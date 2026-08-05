@@ -2,6 +2,12 @@
 
 Read this file first.
 
+## Goal prompt
+
+A good kickoff prompt for Hermes is:
+
+> `/goal Read and follow `juliench82/hermes-bootstraper` from start to finish. Set up the isolated-profile control room, install BUZZ and the Obsidian brain, create the isolated profiles, install each role's skill and shared policies, and make hermes-orchestrator the default user-facing profile. Ask me only for values that cannot be discovered safely.`
+
 ## One-prompt setup
 
 The user gives Hermes one instruction:
