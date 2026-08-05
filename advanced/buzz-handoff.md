@@ -1,8 +1,6 @@
 # advanced/buzz-handoff.md — Task-Bus Contract
 
-How isolated profiles talk to each other through BUZZ. The orchestrator is the
-only profile allowed to start a handoff chain; specialists reply on their own
-channel and never talk to each other directly.
+This branch is isolated-profile only. BUZZ is the transport layer, but the control room stays prompt-first: Hermes should be able to understand the task bus contract from the prompt and fall back safely when an exact command or surface is missing.
 
 ## Channels
 
@@ -34,21 +32,16 @@ Every handoff message is a single JSON object posted to the target channel:
 }
 ```
 
-- `payload_ref` points to the full artifact in the Obsidian vault, not inline
-  content. This keeps BUZZ messages compact per `shared/context-policy.md`.
-- `needs_approval: true` freezes the chain until the orchestrator relays a
-  user approval, per `shared/safety-gates.md`.
+- `payload_ref` points to the full artifact in the Obsidian vault, not inline content.
+- `needs_approval: true` freezes the chain until the orchestrator relays a user approval.
+- Keep envelopes compact; if the command surface is missing, Hermes should use the prompt rule in `advanced/BOOTSTRAP.md` rather than inventing a hidden fallback.
 
 ## Handoff rules
 
 1. One task = one `task_id` for the whole chain; every message reuses it.
-2. The reader acknowledges by writing its own envelope with `stage` advanced.
-   Silence beyond `poll_interval * 5` is a timeout: orchestrator retries once,
-   then reports failure honestly.
-3. Specialists never skip stages and never message each other directly — the
-   orchestrator is the only router.
-4. Secrets never appear in envelopes. If a payload needs a credential, the
-   consuming profile reads it from its own `.env`.
+2. The reader acknowledges by writing its own envelope with `stage` advanced. Silence beyond `poll_interval * 5` is a timeout: orchestrator retries once, then reports failure honestly.
+3. Specialists never skip stages and never message each other directly — the orchestrator is the only router.
+4. Secrets never appear in envelopes. If a payload needs a credential, the consuming profile reads it from its own `.env`.
 5. The self-improver channel is advisory: it may propose, never merge.
 
 ## Gateway configuration
