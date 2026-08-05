@@ -31,6 +31,7 @@ One active Hermes profile becomes the root orchestrator. Six specialist role spe
 - All specialist roles share the same agent context, memory, and credentials.
 - There is no hard boundary preventing role overlap.
 - The orchestrator must self-discipline to avoid collapsing into a mega-agent.
+- This mode does not require BUZZ for internal skill routing.
 
 ### Status
 Tested. This is the result of a real six-minute bootstrap using the launch prompt on a Hermes installation.
@@ -50,6 +51,7 @@ Each specialist role becomes a separate native Hermes profile with its own `SOUL
   - `hermes-self-improver`
 - Each profile receives its corresponding skill from `profiles/<role>/skill.md`.
 - Each profile receives copies of the three shared policy files.
+- BUZZ is configured as the inter-profile transport layer.
 - A task bus or inter-profile handoff mechanism is configured.
 
 ### Provisioning commands (manual)
@@ -62,7 +64,7 @@ hermes profile create hermes-quality-guardian
 hermes profile create hermes-self-improver
 ```
 
-Then install the corresponding skill and shared policies into each profile.
+Then install the corresponding skill and shared policies into each profile, and wire BUZZ as the messaging layer.
 
 ### When to use it
 - You need strict isolation between roles (different credentials, different memory, different risk boundaries).
@@ -73,6 +75,7 @@ Then install the corresponding skill and shared policies into each profile.
 - More complex to set up and maintain.
 - Requires a reliable handoff mechanism between profiles.
 - The bootstrap prompt does not automate this mode; it must be provisioned manually or via a separate script.
+- The advanced topology is only valid once BUZZ is operational.
 
 ### Status
 Design target. Not automated by the bootstrap prompt. Requires manual provisioning.
