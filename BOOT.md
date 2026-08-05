@@ -41,11 +41,14 @@ Unless the user explicitly requests advanced mode, use default mode.
 3. Read `manifest.md`.
 4. Read `starter-guide.md`.
 5. Read `installation-modes.md`.
-6. Create one native Hermes profile per role using `hermes profile create`.
-7. Install the corresponding skill in each profile.
-8. Distribute the shared policy files to every profile.
-9. Configure the task bus and inter-profile handoff mechanism.
-10. Begin runtime orchestration.
+6. Bootstrap Hermes core.
+7. Bootstrap the Obsidian brain as the persistent memory layer.
+8. Bootstrap BUZZ as the messaging layer.
+9. Create one native Hermes profile per role using `hermes profile create`.
+10. Install the corresponding skill in each profile.
+11. Distribute the shared policy files to every profile.
+12. Configure the task bus and inter-profile handoff mechanism.
+13. Begin runtime orchestration.
 
 ## What to do next
 - Treat the root orchestrator as the main control point.
