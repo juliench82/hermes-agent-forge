@@ -1,64 +1,37 @@
 # advanced/BOOTSTRAP.md — Isolated-Profile Control Room
 
-Read this file after the root `BOOT.md` when the user selects **advanced mode**.
-This is the contract for v2 of the control room: one native Hermes profile per role,
-BUZZ as the task bus, and the Obsidian brain as shared persistent memory.
+This branch is **isolated-profile only**. There is no v1 fallback here. The control room itself is the bootstrap contract: Hermes reads the prompt, understands the topology, and provisions the advanced system without relying on a separate installer scaffold.
 
-## Topology
+## What this branch contains
+- One native Hermes profile per role.
+- BUZZ as the inter-profile transport layer.
+- The Obsidian brain as the shared memory layer.
+- Prompt-first orchestration with fallback instructions when a command or surface does not exist.
 
-```text
-                +------------------------+
-                |   Obsidian brain       |  shared vault (memory layer)
-                +-----------+------------+
-                            |
-   +----------------+  BUZZ |  +----------------+
-   | orchestrator   |<------>|  | BUZZ relay     |
-   | profile        |<------>|  | (task bus)     |
-   +-------+--------+        +--+-------+-------+
-           ^                      ^       ^
-           | handoff channels    |       |
-   +-------+--------+   +--------+--+   +-+-------------+
-   | strategist etc. |   | architect |   | builder ...   |
-   | (own profile)   |   | (profile) |   | (profiles)    |
-   +-----------------+   +-----------+   +---------------+
-```
+## Operating principle
+The control room should not force a specific CLI shape unless the runtime actually exposes it. Instead, it tells Hermes what outcome to achieve, what to verify, and what to do when a preferred command is unavailable.
 
-Each profile has its own `HERMES_HOME`, config, memory, sessions, credentials,
-and **its own BUZZ identity** (one scoped lock per relay+pubkey pair — two profiles
-cannot drive one Buzz identity).
+## Prompt-first startup sequence
+1. Read the branch root intention: isolated-profile only.
+2. Verify Hermes core and the current role context.
+3. Ask Hermes to create the isolated profiles it needs, one per role.
+4. Ask Hermes to provision BUZZ identities and channels for those profiles.
+5. Ask Hermes to initialize the Obsidian brain and seed the shared vault.
+6. Ask Hermes to install the role skills and shared policy files into each profile.
+7. Ask Hermes to configure handoff channels and validate the task bus.
+8. If a preferred CLI command does not exist, Hermes must fall back to the next clearly stated method in the prompt.
+9. Begin runtime orchestration only after the topology is verified.
 
-## Startup sequence
+## Fallback rule
+If Hermes cannot find a CLI command named in a step, it should:
+- search for the equivalent built-in action,
+- otherwise perform the task through the most direct available Hermes surface,
+- otherwise ask one short clarification question.
 
-1. Read root `BOOT.md`, `SOUL.MD`, `manifest.md`, `installation-modes.md`.
-2. Verify Hermes core is installed and a working provider is configured
-   (`hermes --version`, provider key present).
-3. Run `advanced/scripts/obsidian.sh` — verify/seed the shared vault.
-4. Run `advanced/scripts/buzz.sh` — verify the BUZZ adapter and relay reachability.
-5. Run `advanced/scripts/profiles.sh` — create the seven profiles idempotently
-   and install each role's skill + the three shared policy files.
-6. Read `advanced/buzz-handoff.md` and configure the handoff channels.
-7. Provision one BUZZ identity per profile (`BUZZ_PRIVATE_KEY` in each profile's
-   `.env`; never committed, never shared between profiles).
-8. Smoke test: orchestrator posts a `handoff` envelope to the `strategist`
-   channel and receives an acknowledgement.
-9. Begin runtime orchestration from the orchestrator profile.
+Never invent a hidden command. Never silently skip a bootstrap step.
 
-## Role-to-profile map
-
-| Profile | Skill source | BUZZ channels |
-|---------|--------------|----------------|
-| `hermes-orchestrator` | `profiles/orchestrator/skill.md` | all |
-| `hermes-product-strategist` | `profiles/product-strategist/skill.md` | `cr-brief` |
-| `hermes-architect` | `profiles/architect/skill.md` | `cr-design` |
-| `hermes-builder` | `profiles/builder/skill.md` | `cr-build` |
-| `hermes-quality-guardian` | `profiles/quality-guardian/skill.md` | `cr-review` |
-| `hermes-self-improver` | `profiles/self-improver/skill.md` | `cr-improve` |
-
-## Rules
-
-- Scripts are idempotent; re-running the bootstrap must be safe and fast.
-- Scripts never print secrets. BUZZ keys live only in per-profile `.env` files.
-- The Obsidian vault is the only shared writable memory; profiles do not share
-  `HERMES_HOME`.
-- If a required value is missing (relay URL, vault path, key), ask one short
-  question — do not guess.
+## Success criteria
+- The branch stays isolated-profile only.
+- The advanced topology can be understood and executed from the prompt itself.
+- BUZZ and Obsidian are initialized as part of the control room flow, not as a sidecar project.
+- Fallback behavior is explicit and safe.
