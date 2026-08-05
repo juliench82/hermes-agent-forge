@@ -2,39 +2,45 @@
 
 # Hermes Control Room — Isolated Profiles
 
-Hermes Control Room turns recurring company work into finished automation outcomes through a team of focused, isolated Hermes profiles.
+Turn recurring company work into finished automation outcomes with a team of focused, isolated Hermes profiles.
 
-## Goal prompt
+## One prompt. Full control room.
 
-The cleanest way to start is:
+Give Hermes this:
 
-> `/goal Read and follow `juliench82/hermes-bootstraper` from start to finish. Set up the isolated-profile control room, install BUZZ and the Obsidian brain, create the isolated profiles, install each role's skill and shared policies, and make hermes-orchestrator the default user-facing profile. Ask me only for values that cannot be discovered safely.`
+> `/goal Read and follow juliench82/hermes-bootstraper from start to finish. Set up the isolated-profile control room, install BUZZ and the Obsidian brain, create the isolated profiles, install each role's skill and shared policies, and make hermes-orchestrator the default user-facing profile. Ask me only for values that cannot be discovered safely.`
 
-This keeps the user experience simple while still telling Hermes exactly what needs to be completed.
+Hermes does the rest:
+- Creates one native profile per role (orchestrator, strategist, architect, builder, quality, self-improver)
+- Installs skills and policies
+- Wires BUZZ as the task bus
+- Seeds Obsidian as the shared brain
+- Makes `hermes-orchestrator` the only profile you talk to
 
-## Start with one prompt
+## Why this exists
 
-Non-technical users do not run commands or configure agents. Give Hermes this:
+Most AI assistants are one generic brain trying to do everything. This repo turns Hermes into a **control room**: a coordinated team of specialists that work together behind the scenes.
 
-> Read and follow `juliench82/hermes-bootstraper` from start to finish. Read `BOOTSTRAP.md` first. Set up the isolated-profile control room, BUZZ, and the Obsidian brain. Run the repository scripts yourself. Ask me only for values that cannot be discovered safely.
+- **BUZZ** is the inter-agent task bus: profiles pass jobs, share status, and finish work without you juggling conversations.
+- **Obsidian** is the shared brain: important context, notes, and decisions live in one place that all profiles can read and update.
 
-Hermes provisions the profiles, shared Obsidian brain, and BUZZ task bus itself. When bootstrap succeeds, **`hermes-orchestrator`** is the default and only profile the user talks to; it routes work to the specialist team.
+You get a real automation team, not a chatbot.
 
 ## Architecture
 
-- One native Hermes profile per role, with separate config, memory, sessions, and credentials.
-- BUZZ is the inter-profile task bus.
-- Obsidian is the durable shared context layer.
-- `scripts/` contains Hermes-run, idempotent helpers for profile, BUZZ, and vault provisioning.
+- One native Hermes profile per role, with separate config, memory, sessions, and credentials
+- BUZZ as the inter-profile task bus
+- Obsidian as the durable shared context layer
+- `scripts/` contains Hermes-run, idempotent helpers for profile, BUZZ, and vault provisioning
 
 ## Team
 
-- Orchestrator: receives user requests, routes work, and delivers results.
-- Product strategist: request to automation brief.
-- Architect: deterministic, agentic, or hybrid design.
-- Builder: implementation.
-- Quality guardian: validation.
-- Self improver: safe improvement proposals.
+- **Orchestrator**: receives your requests, routes work, and delivers results
+- **Product strategist**: turns requests into clear automation briefs
+- **Architect**: designs deterministic, agentic, or hybrid solutions
+- **Builder**: implements the solution
+- **Quality guardian**: validates the work
+- **Self improver**: proposes safe improvements
 
 ## Repository map
 
@@ -45,5 +51,9 @@ scripts/           # Hermes-run provisioning helpers
 profiles/          # specialist role contracts
 shared/            # workflow, safety, and context policies
 ```
+
+## For builders
+
+This repo is a **power pack** for Hermes: it bootstraps the whole system, not just the idea. It's built on top of the Hermes framework and the BUZZ task bus protocol, so it works with the same foundation that companies already use.
 
 Hermes asks short questions only for genuinely missing values, requests approval for irreversible actions, never exposes secrets, and returns useful outcomes rather than raw code.
