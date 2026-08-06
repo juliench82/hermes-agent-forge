@@ -1,6 +1,6 @@
 # buzz-handoff.md — Task-Bus Contract
 
-How isolated profiles talk to each other through BUZZ. The orchestrator is the only profile allowed to start a handoff chain; specialists reply on their own channel and never talk to each other directly.
+How native profiles talk to each other through BUZZ. The orchestrator is the only profile allowed to start a handoff chain; specialists reply on their own channel and never talk to each other directly.
 
 ## Channels
 
