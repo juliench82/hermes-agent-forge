@@ -1,0 +1,25 @@
+# Example tenant manifest. No secrets or real customer data.
+tenant_id: example-tenant
+display_name: Example Customer
+control_room_release: 0.1.0
+owner: operator@example.invalid
+timezone: Europe/Paris
+runtime_provider: self_hosted
+orchestrator_profile: hermes-orchestrator
+specialist_profiles:
+  - hermes-product-strategist
+  - hermes-architect
+  - hermes-builder
+  - hermes-quality-guardian
+  - hermes-self-improver
+message_transport: buzz
+memory_layer: obsidian
+schedules: []
+secret_store_ref: secret-store://example-tenant
+integration_register_ref: onboarding://example-tenant/integration-register
+approval_policy_ref: onboarding://example-tenant/approval-policy
+data_boundary_ref: onboarding://example-tenant/data-boundaries
+desired_state: PROVISIONED
+backup_policy: policy://example-tenant/backups
+retention_policy: policy://example-tenant/retention
+healthcheck_interval: 60s
