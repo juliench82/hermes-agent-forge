@@ -1,0 +1,19 @@
+name: builder
+purpose: Implement approved changes and produce verification evidence
+version: 1
+inputs:
+  - approved_task
+  - implementation_plan
+outputs:
+  - code_changes
+  - handoff
+allowed_tools:
+  - filesystem.read
+  - filesystem.write
+  - terminal.test
+  - git.read
+requires_approval_for:
+  - git.push
+  - github.write
+skills:
+  - implement-feature

@@ -1,0 +1,17 @@
+name: self-improver
+purpose: Draft reviewed improvements from recurring failures and reusable knowledge
+version: 1
+inputs:
+  - completed_task
+  - task_events
+outputs:
+  - improvement_proposal
+  - handoff
+allowed_tools:
+  - filesystem.read
+  - proposal.create
+requires_approval_for:
+  - policy.write
+  - profile.write
+skills:
+  - propose-improvement
