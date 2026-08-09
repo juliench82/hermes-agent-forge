@@ -2,9 +2,9 @@ name: TenantSpec contracts
 
 on:
   push:
-    paths: ["schemas/**", "catalog/**", "runtime/tenant_spec.py", "compiler/**", "examples/*.tenant-spec.json", "tests/test_tenant_spec.py", "tests/test_compiler.py", ".github/workflows/tenant-spec.yml"]
+    paths: ["schemas/**", "catalog/**", "runtime/tenant_spec.py", "compiler/**", "examples/*.tenant-spec.json", "tests/test_tenant_spec.py", "tests/test_compiler.py", "tests/test_renderers.py", ".github/workflows/tenant-spec.yml"]
   pull_request:
-    paths: ["schemas/**", "catalog/**", "runtime/tenant_spec.py", "compiler/**", "examples/*.tenant-spec.json", "tests/test_tenant_spec.py", "tests/test_compiler.py", ".github/workflows/tenant-spec.yml"]
+    paths: ["schemas/**", "catalog/**", "runtime/tenant_spec.py", "compiler/**", "examples/*.tenant-spec.json", "tests/test_tenant_spec.py", "tests/test_compiler.py", "tests/test_renderers.py", ".github/workflows/tenant-spec.yml"]
 permissions:
   contents: read
 jobs:
@@ -15,6 +15,6 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: python -m pip install --disable-pip-version-check jsonschema==4.23.0
-      - run: python -m unittest tests.test_tenant_spec tests.test_compiler
+      - run: python -m unittest tests.test_tenant_spec tests.test_compiler tests.test_renderers
       - run: python -m runtime.tenant_spec examples/invoice-collections.tenant-spec.json
       - run: python -m compiler plan examples/invoice-collections.tenant-spec.json > /tmp/invoice-collections.plan.json
