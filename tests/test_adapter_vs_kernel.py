@@ -1,116 +1,136 @@
-"""Tests comparing adapter output against hermes_kernel.py expectations."""
+"""Structural checks: adapter bundle vs hermes_kernel / shared contracts."""
 
+from __future__ import annotations
+
+import json
+import tempfile
 import unittest
-import hashlib
+from pathlib import Path
 
-class TestAdapterKernelCompatibility(unittest.TestCase):
-    """Test adapter output structure against kernel expectations."""
+from compiler.hermes_adapter import CONTRACT_VERSION, LEGACY_PROFILES, render_hermes
+from compiler.planner import build_plan
 
-    def _get_sample_bundle(self):
-        """Get a sample bundle structure."""
-        return {
-            "contract_version": "v1-draft",
-            "contract_status": "compatibility",
-            "fingerprint": hashlib.sha256(b"test").hexdigest(),
-            "runtime": {"agents": [{"name": "orchestrator", "profile": "orchestrator", "profile_version": "1.0.0", "skills": ["product-vision"], "mode": "skill-routed", "isolation_namespace": "orchestrator-ns", "secrets": []}]},
-            "coordination": {"delegation": [], "handoff": {}},
-            "manifest": {"isolation": {"network": "default-deny", "filesystem": "isolated", "memory": "private"}, "secrets_policy": [], "tools_policy": []}
-        }
+ROOT = Path(__file__).resolve().parents[1]
+SPEC = ROOT / "examples" / "solo-founder-app-builder.tenant-spec.json"
+KERNEL = ROOT / "runtime" / "hermes_kernel.py"
+SHARED = {
+    "profile-contract": ROOT / "shared" / "profile-contract.md",
+    "task-coordination": ROOT / "shared" / "task-coordination.md",
+    "safety-enforcement": ROOT / "shared" / "safety-enforcement.md",
+    "safety-gates": ROOT / "shared" / "safety-gates.md",
+    "workflows": ROOT / "shared" / "workflows.md",
+}
 
-    def test_bundle_has_required_top_level_fields(self):
-        bundle = self._get_sample_bundle()
-        for field in ["contract_version", "contract_status", "fingerprint", "runtime", "coordination", "manifest"]:
-            with self.subTest(field=field):
-                self.assertIn(field, bundle)
 
-    def test_runtime_has_agents_array(self):
-        bundle = self._get_sample_bundle()
-        self.assertIn("agents", bundle["runtime"])
-        self.assertIsInstance(bundle["runtime"]["agents"], list)
+class AdapterVsKernelTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.plan = build_plan(SPEC)
+        cls._tmp = tempfile.TemporaryDirectory()
+        cls.root = render_hermes(cls.plan, Path(cls._tmp.name), ROOT)
+        cls.runtime = json.loads((cls.root / "runtime.json").read_text())
+        cls.coordination = json.loads((cls.root / "coordination.json").read_text())
+        cls.manifest = json.loads((cls.root / "manifest.json").read_text())
 
-    def test_agents_have_required_fields(self):
-        bundle = self._get_sample_bundle()
-        for agent in bundle["runtime"]["agents"]:
-            for field in ["name", "profile", "skills", "mode"]:
-                with self.subTest(agent=agent.get("name"), field=field):
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls._tmp.cleanup()
+
+    def test_kernel_and_shared_contracts_exist(self):
+        self.assertTrue(KERNEL.is_file())
+        for name, path in SHARED.items():
+            with self.subTest(contract=name):
+                self.assertTrue(path.is_file())
+
+    def test_runtime_top_level_contract(self):
+        self.assertEqual(self.runtime["apiVersion"], "hermes.runtime/v1")
+        self.assertEqual(self.runtime["kind"], "HermesRuntimeConfiguration")
+        self.assertEqual(self.runtime["contractVersion"], CONTRACT_VERSION)
+        self.assertEqual(self.runtime["contractStatus"], "compatibility")
+        self.assertEqual(self.runtime["routingMode"], "skill-routed")
+        self.assertEqual(self.runtime["rootAgent"], "orchestrator")
+        self.assertIsInstance(self.runtime["agents"], list)
+        self.assertEqual(len(self.runtime["agents"]), len(LEGACY_PROFILES))
+
+    def test_agents_required_fields(self):
+        required = (
+            "id",
+            "legacyProfile",
+            "profileVersion",
+            "skills",
+            "inputs",
+            "outputs",
+            "requiresApprovalFor",
+            "namespace",
+            "profilePath",
+            "skillPath",
+        )
+        for agent in self.runtime["agents"]:
+            with self.subTest(agent=agent.get("id")):
+                for field in required:
                     self.assertIn(field, agent)
 
-    def test_agents_have_isolation_namespace(self):
-        bundle = self._get_sample_bundle()
-        for agent in bundle["runtime"]["agents"]:
-            with self.subTest(agent=agent.get("name")):
-                self.assertIn("isolation_namespace", agent)
+    def test_isolation_namespace_matches_plan(self):
+        plan_ns = {a["id"]: a["isolation"]["dataNamespace"] for a in self.plan.agents}
+        for agent in self.runtime["agents"]:
+            with self.subTest(agent=agent["id"]):
+                self.assertEqual(agent["namespace"], plan_ns[agent["id"]])
 
-    def test_mode_is_skill_routed(self):
-        bundle = self._get_sample_bundle()
-        for agent in bundle["runtime"]["agents"]:
-            with self.subTest(agent=agent.get("name")):
-                self.assertEqual(agent["mode"], "skill-routed")
-
-    def test_coordination_has_delegation(self):
-        bundle = self._get_sample_bundle()
-        self.assertIn("delegation", bundle["coordination"])
-        self.assertIsInstance(bundle["coordination"]["delegation"], list)
-
-    def test_coordination_has_handoff(self):
-        bundle = self._get_sample_bundle()
-        self.assertIn("handoff", bundle["coordination"])
-        self.assertIsInstance(bundle["coordination"]["handoff"], dict)
-
-    def test_manifest_has_isolation(self):
-        bundle = self._get_sample_bundle()
-        self.assertIn("isolation", bundle["manifest"])
-
-    def test_manifest_has_secrets_policy(self):
-        bundle = self._get_sample_bundle()
-        self.assertIn("secrets_policy", bundle["manifest"])
-        self.assertIsInstance(bundle["manifest"]["secrets_policy"], list)
-
-    def test_manifest_has_tools_policy(self):
-        bundle = self._get_sample_bundle()
-        self.assertIn("tools_policy", bundle["manifest"])
-        self.assertIsInstance(bundle["manifest"]["tools_policy"], list)
-
-    def test_no_secret_values_in_bundle(self):
-        bundle = self._get_sample_bundle()
-        for agent in bundle["runtime"]["agents"]:
-            for secret in agent.get("secrets", []):
-                with self.subTest(secret=secret.get("name")):
-                    self.assertNotIn("value", secret)
-                    self.assertIn("ref", secret)
-
-    def test_isolation_network_is_default_deny(self):
-        bundle = self._get_sample_bundle()
-        self.assertEqual(bundle["manifest"]["isolation"]["network"], "default-deny")
-
-    def test_isolation_filesystem_is_isolated(self):
-        bundle = self._get_sample_bundle()
-        self.assertEqual(bundle["manifest"]["isolation"]["filesystem"], "isolated")
-
-    def test_isolation_memory_is_private(self):
-        bundle = self._get_sample_bundle()
-        self.assertEqual(bundle["manifest"]["isolation"]["memory"], "private")
+    def test_coordination_delegation_and_handoff(self):
+        self.assertEqual(self.coordination["apiVersion"], "hermes.runtime/v1")
+        self.assertEqual(self.coordination["kind"], "HermesCoordinationConfiguration")
+        self.assertIsInstance(self.coordination["delegation"], list)
+        self.assertEqual(self.coordination["handoffContract"], "shared/profile-contract.md")
+        self.assertEqual(self.coordination["delegation"], self.plan.delegation)
 
     def test_delegation_is_acyclic(self):
-        bundle = self._get_sample_bundle()
-        delegation = bundle["coordination"]["delegation"]
-        graph = {}
-        for edge in delegation:
-            src, tgt = edge["from"], edge["to"]
-            graph.setdefault(src, []).append(tgt)
-        visited, rec_stack = set(), set()
-        def has_cycle(node):
+        graph: dict[str, list[str]] = {}
+        for edge in self.coordination["delegation"]:
+            graph.setdefault(edge["from"], []).append(edge["to"])
+        visited: set[str] = set()
+        stack: set[str] = set()
+
+        def has_cycle(node: str) -> bool:
             visited.add(node)
-            rec_stack.add(node)
+            stack.add(node)
             for neighbor in graph.get(node, []):
                 if neighbor not in visited:
-                    if has_cycle(neighbor): return True
-                elif neighbor in rec_stack: return True
-            rec_stack.remove(node)
+                    if has_cycle(neighbor):
+                        return True
+                elif neighbor in stack:
+                    return True
+            stack.remove(node)
             return False
-        for node in graph:
+
+        for node in list(graph):
             if node not in visited:
-                self.assertFalse(has_cycle(node))
+                self.assertFalse(has_cycle(node), f"cycle involving {node}")
+
+    def test_manifest_security_flags(self):
+        self.assertEqual(self.manifest["kind"], "HermesCompatibilityBundle")
+        self.assertEqual(self.manifest["contractVersion"], CONTRACT_VERSION)
+        self.assertIs(self.manifest["secretValuesIncluded"], False)
+        self.assertEqual(self.manifest["sourcePlanFingerprint"], self.plan.fingerprint)
+
+    def test_no_secret_values_in_bundle_files(self):
+        for name in ("runtime.json", "coordination.json", "manifest.json"):
+            text = (self.root / name).read_text().lower()
+            with self.subTest(file=name):
+                self.assertNotIn("password", text)
+                self.assertNotIn("begin private key", text)
+
+    def test_fingerprint_file_matches_bundle(self):
+        fp = (self.root / "fingerprint.sha256").read_text().strip()
+        self.assertEqual(len(fp), 64)
+        self.assertTrue(all(c in "0123456789abcdef" for c in fp))
+
+    def test_legacy_profiles_unchanged_on_disk(self):
+        for name in LEGACY_PROFILES:
+            with self.subTest(profile=name):
+                src = ROOT / "profiles" / name / "profile.yaml"
+                dst = self.root / "profiles" / name / "profile.yaml"
+                self.assertEqual(src.read_bytes(), dst.read_bytes())
+
 
 if __name__ == "__main__":
     unittest.main()
