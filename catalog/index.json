@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "primitives": {
+    "imap-smtp@1.0.0": "connectors/imap-smtp/1.0.0/primitive.yaml",
+    "rest-api@1.0.0": "connectors/rest-api/1.0.0/primitive.yaml",
+    "executor@1.0.0": "roles/executor/1.0.0/primitive.yaml",
+    "supervisor@1.0.0": "roles/supervisor/1.0.0/primitive.yaml",
+    "cron@1.0.0": "triggers/cron/1.0.0/primitive.yaml",
+    "audit-log@1.0.0": "memory/audit-log/1.0.0/primitive.yaml",
+    "mandatory-baseline@1.0.0": "policies/mandatory-baseline/1.0.0/policy.yaml"
+  }
+}
