@@ -1,0 +1,17 @@
+name: quality-guardian
+purpose: Independently verify scope, safety, tests, and acceptance criteria
+version: 1
+inputs:
+  - task_spec
+  - builder_handoff
+outputs:
+  - review_decision
+  - handoff
+allowed_tools:
+  - filesystem.read
+  - terminal.test
+  - security.scan
+  - git.diff
+requires_approval_for: []
+skills:
+  - verify-change

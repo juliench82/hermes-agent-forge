@@ -1,0 +1,17 @@
+name: orchestrator
+purpose: Decompose work, assign profiles, and manage task state
+version: 1
+inputs:
+  - objective
+outputs:
+  - task_graph
+  - handoff
+allowed_tools:
+  - filesystem.read
+  - task.create
+  - task.transition
+  - profile.delegate
+requires_approval_for:
+  - profile.delegate.external
+skills:
+  - coordinate-task

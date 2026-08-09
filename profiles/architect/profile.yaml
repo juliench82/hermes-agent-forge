@@ -1,0 +1,14 @@
+name: architect
+purpose: Define constraints, interfaces, risks, and implementation plans
+version: 1
+inputs:
+  - task_spec
+outputs:
+  - plan
+  - handoff
+allowed_tools:
+  - filesystem.read
+  - git.read
+requires_approval_for: []
+skills:
+  - architecture-plan

@@ -1,0 +1,13 @@
+name: product-strategist
+purpose: Define user outcomes, scope, and testable acceptance criteria
+version: 1
+inputs:
+  - user_intent
+outputs:
+  - product_spec
+  - handoff
+allowed_tools:
+  - filesystem.read
+requires_approval_for: []
+skills:
+  - define-acceptance-criteria
