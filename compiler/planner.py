@@ -6,7 +6,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from runtime.tenant_spec import validate_file
+from runtime.tenant_spec import TenantSpecValidationError, validate_file
 
 from .catalog import Catalog
 from .errors import CompilerError
@@ -36,7 +36,10 @@ def _read_spec(path: Path) -> dict[str, Any]:
 
 
 def build_plan(spec_path: Path, catalog: Catalog | None = None) -> DeploymentPlan:
-    validate_file(spec_path)
+    try:
+        validate_file(spec_path)
+    except TenantSpecValidationError as exc:
+        raise CompilerError(f"invalid TenantSpec: {exc}") from exc
     spec = _read_spec(spec_path)
     catalog = catalog or Catalog()
 
