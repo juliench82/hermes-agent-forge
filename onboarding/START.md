@@ -4,6 +4,15 @@ This is the customer-facing activation entry point for Hermes Control Room.
 
 The customer does not need to understand profiles, tools, models, prompts, or infrastructure. Ask only for the information needed to design one useful first automation.
 
+## Install prerequisite (shared brain)
+
+If Control Room install is still in progress, resolve the Obsidian vault **first** via
+`workflows/vault-path.md` (path prompt + OS suggestion, or SKIP). Do not mix the
+vault-path question with the automation discovery question below.
+
+If install already recorded `SKIPPED` for the vault, continue; automations that need
+local notes can revisit vault-path later.
+
 ## Desired outcome
 
 Begin with this question:
@@ -29,6 +38,7 @@ Examples:
 
 ## Next artifacts
 
+- `workflows/vault-path.md` (install-time only, if vault not yet resolved)
 - `templates/customer-blueprint.md`
 - `templates/integration-register.md`
 - `templates/approval-policy.md`
