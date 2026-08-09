@@ -8,6 +8,8 @@ from typing import Any
 
 from .planner import DeploymentPlan
 
+CONTRACT_VERSION = "v1-draft"
+
 
 class HermesAdapterError(ValueError):
     pass
@@ -60,7 +62,17 @@ def _profile_contract(path: Path) -> dict[str, Any]:
         if ":" in line:
             key, value = line.split(":", 1)
             current = key.strip()
-            values[current] = value.strip() or []
+            raw = value.strip()
+            values[current] = [] if raw == "" or raw == "[]" else raw
+    # Normalize list-like fields
+    for field in ("inputs", "outputs", "skills", "allowed_tools", "requires_approval_for"):
+        val = values.get(field)
+        if val == "[]":
+            values[field] = []
+        elif isinstance(val, str) and val:
+            values[field] = [v.strip() for v in val.split(",") if v.strip()]
+        elif val is None or val == "":
+            values[field] = []
     return values
 
 
@@ -86,7 +98,12 @@ def _agent(plan_agent: dict[str, Any], legacy_name: str, repo_root: Path) -> dic
     }
 
 
-def render_hermes(plan: DeploymentPlan, output_dir: Path, repo_root: Path | None = None, profile_map: dict[str, str] | None = None) -> Path:
+def render_hermes(
+    plan: DeploymentPlan,
+    output_dir: Path,
+    repo_root: Path | None = None,
+    profile_map: dict[str, str] | None = None,
+) -> Path:
     repo_root = (repo_root or Path(__file__).resolve().parents[1]).resolve()
     profile_map = profile_map or DEFAULT_PROFILE_MAP
     root = output_dir.resolve() / plan.tenantId / "hermes"
@@ -106,6 +123,7 @@ def render_hermes(plan: DeploymentPlan, output_dir: Path, repo_root: Path | None
         "kind": "HermesRuntimeConfiguration",
         "adapter": "hermes",
         "adapterVersion": "1.0.0",
+        "contractVersion": CONTRACT_VERSION,
         "contractStatus": "compatibility",
         "tenantId": plan.tenantId,
         "rootAgent": "orchestrator",
@@ -119,12 +137,29 @@ def render_hermes(plan: DeploymentPlan, output_dir: Path, repo_root: Path | None
         "stages": [{"id": stage, "agent": agent} for stage, agent in STAGES],
         "delegation": plan.delegation,
         "handoffContract": "shared/profile-contract.md",
-        "policyContracts": ["shared/workflows.md", "shared/safety-gates.md", "shared/safety-enforcement.md"],
+        "policyContracts": [
+            "shared/workflows.md",
+            "shared/safety-gates.md",
+            "shared/safety-enforcement.md",
+        ],
     }
     _write_json(root / "runtime.json", runtime)
     _write_json(root / "coordination.json", coordination)
-    manifest = {"kind": "HermesCompatibilityBundle", "version": "1.0.0", "tenantId": plan.tenantId, "secretValuesIncluded": False, "sourcePlanFingerprint": plan.fingerprint}
+    manifest = {
+        "kind": "HermesCompatibilityBundle",
+        "version": "1.0.0",
+        "contractVersion": CONTRACT_VERSION,
+        "tenantId": plan.tenantId,
+        "secretValuesIncluded": False,
+        "sourcePlanFingerprint": plan.fingerprint,
+    }
     _write_json(root / "manifest.json", manifest)
-    fingerprint = hashlib.sha256(json.dumps({"runtime": runtime, "coordination": coordination, "manifest": manifest}, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    fingerprint = hashlib.sha256(
+        json.dumps(
+            {"runtime": runtime, "coordination": coordination, "manifest": manifest},
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
     (root / "fingerprint.sha256").write_text(fingerprint + "\n", encoding="utf-8")
     return root

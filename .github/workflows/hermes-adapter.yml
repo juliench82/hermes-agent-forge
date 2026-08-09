@@ -2,9 +2,29 @@ name: Hermes adapter compatibility
 
 on:
   push:
-    paths: ["compiler/hermes_adapter.py", "examples/solo-founder-app-builder.tenant-spec.json", "profiles/**", "shared/**", "runtime/**", "tests/test_hermes_adapter.py", ".github/workflows/hermes-adapter.yml"]
+    paths:
+      - "compiler/hermes_adapter.py"
+      - "examples/solo-founder-app-builder.tenant-spec.json"
+      - "profiles/**"
+      - "shared/**"
+      - "runtime/**"
+      - "schemas/hermes-bundle.v1.schema.json"
+      - "tests/test_hermes_adapter.py"
+      - "tests/test_adapter_vs_kernel.py"
+      - "tests/golden_solo_founder_profiles.py"
+      - ".github/workflows/hermes-adapter.yml"
   pull_request:
-    paths: ["compiler/hermes_adapter.py", "examples/solo-founder-app-builder.tenant-spec.json", "profiles/**", "shared/**", "runtime/**", "tests/test_hermes_adapter.py", ".github/workflows/hermes-adapter.yml"]
+    paths:
+      - "compiler/hermes_adapter.py"
+      - "examples/solo-founder-app-builder.tenant-spec.json"
+      - "profiles/**"
+      - "shared/**"
+      - "runtime/**"
+      - "schemas/hermes-bundle.v1.schema.json"
+      - "tests/test_hermes_adapter.py"
+      - "tests/test_adapter_vs_kernel.py"
+      - "tests/golden_solo_founder_profiles.py"
+      - ".github/workflows/hermes-adapter.yml"
 
 permissions:
   contents: read
@@ -18,4 +38,6 @@ jobs:
         with: {python-version: "3.12"}
       - run: python -m pip install --disable-pip-version-check jsonschema==4.23.0
       - run: python -m unittest tests.test_hermes_adapter
+      - run: python -m unittest tests.test_adapter_vs_kernel
+      - run: python -m unittest tests.golden_solo_founder_profiles
       - run: python -m compiler validate examples/solo-founder-app-builder.tenant-spec.json
