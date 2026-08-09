@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
+
 from runtime.policy_proxy import PolicyProxy, ToolCall, EffectLevel, Decision, InMemoryAuditLog
 from runtime.isolation import IsolationConfig, NetworkPolicy, FilesystemPolicy, MemoryPolicy, apply_isolation
 from runtime.secrets import SecretsPolicy, SecretRef, build_secrets_policy
