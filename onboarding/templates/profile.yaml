@@ -1,0 +1,16 @@
+# Copy to profiles/<name>/profile.yaml and complete every field.
+name: profile-name
+purpose: One-sentence responsibility
+version: 1
+inputs:
+  - name: task_spec
+    required: true
+outputs:
+  - name: handoff
+    format: yaml
+allowed_tools: []
+requires_approval_for: []
+skills: []
+verification:
+  - structured handoff emitted
+  - acceptance criteria evidenced
