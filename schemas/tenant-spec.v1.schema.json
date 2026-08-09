@@ -1,0 +1,1 @@
+TenantSpec JSON Schema v1: requires apiVersion, kind, metadata, business, security, connectors and agents; enforces audit, secret references, agent isolation, connector scopes and confirmation for irreversible actions.

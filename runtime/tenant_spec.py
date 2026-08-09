@@ -1,0 +1,1 @@
+Pure-Python TenantSpec v1 semantic validator with mandatory baseline checks (audit, secret references, isolation, connector reference/scope validation, confirmation for irreversible effects, delegation DAG).

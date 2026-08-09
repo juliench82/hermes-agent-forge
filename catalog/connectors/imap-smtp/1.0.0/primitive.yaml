@@ -1,0 +1,1 @@
+IMAP/SMTP connector primitive with email.read, email.draft and confirmation-gated email.send contracts.

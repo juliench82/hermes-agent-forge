@@ -1,0 +1,1 @@
+unittest coverage for valid invoice collections spec and failures for missing audit, literal secrets, unknown connector scopes, irreversible actions without confirmation and delegation cycles.

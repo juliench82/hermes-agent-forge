@@ -1,0 +1,1 @@
+Versioned primitive-catalog contract and publication rules.
