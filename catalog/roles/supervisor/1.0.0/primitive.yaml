@@ -1,0 +1,8 @@
+apiVersion: hermes.platform/v1
+kind: AgentRolePrimitive
+metadata: {id: supervisor, version: 1.0.0}
+contract:
+  purpose: Coordinate allowlisted agents and validate workflow outputs.
+  delegation: allowlist_only
+  requiredIsolation: {networkPolicy: strict, filesystem: read_only}
+  requiredAudit: true

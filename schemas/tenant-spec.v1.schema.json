@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hermes-bootstrapper.dev/schemas/tenant-spec.v1.schema.json",
+  "title": "TenantSpec v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "business", "security", "connectors", "agents"],
+  "properties": {
+    "apiVersion": {"const": "hermes.platform/v1"},
+    "kind": {"const": "TenantSpec"},
+    "metadata": {"type": "object", "additionalProperties": false, "required": ["tenantId", "specVersion", "status"], "properties": {"tenantId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"}, "displayName": {"type": "string", "minLength": 1}, "specVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"}, "status": {"enum": ["draft", "validated", "dry_run", "approved", "production"]}}},
+    "business": {"type": "object", "additionalProperties": false, "required": ["objectives"], "properties": {"objectives": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}}},
+    "security": {"type": "object", "additionalProperties": false, "required": ["baseline", "secretsProvider", "audit", "network"], "properties": {"baseline": {"const": "mandatory-baseline@1.0.0"}, "secretsProvider": {"enum": ["docker-secrets", "vault"]}, "audit": {"type": "object", "required": ["enabled", "retentionDays", "immutable"], "properties": {"enabled": {"const": true}, "retentionDays": {"type": "integer", "minimum": 30}, "immutable": {"const": true}}}, "network": {"type": "object", "required": ["defaultDenyEgress"], "properties": {"defaultDenyEgress": {"const": true}}}}},
+    "connectors": {"type": "array", "items": {"$ref": "#/$defs/connector"}},
+    "agents": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/$defs/agent"}}
+  },
+  "$defs": {
+    "connector": {"type": "object", "additionalProperties": false, "required": ["id", "primitive", "secretRefs", "allowedOperations"], "properties": {"id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"}, "primitive": {"type": "string", "pattern": "^[a-z0-9-]+@[0-9]+\\.[0-9]+\\.[0-9]+$"}, "secretRefs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9/_-]+$"}}, "allowedOperations": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z]+(\\.[a-z_]+)+$"}}}},
+    "agent": {"type": "object", "additionalProperties": false, "required": ["id", "profile", "purpose", "isolation", "connectors", "permissions"], "properties": {"id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"}, "profile": {"type": "string", "pattern": "^[a-z0-9-]+@[0-9]+\\.[0-9]+\\.[0-9]+$"}, "purpose": {"type": "string", "minLength": 1}, "isolation": {"type": "object", "required": ["dataNamespace", "networkPolicy", "filesystem"], "properties": {"dataNamespace": {"type": "string", "minLength": 1}, "networkPolicy": {"const": "strict"}, "filesystem": {"const": "read_only"}}}, "connectors": {"type": "array", "items": {"type": "object", "required": ["connectorId", "scopes"], "properties": {"connectorId": {"type": "string"}, "scopes": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}}, "permissions": {"type": "object", "required": ["maxEffect"], "properties": {"maxEffect": {"enum": ["read", "write_limited", "irreversible"]}, "confirmation": {"type": "object", "required": ["required"], "properties": {"required": {"type": "boolean"}}}}}, "delegates": {"type": "object", "properties": {"allow": {"type": "array", "items": {"type": "string"}}}}}}
+  }
+}

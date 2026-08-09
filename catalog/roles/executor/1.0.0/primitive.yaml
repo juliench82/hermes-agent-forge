@@ -1,0 +1,8 @@
+apiVersion: hermes.platform/v1
+kind: AgentRolePrimitive
+metadata: {id: executor, version: 1.0.0}
+contract:
+  purpose: Execute a bounded workflow with explicitly granted tools.
+  delegation: forbidden
+  requiredIsolation: {networkPolicy: strict, filesystem: read_only}
+  requiredAudit: true

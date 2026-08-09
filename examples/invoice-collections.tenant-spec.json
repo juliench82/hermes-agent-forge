@@ -1,0 +1,15 @@
+{
+  "apiVersion": "hermes.platform/v1",
+  "kind": "TenantSpec",
+  "metadata": {"tenantId": "acme-fr", "displayName": "ACME France", "specVersion": "1.0.0", "status": "validated"},
+  "business": {"objectives": ["Identify overdue invoices and prepare customer follow-ups."]},
+  "security": {"baseline": "mandatory-baseline@1.0.0", "secretsProvider": "docker-secrets", "audit": {"enabled": true, "immutable": true, "retentionDays": 365}, "network": {"defaultDenyEgress": true}},
+  "connectors": [
+    {"id": "accounting-api", "primitive": "rest-api@1.0.0", "secretRefs": ["acme-fr/accounting-api/token"], "allowedOperations": ["invoices.read", "customers.read"]},
+    {"id": "finance-mailbox", "primitive": "imap-smtp@1.0.0", "secretRefs": ["acme-fr/finance-mailbox/credentials"], "allowedOperations": ["email.read", "email.draft", "email.send"]}
+  ],
+  "agents": [
+    {"id": "receivables-analyst", "profile": "executor@1.0.0", "purpose": "Produce a prioritised overdue-invoice report.", "isolation": {"dataNamespace": "acme-fr.receivables-analyst", "networkPolicy": "strict", "filesystem": "read_only"}, "connectors": [{"connectorId": "accounting-api", "scopes": ["invoices.read", "customers.read"]}], "permissions": {"maxEffect": "read"}},
+    {"id": "collections-supervisor", "profile": "supervisor@1.0.0", "purpose": "Prepare and send approved collection follow-ups.", "isolation": {"dataNamespace": "acme-fr.collections-supervisor", "networkPolicy": "strict", "filesystem": "read_only"}, "connectors": [{"connectorId": "finance-mailbox", "scopes": ["email.read", "email.draft", "email.send"]}], "delegates": {"allow": ["receivables-analyst"]}, "permissions": {"maxEffect": "irreversible", "confirmation": {"required": true}}}
+  ]
+}

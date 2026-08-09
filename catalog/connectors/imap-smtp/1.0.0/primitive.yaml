@@ -1,0 +1,13 @@
+apiVersion: hermes.platform/v1
+kind: ConnectorPrimitive
+metadata:
+  id: imap-smtp
+  version: 1.0.0
+capabilities: [email.read, email.draft, email.send]
+requiredSecrets: [IMAP_HOST, IMAP_USERNAME, IMAP_PASSWORD, SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD]
+toolContracts:
+  - {name: search_messages, effect: read, requiredScope: email.read}
+  - {name: create_draft, effect: write_limited, requiredScope: email.draft}
+  - {name: send_message, effect: irreversible, requiredScope: email.send, requiresConfirmation: true}
+network:
+  egress: {protocols: [tcp], ports: [993, 465, 587], hostsFromSecrets: [IMAP_HOST, SMTP_HOST]}

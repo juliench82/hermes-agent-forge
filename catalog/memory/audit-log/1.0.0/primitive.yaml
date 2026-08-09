@@ -1,0 +1,8 @@
+apiVersion: hermes.platform/v1
+kind: MemoryPrimitive
+metadata: {id: audit-log, version: 1.0.0}
+contract:
+  appendOnly: true
+  immutable: true
+  requiredFields: [tenant_id, agent_id, run_id, tool, effect, policy_decision, result_hash]
+  secretRedaction: required

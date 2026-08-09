@@ -1,0 +1,8 @@
+apiVersion: hermes.platform/v1
+kind: TriggerPrimitive
+metadata: {id: cron, version: 1.0.0}
+contract:
+  requiredFields: [schedule, timezone]
+  timezoneRequired: true
+  maxFrequency: "* * * * *"
+  idempotencyRequired: true

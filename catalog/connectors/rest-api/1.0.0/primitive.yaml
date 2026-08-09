@@ -1,0 +1,13 @@
+apiVersion: hermes.platform/v1
+kind: ConnectorPrimitive
+metadata:
+  id: rest-api
+  version: 1.0.0
+capabilities: []
+requiredSecrets: [API_BASE_URL, API_TOKEN]
+configuration:
+  required: [operationAllowlist, egressHostAllowlist]
+toolContracts:
+  - {name: request, effect: delegated, requiredScope: operationAllowlist, policyProxyRequired: true}
+network:
+  egress: {defaultDeny: true, hostsFromConfiguration: [egressHostAllowlist]}
