@@ -20,13 +20,24 @@ The user does not run commands, create profiles, edit YAML, configure BUZZ, or w
 
 - Create one native Hermes profile per role.
 - Make `hermes-orchestrator` the active/default and only user-facing profile.
-- Run `scripts/obsidian.sh` to seed and verify the shared vault.
+- **Resolve the Obsidian vault path** via `onboarding/workflows/vault-path.md` (OS-aware suggestion, CREATE, or SKIP) and record `onboarding/templates/vault-register.md` before any vault script.
+- Run `scripts/obsidian.sh` only when vault status is `ACCEPTED` or `CREATED` — seed and verify the shared vault.
 - Run `scripts/profiles.sh` to create/verify profiles and install skills and policies.
 - Configure one distinct BUZZ identity per profile; keep secrets only in each profile `.env`.
 - Configure BUZZ from `buzz-handoff.md`, then run `scripts/buzz.sh`.
 - Smoke-test an orchestrator-to-strategist handoff before declaring success.
 
-Ask only for an Obsidian vault choice, BUZZ relay/community endpoint, or identity creation/location when Hermes cannot discover them safely.
+Ask only for an Obsidian vault choice, BUZZ relay/community endpoint, or identity creation/location when Hermes cannot discover them safely. For the vault choice, follow `onboarding/workflows/vault-path.md` (never invent a path; always show a concrete suggested path for the host OS).
+
+## Install sequence (Obsidian brain)
+
+1. Read `onboarding/workflows/vault-path.md`.
+2. Silent discovery of `OBSIDIAN_VAULT_PATH` (env, `~/.hermes/.env`, cwd, well-known vault roots).
+3. If unresolved, prompt once with an OS-specific suggested path plus `CREATE` / `SKIP`.
+4. Persist path to `${HERMES_HOME:-~/.hermes}/.env` when accepted or created; fill `onboarding/templates/vault-register.md`.
+5. Optionally seed vault `/.hermes.md` from `onboarding/templates/hermes-md.md`.
+6. If not skipped, run `scripts/obsidian.sh`.
+7. If skipped, continue bootstrap and do not claim Obsidian succeeded.
 
 ## Customer onboarding
 
@@ -44,4 +55,4 @@ The default profile owns all customer-facing communication. Specialist profiles 
 
 ## Fallback
 
-If a named CLI command is unavailable, use the equivalent Hermes action or runtime surface. Never invent a command, silently skip a step, or claim setup completed before profiles, BUZZ, Obsidian, and the smoke test succeed.
+If a named CLI command is unavailable, use the equivalent Hermes action or runtime surface. Never invent a command, silently skip a step, or claim setup completed before profiles, BUZZ, Obsidian (unless vault was explicitly SKIPPED), and the smoke test succeed.
