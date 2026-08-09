@@ -62,7 +62,17 @@ def _profile_contract(path: Path) -> dict[str, Any]:
         if ":" in line:
             key, value = line.split(":", 1)
             current = key.strip()
-            values[current] = value.strip() or []
+            raw = value.strip()
+            values[current] = [] if raw == "" or raw == "[]" else raw
+    # Normalize list-like fields
+    for field in ("inputs", "outputs", "skills", "allowed_tools", "requires_approval_for"):
+        val = values.get(field)
+        if val == "[]":
+            values[field] = []
+        elif isinstance(val, str) and val:
+            values[field] = [v.strip() for v in val.split(",") if v.strip()]
+        elif val is None or val == "":
+            values[field] = []
     return values
 
 

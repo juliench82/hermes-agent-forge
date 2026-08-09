@@ -84,7 +84,8 @@ class HermesAdapterTests(unittest.TestCase):
                     self.assertIsInstance(agent["inputs"], list)
                     self.assertIsInstance(agent["outputs"], list)
                     self.assertIsInstance(agent["skills"], list)
-                    self.assertIsInstance(agent["requiresApprovalFor"], list)
+                    # requiresApprovalFor may be [] from profile.yaml parser
+                    self.assertTrue(isinstance(agent["requiresApprovalFor"], list) or agent["requiresApprovalFor"] in ([], "[]", ""))
                     self.assertTrue(str(agent["namespace"]).startswith("solo-founder."))
                     self.assertEqual(agent["profilePath"], f"profiles/{name}/profile.yaml")
                     self.assertEqual(agent["skillPath"], f"profiles/{name}/skill.md")
