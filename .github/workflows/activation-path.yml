@@ -1,0 +1,35 @@
+name: Activation path (Sprint 7)
+
+on:
+  push:
+    paths:
+      - "compiler/activation.py"
+      - "compiler/bootstrap_discovery.py"
+      - "compiler/onboarding.py"
+      - "compiler/team_compiler.py"
+      - "onboarding/fixtures/solo-founder-saas.json"
+      - "bootstrap.manifest.json"
+      - "tests/test_activation.py"
+      - ".github/workflows/activation-path.yml"
+  pull_request:
+    paths:
+      - "compiler/activation.py"
+      - "compiler/bootstrap_discovery.py"
+      - "compiler/onboarding.py"
+      - "compiler/team_compiler.py"
+      - "onboarding/fixtures/solo-founder-saas.json"
+      - "bootstrap.manifest.json"
+      - "tests/test_activation.py"
+      - ".github/workflows/activation-path.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python -m unittest tests.test_activation
