@@ -1,58 +1,136 @@
-# BOOTSTRAP.md — Multi-Agent Control Room
+# BOOTSTRAP.md — Hermes Agent Forge
 
 Read this file first.
 
-## Goal prompt
+## What this repository is
 
-A good kickoff prompt for Hermes is:
+This repository is a **Hermes bootstrap source**, not a user application repository.
 
-> `/goal Read and follow `juliench82/hermes-bootstraper` from start to finish. Set up the multi-agent control room, install BUZZ and the Obsidian brain, create the native profiles, install each role's skill and shared policies, and make hermes-orchestrator the default user-facing profile. Ask me only for values that cannot be discovered safely.`
+When Hermes is given:
 
-## One-prompt setup
+`https://github.com/juliench82/hermes-agent-forge`
 
-The user gives Hermes one instruction:
+it must treat the repository as a product activation contract for **Hermes Agent Forge**.
 
-> Read and follow `juliench82/hermes-bootstraper` from start to finish. Read `BOOTSTRAP.md` first. Set up the multi-agent control room, BUZZ, and the Obsidian brain. Run the repository scripts yourself. Ask me only for values that cannot be discovered safely.
+It must **not**:
 
-The user does not run commands, create profiles, edit YAML, configure BUZZ, or wire Obsidian. Hermes owns bootstrap.
+- treat this repository as the user's SaaS or application codebase;
+- begin feature implementation against this repository by default;
+- invent custom Hermes commands;
+- provision a multi-profile team before onboarding and explicit approval;
+- connect a separate user project repository until onboarding determines that one is required.
 
-## Required outcome
+## Machine-readable entrypoint
 
-- Create one native Hermes profile per role.
-- Make `hermes-orchestrator` the active/default and only user-facing profile.
-- **Resolve the Obsidian vault path** via `onboarding/workflows/vault-path.md` (OS-aware suggestion, CREATE, or SKIP) and record `onboarding/templates/vault-register.md` before any vault script.
-- Run `scripts/obsidian.sh` only when vault status is `ACCEPTED` or `CREATED` — seed and verify the shared vault.
-- Run `scripts/profiles.sh` to create/verify profiles and install skills and policies.
-- Configure one distinct BUZZ identity per profile; keep secrets only in each profile `.env`.
-- Configure BUZZ from `buzz-handoff.md`, then run `scripts/buzz.sh`.
-- Smoke-test an orchestrator-to-strategist handoff before declaring success.
+Canonical human entrypoint: `BOOTSTRAP.md` (this file).
 
-Ask only for an Obsidian vault choice, BUZZ relay/community endpoint, or identity creation/location when Hermes cannot discover them safely. For the vault choice, follow `onboarding/workflows/vault-path.md` (never invent a path; always show a concrete suggested path for the host OS).
+Canonical machine-readable entrypoint: `bootstrap.manifest.json`
 
-## Install sequence (Obsidian brain)
+Schema: `schemas/bootstrap-manifest.v1.schema.json`
 
-1. Read `onboarding/workflows/vault-path.md`.
-2. Silent discovery of `OBSIDIAN_VAULT_PATH` (env, `~/.hermes/.env`, cwd, well-known vault roots).
-3. If unresolved, prompt once with an OS-specific suggested path plus `CREATE` / `SKIP`.
-4. Persist path to `${HERMES_HOME:-~/.hermes}/.env` when accepted or created; fill `onboarding/templates/vault-register.md`.
-5. Optionally seed vault `/.hermes.md` from `onboarding/templates/hermes-md.md`.
-6. If not skipped, run `scripts/obsidian.sh`.
-7. If skipped, continue bootstrap and do not claim Obsidian succeeded.
+Discovery loader (read-only): `compiler/bootstrap_discovery.py`
 
-## Customer onboarding
+```text
+sourceType: hermes-bootstrap
+role: bootstrap
+userProjectRepository: false
+nextStep: onboarding
+provisionTeam: false
+```
 
-When a customer requests an automation, follow the onboarding contracts in `onboarding/`:
+## Discovery order
 
-1. Read `onboarding/START.md` — the customer-facing activation entry point.
-2. Create a Customer Blueprint from `onboarding/templates/customer-blueprint.md` before any build work begins.
-3. The Product Strategist produces an Automation Brief from `onboarding/templates/automation-brief.md`.
-4. Connect integrations per `onboarding/workflows/connector-authorisation.md` and record them in `onboarding/templates/integration-register.md`.
-5. The Quality Guardian completes `onboarding/templates/acceptance-checklist.md` before activation.
-6. Present an Activation Review using `onboarding/workflows/activation-review.md` and record the decision in `onboarding/templates/activation-review-record.md`.
-7. No external action runs until the customer explicitly activates the workflow.
+Hermes should inspect the repository in this order:
 
-The default profile owns all customer-facing communication. Specialist profiles participate through defined handoffs only.
+1. `BOOTSTRAP.md` — activation and bootstrap instructions (this file)
+2. `bootstrap.manifest.json` — machine-readable bootstrap contract
+3. `README.md` — product purpose and operating model
+4. `onboarding/` — onboarding questions, activation flow, templates, examples
+5. `profiles/` — available specialist roles and boundaries
+6. `schemas/` — machine-readable contracts
+7. `catalog/` — platform primitives and capabilities
+8. `packs/` — reusable workflow packs
+9. `examples/` — reference tenant specifications (including solo-founder SaaS)
+10. `runtime/` — policy proxy, confirmation gates, audit log, isolation, secrets
+11. `tests/` — compatibility and contract expectations
 
-## Fallback
+Prefer machine-readable schemas, manifests, and examples for validation. Prefer Markdown for human-readable instructions and onboarding context.
 
-If a named CLI command is unavailable, use the equivalent Hermes action or runtime surface. Never invent a command, silently skip a step, or claim setup completed before profiles, BUZZ, Obsidian (unless vault was explicitly SKIPPED), and the smoke test succeed.
+## Sprint 4 expected behaviour
+
+After successful discovery, Hermes should be able to conclude:
+
+```text
+Repository recognised: hermes-bootstrap
+Bootstrap repository: juliench82/hermes-agent-forge
+Entrypoint: BOOTSTRAP.md
+Onboarding entrypoints: onboarding/START.md, onboarding/manifest.md
+Required profiles discoverable:
+  - orchestrator
+  - product-strategist
+  - architect
+  - builder
+  - quality-guardian
+Optional profiles (not enabled by default):
+  - self-improver
+User project repository: not connected
+Team status: not provisioned
+Next step: onboarding
+```
+
+Sprint 4 stops here. Discovery must not start specialists, create workspaces, write external systems, or activate connectors.
+
+## What comes next
+
+1. **Sprint 5 — Adaptive onboarding**
+   Read `onboarding/START.md` and run a business-oriented decision flow.
+   Output: a proposed team manifest for user review.
+2. **Sprint 6 — Team compiler and provisioning**
+   Compile the approved onboarding result into isolated profile instances using Sprint 3 runtime primitives.
+3. **Sprint 7 — Hermes activation path**
+   Prove the full repository-link experience through orchestrator startup.
+
+Until those stages are implemented and validated, Hermes must not claim that end-to-end team activation is complete merely because profiles, schemas, or examples exist.
+
+## Baseline team (reference only)
+
+The first target use case is a solo founder building SaaS products or applications.
+
+Default enabled profiles after a future approved onboarding:
+
+| Profile | Responsibility |
+|---|---|
+| `orchestrator` | Receive founder requests, plan, delegate, consolidate |
+| `product-strategist` | Users, problems, priorities, scope, acceptance criteria |
+| `architect` | Technical design, boundaries, data flows, trade-offs |
+| `builder` | Implement approved work in an isolated workspace or branch |
+| `quality-guardian` | Tests, regressions, security, readiness |
+
+`self-improver` remains optional and disabled by default.
+
+## Safety rules
+
+- No secrets in Markdown, manifests, examples, or prompts.
+- No external writes, merges, deployments, migrations, financial actions, or external communication without an explicit approval gate.
+- Runtime enforcement (policy proxy, confirmation, audit, isolation, secrets) remains authoritative once a team is provisioned in later sprints.
+- The bootstrap repository stays read-oriented during discovery.
+
+## Validation
+
+Run:
+
+```bash
+python -m unittest tests.test_bootstrap_discovery
+```
+
+Successful tests confirm that the bootstrap manifest exists, referenced paths exist, onboarding entrypoints exist, required profiles are discoverable, required schemas are present, and at least one use-case example exists.
+
+## Core rule
+
+Do not improvise a different product path.
+
+1. Read this file.
+2. Load `bootstrap.manifest.json`.
+3. Validate discovery.
+4. Identify the repository as `hermes-bootstrap`.
+5. Stop before team provisioning until onboarding is completed and approved.
