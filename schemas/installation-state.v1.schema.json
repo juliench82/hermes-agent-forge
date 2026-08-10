@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Agent Forge installation state v1",
+  "type": "object",
+  "required": ["installation_id", "bootstrap", "status", "events"],
+  "properties": {
+    "installation_id": {"type": "string", "minLength": 1},
+    "bootstrap": {"type": "object"},
+    "status": {"enum": ["discovered", "onboarding", "proposed", "approved", "provisioning", "provisioned", "smoke-tested", "running", "blocked", "failed", "stopped"]},
+    "events": {"type": "array"}
+  }
+}
