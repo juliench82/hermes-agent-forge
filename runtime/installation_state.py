@@ -1,44 +1,56 @@
-from dataclasses import asdict, dataclass, field
+"""
+installation_state.py — Schema-backed lifecycle state machine for installation.
+"""
+
+import json
+from pathlib import Path
 from datetime import datetime, timezone
 from enum import Enum
-from hashlib import sha256
-import json
 
-class InstallationStatus(str, Enum):
-    DISCOVERED="discovered"; ONBOARDING="onboarding"; PROPOSED="proposed"; APPROVED="approved"; PROVISIONING="provisioning"; PROVISIONED="provisioned"; SMOKE_TESTED="smoke-tested"; RUNNING="running"; BLOCKED="blocked"; FAILED="failed"; STOPPED="stopped"
+RUNTIME_DIR = Path("runtime")
+INSTALLATION_STATE_FILE = RUNTIME_DIR / "installation_state.json"
 
-_ALLOWED = {
- InstallationStatus.DISCOVERED:{InstallationStatus.ONBOARDING,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.ONBOARDING:{InstallationStatus.PROPOSED,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.PROPOSED:{InstallationStatus.APPROVED,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.APPROVED:{InstallationStatus.PROVISIONING,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.PROVISIONING:{InstallationStatus.PROVISIONED,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.PROVISIONED:{InstallationStatus.SMOKE_TESTED,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.SMOKE_TESTED:{InstallationStatus.RUNNING,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.RUNNING:{InstallationStatus.STOPPED,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.STOPPED:{InstallationStatus.PROVISIONING,InstallationStatus.BLOCKED,InstallationStatus.FAILED},
- InstallationStatus.BLOCKED:set(), InstallationStatus.FAILED:set()}
+class InstallState(str, Enum):
+    NOT_STARTED = "not_started"
+    PREREQS_CHECK = "prereqs_check"
+    APPROVAL_RECORDED = "approval_recorded"
+    PROFILES_PROVISIONED = "profiles_provisioned"
+    ROLE_ASSETS_INSTALLED = "role_assets_installed"
+    OBSIDIAN_SETUP = "obsidian_setup"
+    BUZZ_SETUP = "buzz_setup"
+    SMOKE_TESTS = "smoke_tests"
+    ORCHESTRATOR_STARTED = "orchestrator_started"
+    HANDOFF_PERFORMED = "handoff_performed"
+    COMPLETED = "completed"
+    FAILED = "failed"
 
-class StateTransitionError(ValueError): pass
-def now(): return datetime.now(timezone.utc).isoformat()
+def load_state():
+    """Load current installation state, or return a fresh state if none exists."""
+    if not INSTALLATION_STATE_FILE.exists():
+        return {
+            "schema_version": "installation-state.v1",
+            "state": InstallState.NOT_STARTED.value,
+            "steps": {},
+            "updated_at": None,
+        }
+    with open(INSTALLATION_STATE_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-@dataclass
-class InstallationState:
-    installation_id: str
-    bootstrap: dict
-    status: InstallationStatus = InstallationStatus.DISCOVERED
-    events: list = field(default_factory=list)
-    provisioning: dict = field(default_factory=dict)
-    smoke_tests: dict = field(default_factory=dict)
-    @classmethod
-    def discovered(cls, bootstrap):
-        installation_id=sha256(json.dumps(bootstrap,sort_keys=True,separators=(",",":")).encode()).hexdigest()
-        state=cls(installation_id,dict(bootstrap)); state.events.append({"at":now(),"from":None,"to":state.status.value}); return state
-    def transition(self, target):
-        if target == self.status: return
-        if target not in _ALLOWED[self.status]: raise StateTransitionError(f"invalid transition: {self.status.value} -> {target.value}")
-        if target is InstallationStatus.RUNNING and not (self.provisioning.get("complete") and self.smoke_tests.get("passed")):
-            raise StateTransitionError("running requires complete provisioning and passing smoke tests")
-        prior=self.status; self.status=target; self.events.append({"at":now(),"from":prior.value,"to":target.value})
-    def to_dict(self):
-        data=asdict(self); data["status"]=self.status.value; return data
+
+def save_state(state: dict):
+    """Persist installation state."""
+    RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
+    state["updated_at"] = datetime.now(timezone.utc).isoformat()
+    with open(INSTALLATION_STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
+
+
+def transition(state: dict, new_state: InstallState, step_details: dict):
+    """Transition to a new state, recording step details."""
+    state["state"] = new_state.value
+    state["steps"][new_state.value] = {
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+        "details": step_details,
+    }
+    save_state(state)
+    return state
