@@ -1,0 +1,31 @@
+name: Team compiler (Sprint 6)
+
+on:
+  push:
+    paths:
+      - "compiler/team_compiler.py"
+      - "schemas/team-plan.v1.schema.json"
+      - "tests/test_team_compiler.py"
+      - "compiler/onboarding.py"
+      - "onboarding/fixtures/solo-founder-saas.json"
+      - ".github/workflows/team-compiler.yml"
+  pull_request:
+    paths:
+      - "compiler/team_compiler.py"
+      - "schemas/team-plan.v1.schema.json"
+      - "tests/test_team_compiler.py"
+      - "compiler/onboarding.py"
+      - "onboarding/fixtures/solo-founder-saas.json"
+      - ".github/workflows/team-compiler.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python -m unittest tests.test_team_compiler
