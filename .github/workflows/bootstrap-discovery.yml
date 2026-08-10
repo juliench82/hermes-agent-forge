@@ -1,0 +1,31 @@
+name: Bootstrap discovery (Sprint 4)
+
+on:
+  push:
+    paths:
+      - "bootstrap.manifest.json"
+      - "BOOTSTRAP.md"
+      - "compiler/bootstrap_discovery.py"
+      - "schemas/bootstrap-manifest.v1.schema.json"
+      - "tests/test_bootstrap_discovery.py"
+      - ".github/workflows/bootstrap-discovery.yml"
+  pull_request:
+    paths:
+      - "bootstrap.manifest.json"
+      - "BOOTSTRAP.md"
+      - "compiler/bootstrap_discovery.py"
+      - "schemas/bootstrap-manifest.v1.schema.json"
+      - "tests/test_bootstrap_discovery.py"
+      - ".github/workflows/bootstrap-discovery.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python -m unittest tests.test_bootstrap_discovery

@@ -40,17 +40,20 @@ The bootstrap link is therefore a product activation mechanism. It is not a requ
 Hermes should treat the repository as a discoverable bootstrap contract and inspect the following areas in this order:
 
 1. `BOOTSTRAP.md` — activation and bootstrap instructions.
-2. `README.md` — product purpose, operating model, and expected experience.
-3. `onboarding/` — onboarding questions, activation flow, connector authorization, templates, and examples.
-4. `profiles/` — available specialist roles and their boundaries.
-5. `schemas/` — machine-readable contracts for tenants, bundles, runtime configuration, and compatibility.
-6. `catalog/` — available primitives and supported capabilities.
-7. `packs/` — reusable workflow packs.
-8. `examples/` — reference tenant specifications, including the solo-founder app-builder scenario.
-9. `runtime/` — enforcement concepts such as policies, confirmations, audit logging, secrets, and isolation.
-10. `tests/` — compatibility, golden, renderer, adapter, and runtime expectations.
+2. `bootstrap.manifest.json` — machine-readable bootstrap discovery contract.
+3. `README.md` — product purpose, operating model, and expected experience.
+4. `onboarding/` — onboarding questions, activation flow, connector authorization, templates, and examples.
+5. `profiles/` — available specialist roles and their boundaries.
+6. `schemas/` — machine-readable contracts for tenants, bundles, runtime configuration, and compatibility.
+7. `catalog/` — available primitives and supported capabilities.
+8. `packs/` — reusable workflow packs.
+9. `examples/` — reference tenant specifications, including the solo-founder app-builder scenario.
+10. `runtime/` — enforcement concepts such as policies, confirmations, audit logging, secrets, and isolation.
+11. `tests/` — compatibility, golden, renderer, adapter, and runtime expectations.
 
 The implementation may evolve, but these conceptual boundaries must remain discoverable. Hermes should prefer the machine-readable schemas and examples for provisioning and use the Markdown files for human-readable instructions and onboarding context.
+
+Sprint 4 status: discovery is implemented via `bootstrap.manifest.json` and `compiler/bootstrap_discovery.py`. Recognition of this repository as a bootstrap source does **not** yet mean a team has been provisioned.
 
 ## Onboarding model
 
@@ -212,7 +215,8 @@ The repository contains the main conceptual building blocks:
 - deterministic planning and rendering concepts;
 - Hermes adapter and solo-founder compatibility path;
 - golden compatibility and adapter tests;
-- runtime enforcement concepts for policy, audit, confirmation, isolation, and secrets.
+- runtime enforcement concepts for policy, audit, confirmation, isolation, and secrets;
+- **Sprint 4 bootstrap discovery contract** (`bootstrap.manifest.json`, schema, loader, tests).
 
 The remaining product-level goal is to connect these pieces into the user experience described above: repository-triggered bootstrap, adaptive onboarding, team recommendation, explicit approval, team provisioning, and immediate interaction through the orchestrator.
 
@@ -239,6 +243,7 @@ The solo-founder SaaS/apps scenario should be the first complete acceptance test
 ## Repository map
 
 - `BOOTSTRAP.md` — bootstrap activation instructions.
+- `bootstrap.manifest.json` — machine-readable bootstrap discovery contract.
 - `onboarding/` — onboarding flow, templates, connector authorization, activation review, and examples.
 - `profiles/` — specialist agent profiles.
 - `schemas/` — machine-readable contracts.
@@ -246,7 +251,7 @@ The solo-founder SaaS/apps scenario should be the first complete acceptance test
 - `packs/` — reusable workflow packs.
 - `examples/` — reference tenant specifications.
 - `runtime/` — runtime policy, confirmation, audit, isolation, and secret-handling components.
-- `compiler/` — deterministic planning and rendering boundaries.
+- `compiler/` — deterministic planning, rendering, and bootstrap discovery.
 - `tests/` — compatibility and enforcement expectations.
 
 ## Guiding principle
