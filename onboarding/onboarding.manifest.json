@@ -1,0 +1,22 @@
+{
+  "$schema": "../schemas/onboarding-manifest.v1.schema.json",
+  "apiVersion": "hermes.onboarding/v1",
+  "kind": "OnboardingManifest",
+  "version": "1.0.0",
+  "userFacing": true,
+  "questions": [
+    {"id":"objective","required":true,"prompt":"What outcome do you want to achieve?"},
+    {"id":"userType","required":true,"prompt":"Are you a solo founder, small team, agency, or another organisation?"},
+    {"id":"projectStage","required":true,"prompt":"What stage are you at: idea, validation, MVP, growth, maintenance, or operations?"},
+    {"id":"workflowCategory","required":true,"prompt":"What help do you need: product discovery, MVP definition, architecture, implementation, testing, or operations?"},
+    {"id":"projectRepositoryNeeded","required":true,"prompt":"Do you need Hermes to inspect or change an existing project repository now?"},
+    {"id":"connectors","required":true,"prompt":"Which integrations are needed now, if any?"},
+    {"id":"sensitiveData","required":true,"prompt":"Will the work involve sensitive data or credentials?"},
+    {"id":"autonomy","required":true,"prompt":"How much autonomy should Hermes have: draft-only, approval-required, or limited automatic actions after acceptance?"},
+    {"id":"approvalRequirements","required":true,"prompt":"Which actions must always require your approval?"},
+    {"id":"reporting","required":true,"prompt":"How should Hermes report progress and escalate blockers?"}
+  ],
+  "supportedUseCases":["solo-founder-saas"],
+  "output":{"schema":"schemas/team-manifest.v1.schema.json","status":"proposed"},
+  "sideEffects":{"provisionTeam":false,"connectUserProjectRepository":false,"connectConnectors":false}
+}

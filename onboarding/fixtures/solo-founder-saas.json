@@ -1,0 +1,12 @@
+{
+  "fixture":"solo-founder-saas",
+  "answers":{
+    "objective":"Build a SaaS application from product discovery through MVP implementation, tests, and GitHub pull requests.",
+    "userType":"solo-founder","projectStage":"mvp",
+    "workflowCategory":["product-discovery","mvp-definition","architecture","implementation","testing","github-pull-requests"],
+    "projectRepositoryNeeded":false,"connectors":[],"sensitiveData":"none-declared","autonomy":"approval-required",
+    "approvalRequirements":["external-writes","pull-request-creation","merge","deployment","migration","financial-action","external-communication"],
+    "reporting":"orchestrator-summary-and-escalation"
+  },
+  "expected":{"useCase":"solo-founder-saas","status":"proposed","profiles":["orchestrator","product-strategist","architect","builder","quality-guardian"],"userProjectRepository":{"connected":false},"approvalMode":"human-in-the-loop"}
+}

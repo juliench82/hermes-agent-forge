@@ -1,0 +1,31 @@
+name: Adaptive onboarding (Sprint 5)
+
+on:
+  push:
+    paths:
+      - "onboarding/**"
+      - "schemas/onboarding-manifest.v1.schema.json"
+      - "schemas/team-manifest.v1.schema.json"
+      - "compiler/onboarding.py"
+      - "tests/test_onboarding.py"
+      - ".github/workflows/onboarding-contract.yml"
+  pull_request:
+    paths:
+      - "onboarding/**"
+      - "schemas/onboarding-manifest.v1.schema.json"
+      - "schemas/team-manifest.v1.schema.json"
+      - "compiler/onboarding.py"
+      - "tests/test_onboarding.py"
+      - ".github/workflows/onboarding-contract.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python -m unittest tests.test_onboarding
