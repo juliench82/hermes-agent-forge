@@ -1,20 +1,83 @@
 {
-  "schema_version": "bootstrap-manifest.v1",
-  "repo_kind": "bootstrap",
+  "$schema": "./schemas/bootstrap-manifest.v1.schema.json",
+  "apiVersion": "hermes.bootstrap/v1",
+  "kind": "BootstrapManifest",
+  "manifestVersion": "1.0.0",
+  "sourceType": "hermes-bootstrap",
+  "name": "hermes-agent-forge",
+  "displayName": "Hermes Agent Forge",
+  "description": "Bootstrap repository for Hermes Agent Forge. Read-only product activation source; not a user application repository.",
+  "repository": {
+    "url": "https://github.com/juliench82/hermes-agent-forge",
+    "role": "bootstrap",
+    "userProjectRepository": false
+  },
+  "entrypoint": "BOOTSTRAP.md",
+  "machineReadableEntrypoint": "bootstrap.manifest.json",
+  "discoveryOrder": [
+    "BOOTSTRAP.md",
+    "bootstrap.manifest.json",
+    "README.md",
+    "onboarding/",
+    "profiles/",
+    "schemas/",
+    "catalog/",
+    "packs/",
+    "examples/",
+    "runtime/",
+    "tests/"
+  ],
+  "onboarding": {
+    "entrypoints": ["onboarding/START.md", "onboarding/manifest.md"],
+    "directory": "onboarding/"
+  },
+  "profiles": {
+    "directory": "profiles/",
+    "required": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
+    "optional": ["self-improver", "devops-security"],
+    "defaultEnabled": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"]
+  },
+  "schemas": {
+    "directory": "schemas/",
+    "required": [
+      "schemas/bootstrap-manifest.v1.schema.json",
+      "schemas/hermes-bundle.v1.schema.json",
+      "schemas/tenant-spec.v1.schema.json"
+    ]
+  },
+  "examples": {
+    "directory": "examples/",
+    "required": ["examples/solo-founder-app-builder.tenant-spec.json"]
+  },
+  "catalog": {"directory": "catalog/"},
+  "packs": {"directory": "packs/"},
+  "runtime": {
+    "directory": "runtime/",
+    "components": ["policy_proxy", "audit_log", "confirmation", "isolation", "secrets"]
+  },
+  "tests": {"directory": "tests/"},
+  "capabilities": {
+    "recogniseBootstrapSource": true,
+    "startOnboarding": false,
+    "provisionTeam": false,
+    "connectUserProjectRepository": false
+  },
+  "nextStep": "onboarding",
+  "notes": [
+    "Discovery is read-only.",
+    "Provisioning is performed only by the explicit installer command after onboarding.",
+    "Optional profiles remain disabled by default unless adaptive onboarding selects them."
+  ],
   "default_team": {
     "name": "solo-founder",
-    "profiles": [
-      "orchestrator",
-      "product-strategist",
-      "architect",
-      "builder",
-      "quality-guardian"
-    ],
-    "optional_profiles": ["self-improver"]
+    "profiles": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
+    "optional_profiles": ["self-improver", "devops-security"]
   },
   "installer_entrypoint": "scripts/hermes_forge_install.py",
+  "installer_command": "./install.sh",
+  "yolo_mode": "auto",
   "onboarding_manifest": "onboarding/onboarding.manifest.json",
   "config_onboarding_required": true,
   "state_directory": "~/.hermes-forge/",
-  "description": "Bootstrap repository for hermes-agent-forge. Provisions a default solo-founder team with isolated Hermes profiles, adaptive config onboarding, and truthful state reporting."
+  "config_version": 34
 }

@@ -1,14 +1,16 @@
 {
   "schema_version": "onboarding-manifest.v1",
   "team": "solo-founder",
-  "profiles": [
-    "orchestrator",
-    "product-strategist",
-    "architect",
-    "builder",
-    "quality-guardian"
-  ],
-  "adaptive_onboarding": true,
+  "profiles": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
   "config_onboarding_required": true,
-  "description": "Adaptive business onboarding for solo-founder team. Collects provider/model/config choices and requires explicit approval before provisioning."
+  "adaptive_onboarding": true,
+  "questions": ["use_case", "role", "team_size", "provider", "model", "preferences"],
+  "team_sizes": {
+    "3": ["orchestrator", "builder", "quality-guardian"],
+    "5": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
+    "7": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian", "self-improver", "devops-security"]
+  },
+  "default_team_size": 5,
+  "config_version": 34,
+  "description": "Adaptive business onboarding for solo-founder and larger teams."
 }
