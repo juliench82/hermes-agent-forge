@@ -1,6 +1,6 @@
 {
-  "schema_version": "onboarding-manifest.v2",
-  "team": "adaptive",
+  "schema_version": "onboarding-manifest.v1",
+  "team": "solo-founder",
   "profiles": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
   "config_onboarding_required": true,
   "adaptive_onboarding": true,
@@ -12,5 +12,5 @@
   },
   "default_team_size": 5,
   "config_version": 34,
-  "description": "Adaptive onboarding with legacy manifest compatibility."
+  "description": "Adaptive business onboarding for solo-founder and larger teams."
 }
