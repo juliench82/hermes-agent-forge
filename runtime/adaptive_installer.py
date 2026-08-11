@@ -1,10 +1,9 @@
-"""Adaptive, read-only-bootstrap Hermes Forge installer."""
+"""Adaptive installer with verified role-asset provisioning."""
 from __future__ import annotations
-import json, os, subprocess
+import json, subprocess
 from pathlib import Path
-from datetime import datetime, timezone
 from .hardening import write_managed_config, verify_profile, write_truthful_state
-from .native_runtime import activate_yolo
+from .profile_assets import provision_profile_assets
 
 PROFILES = {
   3: ["orchestrator", "builder", "quality-guardian"],
@@ -26,26 +25,33 @@ def yaml_scalar(value):
 
 
 def config_yaml(provider, model, profile):
-    skills = [f"{profile}-role", "hermes-cli"]
     lines = [
       "_config_version: 34", "model:", f"  provider: {yaml_scalar(provider)}", f"  name: {yaml_scalar(model)}",
       "toolsets:", "  - hermes-cli", "agent:", "  max_turns: 50", "  default_personality: bootstrap-coordinator", "  reasoning_effort: high",
       "terminal:", "  backend: native", "  timeout: 120", "  home_mode: profile", "approvals:", "  mode: off",
-      "platform_toolsets:", "  - cli", "skills:"] + [f"  - {yaml_scalar(x)}" for x in skills] + [
+      "platform_toolsets:", "  - cli", "skills:", f"  - {yaml_scalar(profile + '-role')}", "  - hermes-cli",
       "memory:", "  enabled: true", f"  namespace: {yaml_scalar('hermes-forge-' + profile)}", "delegation:", "  enabled: true", "  max_profiles: 7", ""
     ]
     return "\n".join(lines)
+
+
+def provision_profile(root: Path, name: str, provider: str, model: str) -> dict:
+    result = subprocess.run(["hermes", "profile", "create", name], text=True, capture_output=True, check=False)
+    home = HERMES_HOME / "profiles" / name
+    if result.returncode and "already exists" not in result.stderr.lower():
+        raise RuntimeError(result.stderr.strip() or "profile creation failed")
+    home.mkdir(parents=True, exist_ok=True)
+    write_managed_config(home / "config.yaml", config_yaml(provider, model, name))
+    assets = provision_profile_assets(root, name, home)
+    profile_evidence = verify_profile(home)
+    verified = bool(assets["verified"] and profile_evidence["verified"])
+    return {"name": name, "verified": verified, "home": str(home), "assets": assets, "checks": profile_evidence["checks"]}
 
 
 def main():
     root = Path(__file__).resolve().parents[1]
     json.loads((root / "bootstrap.manifest.json").read_text(encoding="utf-8"))
     FORGE_HOME.mkdir(parents=True, exist_ok=True)
-    yolo = activate_yolo()
-    if not yolo.ok:
-        write_truthful_state(STATE_FILE, {"provider": None, "model": None, "team_size": None}, [], [{"step": "yolo", "command": list(yolo.command), "error": yolo.stderr or "activation failed"}])
-        print("Status: partial (YOLO activation failed)")
-        return 1
     print("=== Hermes Forge adaptive onboarding ===")
     use_case = ask("Use case", "software project")
     role = ask("Your role", "founder/developer")
@@ -59,15 +65,7 @@ def main():
     profiles, errors = [], []
     for name in PROFILES[size]:
         try:
-            result = subprocess.run(["hermes", "profile", "create", name], text=True, capture_output=True, check=False)
-            home = HERMES_HOME / "profiles" / name
-            if result.returncode and "already exists" not in result.stderr.lower():
-                raise RuntimeError(result.stderr.strip() or "profile creation failed")
-            home.mkdir(parents=True, exist_ok=True)
-            write_managed_config(home / "config.yaml", config_yaml(provider, model, name))
-            if not (home / "SOUL.md").exists():
-                (home / "SOUL.md").write_text(f"# {name}\n\nHermes Forge profile.\n", encoding="utf-8")
-            profiles.append({"name": name, **verify_profile(home)})
+            profiles.append(provision_profile(root, name, provider, model))
         except Exception as exc:
             errors.append({"profile": name, "error": str(exc)})
     soul = HERMES_HOME / "SOUL.md"
