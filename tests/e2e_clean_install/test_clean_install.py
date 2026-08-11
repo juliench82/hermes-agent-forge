@@ -17,6 +17,7 @@ def test_bootstrap_manifest_schema():
     assert manifest["repo_kind"] == "bootstrap"
     assert "default_team" in manifest
     assert "installer_entrypoint" in manifest
+    assert manifest.get("config_onboarding_required") == True
 
 
 def test_bootstrap_manifest_hash_stable():
@@ -45,3 +46,10 @@ def test_manifest_installer_entrypoint_exists():
     manifest, _ = load_bootstrap_manifest()
     entrypoint = Path(manifest["installer_entrypoint"])
     assert entrypoint.exists(), f"Installer entrypoint {entrypoint} does not exist"
+
+
+def test_state_directory_outside_repo():
+    """Verify state directory is outside the bootstrap repo."""
+    manifest, _ = load_bootstrap_manifest()
+    state_dir = manifest.get("state_directory", "~/.hermes-forge/")
+    assert state_dir.startswith("~/.hermes-forge/"), f"State directory {state_dir} is not outside the repo"
