@@ -4,6 +4,7 @@ import json, os, subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 from .hardening import write_managed_config, verify_profile, write_truthful_state
+from .native_runtime import activate_yolo
 
 PROFILES = {
   3: ["orchestrator", "builder", "quality-guardian"],
@@ -39,6 +40,12 @@ def config_yaml(provider, model, profile):
 def main():
     root = Path(__file__).resolve().parents[1]
     json.loads((root / "bootstrap.manifest.json").read_text(encoding="utf-8"))
+    FORGE_HOME.mkdir(parents=True, exist_ok=True)
+    yolo = activate_yolo()
+    if not yolo.ok:
+        write_truthful_state(STATE_FILE, {"provider": None, "model": None, "team_size": None}, [], [{"step": "yolo", "command": list(yolo.command), "error": yolo.stderr or "activation failed"}])
+        print("Status: partial (YOLO activation failed)")
+        return 1
     print("=== Hermes Forge adaptive onboarding ===")
     use_case = ask("Use case", "software project")
     role = ask("Your role", "founder/developer")
@@ -60,8 +67,7 @@ def main():
             write_managed_config(home / "config.yaml", config_yaml(provider, model, name))
             if not (home / "SOUL.md").exists():
                 (home / "SOUL.md").write_text(f"# {name}\n\nHermes Forge profile.\n", encoding="utf-8")
-            evidence = verify_profile(home)
-            profiles.append({"name": name, **evidence})
+            profiles.append({"name": name, **verify_profile(home)})
         except Exception as exc:
             errors.append({"profile": name, "error": str(exc)})
     soul = HERMES_HOME / "SOUL.md"
