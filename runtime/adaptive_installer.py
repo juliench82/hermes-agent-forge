@@ -3,6 +3,7 @@ from __future__ import annotations
 import json, os, subprocess
 from pathlib import Path
 from datetime import datetime, timezone
+from .hardening import write_managed_config, verify_profile, write_truthful_state
 
 PROFILES = {
   3: ["orchestrator", "builder", "quality-guardian"],
@@ -35,33 +36,9 @@ def config_yaml(provider, model, profile):
     return "\n".join(lines)
 
 
-def append_config(path, generated):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not path.exists():
-        path.write_text(generated, encoding="utf-8")
-        return "generated"
-    existing = path.read_text(encoding="utf-8")
-    missing = [line for line in generated.splitlines(True) if line not in existing]
-    if missing:
-        with path.open("a", encoding="utf-8") as handle:
-            handle.write("\n# Hermes Forge managed additions\n")
-            handle.writelines(missing)
-        return "appended"
-    return "preserved"
-
-
-def write_state(status, config, profiles, errors):
-    FORGE_HOME.mkdir(parents=True, exist_ok=True)
-    state = {"schema_version": "installation-state.v1", "status": status, "config_summary": {"provider": config["provider"], "model": config["model"], "team_size": config["team_size"]}, "profiles_provisioned": profiles, "errors": errors, "updated_at": datetime.now(timezone.utc).isoformat()}
-    tmp = STATE_FILE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(state, indent=2), encoding="utf-8")
-    os.replace(tmp, STATE_FILE)
-
-
 def main():
     root = Path(__file__).resolve().parents[1]
-    manifest_path = root / "bootstrap.manifest.json"
-    json.loads(manifest_path.read_text(encoding="utf-8"))
+    json.loads((root / "bootstrap.manifest.json").read_text(encoding="utf-8"))
     print("=== Hermes Forge adaptive onboarding ===")
     use_case = ask("Use case", "software project")
     role = ask("Your role", "founder/developer")
@@ -80,16 +57,18 @@ def main():
             if result.returncode and "already exists" not in result.stderr.lower():
                 raise RuntimeError(result.stderr.strip() or "profile creation failed")
             home.mkdir(parents=True, exist_ok=True)
-            action = append_config(home / "config.yaml", config_yaml(provider, model, name))
-            profiles.append({"name": name, "config": str(home / "config.yaml"), "config_action": action, "verified": home.exists()})
+            write_managed_config(home / "config.yaml", config_yaml(provider, model, name))
+            if not (home / "SOUL.md").exists():
+                (home / "SOUL.md").write_text(f"# {name}\n\nHermes Forge profile.\n", encoding="utf-8")
+            evidence = verify_profile(home)
+            profiles.append({"name": name, **evidence})
         except Exception as exc:
             errors.append({"profile": name, "error": str(exc)})
     soul = HERMES_HOME / "SOUL.md"
     if not soul.exists():
         soul.parent.mkdir(parents=True, exist_ok=True)
         soul.write_text("# Hermes Forge Bootstrap Coordinator\n\nCoordinate adaptive onboarding and report only observed status.\n", encoding="utf-8")
-    status = "completed" if len(profiles) == size and not errors and all(p["verified"] for p in profiles) else "partial"
-    write_state(status, config, profiles, errors)
+    status = write_truthful_state(STATE_FILE, config, profiles, errors)
     print(f"Status: {status}")
     print(f"State: {STATE_FILE}")
     return 0 if status == "completed" else 1
