@@ -9,5 +9,6 @@
     "quality-guardian"
   ],
   "adaptive_onboarding": true,
-  "description": "Adaptive business onboarding for solo-founder team. Hermes will propose this default team and proceed with installation in YOLO mode."
+  "config_onboarding_required": true,
+  "description": "Adaptive business onboarding for solo-founder team. Collects provider/model/config choices and requires explicit approval before provisioning."
 }

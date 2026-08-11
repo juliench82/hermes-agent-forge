@@ -14,5 +14,7 @@
   },
   "installer_entrypoint": "scripts/hermes_forge_install.py",
   "onboarding_manifest": "onboarding/onboarding.manifest.json",
-  "description": "Bootstrap repository for hermes-agent-forge. Provisions a default solo-founder team with isolated Hermes profiles, role assets, Obsidian, BUZZ, and real smoke tests."
+  "config_onboarding_required": true,
+  "state_directory": "~/.hermes-forge/",
+  "description": "Bootstrap repository for hermes-agent-forge. Provisions a default solo-founder team with isolated Hermes profiles, adaptive config onboarding, and truthful state reporting."
 }
