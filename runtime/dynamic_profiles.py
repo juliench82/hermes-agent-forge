@@ -5,10 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Callable, Sequence
 
-from compiler.onboarding_prompt import (
-    generate_profile_discovery_prompt,
-    parse_hermes_response,
-)
+from compiler.onboarding_prompt import generate_profile_discovery_prompt, parse_hermes_response, validate_team_structure
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 
@@ -34,7 +31,11 @@ def discover_profiles_via_hermes(use_case: str, user_role: str, goals: list[str]
     last_error = ""
     for attempt in range(max_attempts):
         try:
-            return parse_hermes_response(_run_query(prompt, runner, executable, timeout))
+            team = parse_hermes_response(_run_query(prompt, runner, executable, timeout))
+            errors = team.get("validation_errors", [])
+            if errors:
+                raise ValueError("; ".join(errors))
+            return team
         except (HermesCommandError, ValueError) as exc:
             last_error = str(exc)
             if attempt + 1 == max_attempts:
@@ -50,12 +51,10 @@ def render_soul(profile: dict[str, Any]) -> str:
 
 
 def create_profiles_from_team(team: dict[str, Any], *, runner: Runner = subprocess.run, executable: str = "hermes", profile_root: Path | None = None, skills_by_profile: dict[str, Sequence[str]] | None = None) -> list[dict[str, Any]]:
-    """Create validated profiles and write deterministic SOUL.md files."""
-    errors = team.get("validation_errors")
+    """Validate and create profiles, writing deterministic SOUL.md files."""
+    errors = validate_team_structure(team)
     if errors:
         raise ValueError("cannot provision invalid team: " + "; ".join(errors))
-    if not isinstance(team.get("profiles"), list):
-        raise ValueError("team must contain profiles")
     results: list[dict[str, Any]] = []
     for profile in team["profiles"]:
         name = profile["name"]
