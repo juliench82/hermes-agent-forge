@@ -1,11 +1,16 @@
 {
   "schema_version": "bootstrap-manifest.v1",
   "repo_kind": "bootstrap",
-  "default_team": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
-  "installer_entrypoint": "install.sh",
+  "default_team": {
+    "name": "adaptive",
+    "profiles": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
+    "optional_profiles": ["self-improver", "devops-security"]
+  },
+  "installer_entrypoint": "scripts/hermes_forge_install.py",
   "installer_command": "./install.sh",
   "yolo_mode": "auto",
   "onboarding_manifest": "onboarding/onboarding.manifest.json",
+  "config_onboarding_required": true,
   "state_directory": "~/.hermes-forge/",
   "config_version": 34,
   "description": "Hermes-native adaptive bootstrap for 3, 5, or 7 isolated profiles."

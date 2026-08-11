@@ -1,5 +1,8 @@
 {
   "schema_version": "onboarding-manifest.v2",
+  "team": "adaptive",
+  "profiles": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
+  "config_onboarding_required": true,
   "adaptive_onboarding": true,
   "questions": ["use_case", "role", "team_size", "provider", "model", "preferences"],
   "team_sizes": {
@@ -8,5 +11,6 @@
     "7": ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian", "self-improver", "devops-security"]
   },
   "default_team_size": 5,
-  "config_version": 34
+  "config_version": 34,
+  "description": "Adaptive onboarding with legacy manifest compatibility."
 }
