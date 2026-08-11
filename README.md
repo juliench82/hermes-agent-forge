@@ -1,259 +1,139 @@
-# Hermes Agent Forge
+# Hermes Agents Forge
 
-> Bootstrap repository for Hermes: discover the bootstrap contract, run onboarding, and provision isolated multi-profile agent teams for real-world workflows.
+Hermes Agents Forge is a Hermes-native bootstrap repository. It does not install a preselected business team or predict a customer’s domain. Instead, the fresh Hermes default profile prepares the Hermes environment, then Hermes discovers the customer-specific team from free-text goals.
 
-## Purpose
+## The key idea
 
-This repository is not primarily an application repository that Hermes should modify. It is the bootstrap source that Hermes reads when it starts the Hermes Agent Forge experience.
+There are two different kinds of profiles:
 
-The intended entry point is the repository itself:
+1. **Bootstrap controller** — the fresh Hermes default/main profile. This is the platform control plane that reads this repository, prepares and verifies its own assets, runs onboarding, supervises provisioning, and escalates unresolved failures to the human administrator.
+2. **Customer team** — profiles designed dynamically by Hermes after onboarding. Names, roles, descriptions, capabilities, and skills are generated from the customer’s objective and are never selected from a repository-side domain catalog.
 
-`https://github.com/juliench82/hermes-agent-forge`
+The fixed bootstrap controller is not a fixed customer team. It exists so Hermes can set itself up safely before it designs any customer-specific specialists.
 
-When Hermes is given this repository link, it must read the bootstrap files and start the onboarding flow. The repository describes how to determine a user's objective, select the right specialist profiles, define their permissions and isolation boundaries, and provision a usable agent team.
+The detailed architecture and roadmap are documented in [`REVISED_PLAN_V2.md`](REVISED_PLAN_V2.md).
 
-This distinction is essential:
-
-- **Bootstrap repository:** this repository. It defines Hermes Agent Forge, its profiles, onboarding rules, schemas, examples, policies, and reference workflows.
-- **User project repository:** an optional repository belonging to the user or the user's company. It may be connected later when the selected use case requires code inspection or implementation work.
-
-The bootstrap repository must never be confused with the SaaS or application repository that a team may eventually operate on.
-
-## Intended experience
-
-The target user experience is:
-
-1. The user starts Hermes and provides the Hermes Agent Forge repository link.
-2. Hermes reads the root bootstrap instructions and discovers the repository structure.
-3. Hermes starts an interactive onboarding instead of asking the user to edit JSON or write prompts manually.
-4. The user describes their objective, business, project stage, tools, constraints, and desired level of autonomy.
-5. Hermes identifies the required capabilities and proposes a team of specialized profiles.
-6. Hermes shows the proposed profiles, responsibilities, tools, permissions, isolation model, workflows, and approval gates.
-7. The user approves or adjusts the proposed team.
-8. Hermes creates the runtime team from the generated configuration.
-9. The user interacts primarily with the orchestrator, which delegates work to the isolated specialist profiles.
-
-The bootstrap link is therefore a product activation mechanism. It is not a request to work on this repository and it is not equivalent to connecting a customer's codebase.
-
-## Bootstrap reading contract
-
-Hermes should treat the repository as a discoverable bootstrap contract and inspect the following areas in this order:
-
-1. `BOOTSTRAP.md` — activation and bootstrap instructions.
-2. `bootstrap.manifest.json` — machine-readable bootstrap discovery contract.
-3. `README.md` — product purpose, operating model, and expected experience.
-4. `onboarding/` — onboarding questions, activation flow, connector authorization, templates, and examples.
-5. `profiles/` — available specialist roles and their boundaries.
-6. `schemas/` — machine-readable contracts for tenants, bundles, runtime configuration, and compatibility.
-7. `catalog/` — available primitives and supported capabilities.
-8. `packs/` — reusable workflow packs.
-9. `examples/` — reference tenant specifications, including the solo-founder app-builder scenario.
-10. `runtime/` — enforcement concepts such as policies, confirmations, audit logging, secrets, and isolation.
-11. `tests/` — compatibility, golden, renderer, adapter, and runtime expectations.
-
-The implementation may evolve, but these conceptual boundaries must remain discoverable. Hermes should prefer the machine-readable schemas and examples for provisioning and use the Markdown files for human-readable instructions and onboarding context.
-
-Sprint 4 status: discovery is implemented via `bootstrap.manifest.json` and `compiler/bootstrap_discovery.py`. Recognition of this repository as a bootstrap source does **not** yet mean a team has been provisioned.
-
-## Onboarding model
-
-The onboarding must be adaptive. Users should describe the outcome they want; they should not need to know the names of internal profiles or manually construct a `TenantSpec`.
-
-The onboarding should discover at least:
-
-- the user's business or product objective;
-- the type of workflow to automate;
-- whether the user is a solo founder, a small team, or an agency;
-- the project stage: idea, validation, MVP, growth, maintenance, or operations;
-- whether an existing user project repository must be inspected;
-- the application stack and infrastructure, when relevant;
-- required connectors such as GitHub, Supabase, Google Drive, email, finance, or messaging;
-- the data sensitivity and secrets involved;
-- which actions are read-only, reversible, or irreversible;
-- the desired autonomy level;
-- human approval requirements;
-- escalation and reporting preferences.
-
-The onboarding output is a generated team manifest. Conceptually, it contains:
-
-```json
-{
-  "team": {
-    "name": "my-saas-team",
-    "profiles": [
-      "orchestrator",
-      "product-strategist",
-      "architect",
-      "builder",
-      "quality-guardian"
-    ]
-  },
-  "integrations": ["github", "supabase"],
-  "permissions": {
-    "read_repository": true,
-    "create_branch": true,
-    "create_pull_request": true,
-    "merge_pull_request": false,
-    "deploy_production": false
-  },
-  "isolation": {
-    "workspace_per_agent": true,
-    "shared_context": "controlled"
-  },
-  "approval_policy": "human-in-the-loop"
-}
-```
-
-This example is conceptual. The canonical field names and validation rules must come from the schemas in this repository.
-
-## Initial target: solo-founder SaaS/apps
-
-The first complete end-to-end onboarding target is a solo founder building a SaaS or application.
-
-The recommended baseline team is:
-
-| Profile | Responsibility | Default authority |
-|---|---|---|
-| `orchestrator` | Understand the request, plan work, delegate, consolidate results | High coordination authority; no unapproved side effects |
-| `product-strategist` | Clarify the problem, users, priorities, scope, and acceptance criteria | Analysis and specification |
-| `architect` | Propose technical design, boundaries, data flows, and trade-offs | Read-only analysis and design |
-| `builder` | Implement approved work, add tests, and prepare changes | Isolated workspace and branch |
-| `quality-guardian` | Test, review, check regressions, security, and release readiness | Read/test/review; no merge by default |
-
-Optional profiles such as `self-improver` should be added only when evaluation, audit, and rollback behaviour are reliable enough to justify them.
-
-The expected first workflow is:
+## Target lifecycle
 
 ```text
-founder request
-  -> orchestrator
-  -> product strategist: brief and acceptance criteria
-  -> architect: technical proposal
-  -> builder: isolated implementation and tests
-  -> quality guardian: validation report
-  -> human approval
-  -> optional external action
+fresh Hermes install
+  -> read BOOTSTRAP.md and bootstrap.manifest.json
+  -> prepare the default/main profile
+  -> inspect the installed Hermes CLI and version
+  -> create or update verified bootstrap assets
+  -> configure administrator notification policy
+  -> collect free-text customer onboarding
+  -> Hermes designs the required team
+  -> validate the proposal
+  -> resolve or create capabilities
+  -> show a complete reviewable plan
+  -> require approval of that exact plan
+  -> create dynamic profiles
+  -> install and verify skills
+  -> generate and verify SOUL.md/config.yaml
+  -> run bounded repair loops when needed
+  -> notify the administrator on unresolved failure
+  -> report truthful state
 ```
 
-The founder should normally interact with the orchestrator rather than manually coordinating every specialist.
+The repository orchestrates and verifies this lifecycle. Hermes performs the domain reasoning and proposes the team.
 
-## Isolation and safety
+## Bootstrap controller
 
-Every profile must have an explicit identity, workspace, context boundary, tool policy, and approval policy. Profiles should share only the minimum context required for collaboration.
+The default Hermes profile is instructed to act as the Forge bootstrap controller. Its generic responsibilities include:
 
-The default policy for a newly provisioned team is:
+- repository and manifest inspection;
+- actual Hermes CLI/version discovery;
+- main-profile asset preparation;
+- semantic team design;
+- skill resolution and post-install verification;
+- installation-ledger analysis;
+- bounded recovery;
+- human-administrator escalation.
 
-- reading is allowed only for explicitly authorised sources;
-- implementation happens in an isolated workspace or branch;
-- external writes require an approval gate unless explicitly classified as safe;
-- merges, production deployments, production migrations, financial actions, and external communications are not automatic by default;
-- all important actions and decisions are auditable;
-- secrets are referenced through the runtime secret mechanism and must not be placed in prompts, Markdown, or tenant specifications.
+The controller must not invent commands, configuration keys, profile paths, or skill identifiers. It must use command output, filesystem state, and installed-skill inspection as evidence.
 
-The runtime enforcement layer is responsible for policy proxying, confirmations, audit logging, isolation, and secret handling. Profiles must not bypass those controls.
+Main-profile files are generated or updated according to an explicit preservation policy. Existing `SOUL.md` and `config.yaml` files are not silently overwritten.
 
-## User project repositories
+## Dynamic customer teams
 
-Connecting a user project repository is a separate capability from bootstrapping Hermes Agent Forge.
+Onboarding collects:
 
-It becomes relevant only after onboarding has determined that the selected use case needs repository work, for example:
+- what the user wants to accomplish;
+- the user’s role;
+- free-text goals and workflows;
+- optional team-size preference;
+- constraints and approval expectations as needed.
 
-- inspect an existing SaaS codebase;
-- analyse architecture or technical debt;
-- implement a feature;
-- create tests or migrations;
-- open a pull request;
-- maintain an application over time.
+Hermes then proposes a team. The repository validates safe names, unique profiles, descriptions, and non-empty capabilities. The current lifecycle supports teams of three, five, or seven profiles, but contains no predefined team for any customer category.
 
-In that situation, the user project repository is an input to the provisioned team. It must not replace or obscure the bootstrap repository. Hermes should first read and apply the bootstrap contract, then request authorisation for any additional repository or connector required by the selected workflow.
+Each profile may have one to ten capabilities or skills. One is valid; ten is the upper complexity bound. Semantic capability labels are not automatically treated as installable skills.
 
-## Use-case library
+## Skills and verification
 
-The same onboarding and team-provisioning mechanism must support multiple real-world use cases. The team should vary according to the objective rather than always loading every available profile.
+A capability is a semantic requirement. An installable skill is an observed Hermes artifact, a validated bootstrap skill, or a validated local/custom skill.
 
-Reference categories include:
+The resolution sequence is:
 
-- solo-founder SaaS/app development;
-- e-commerce customer support and order anomaly handling;
-- appointment scheduling for local services;
-- quotes, invoice follow-up, and payment administration;
-- medical-office administration with appropriate privacy boundaries;
-- legal or consulting case and deadline tracking;
-- real-estate lead qualification and dossier follow-up;
-- restaurant reservations and review handling;
-- accounting document collection and reporting;
-- marketing outbound and nurturing;
-- freelancer back-office administration;
-- training cohort management;
-- IT/MSP level-one support.
+```text
+semantic capability
+  -> Hermes searches or designs a candidate
+  -> exact identity is checked against observed output
+  -> candidate appears in the approval plan
+  -> approved candidate is installed or created
+  -> Hermes and machine checks verify the result
+```
 
-Each use case should eventually define onboarding questions, recommended profiles, allowed connectors, workflow packs, approval policies, isolation requirements, and evaluation tasks.
+The repository does not guess catalog slugs. A display name is not sufficient evidence of an installable identity. If Hermes cannot resolve or verify a capability, provisioning stops safely.
 
-## Product boundaries
+## Approval and recovery
 
-This repository is intended to define and bootstrap an agent-team product. It is not intended to require the user to:
+No customer profile, skill, or asset side effect occurs before the complete plan is displayed and explicitly approved. Approval must eventually be bound to the exact plan, not merely to a general installation request.
 
-- clone the repository manually as the normal onboarding experience;
-- edit profile files by hand;
-- write a custom system prompt for every agent;
-- construct a tenant manifest from scratch;
-- understand internal compiler or runtime modules before starting;
-- point Hermes at this repository as if it were the user's application code.
+Failures are recorded per profile, skill, and asset. Hermes may diagnose and repair within bounded iteration limits. If recovery is exhausted, the state becomes `admin_action_required`; the customer receives a simple paused-setup message while the human administrator receives the detailed ledger and remediation context.
 
-Manual editing remains useful for development, fixtures, tests, and advanced operators, but it is not the target user experience.
+Completion is based on observed evidence, including subprocess results, filesystem checks, installed-skill inspection, and semantic consistency review. A command invocation alone is never success.
 
-The project should not assume that new custom Hermes commands can be added. The preferred activation mechanism is repository discovery and bootstrap-file reading through Hermes' existing capabilities. If a native Hermes command already exists for repository or bootstrap ingestion, this repository should document and use that mechanism rather than inventing a parallel command interface.
+## Repository contract
 
-## Current implementation direction
+- [`BOOTSTRAP.md`](BOOTSTRAP.md) — canonical human bootstrap instructions.
+- [`bootstrap.manifest.json`](bootstrap.manifest.json) — machine-readable discovery contract.
+- [`REVISED_PLAN_V2.md`](REVISED_PLAN_V2.md) — current architecture and phased implementation plan.
+- [`onboarding/`](onboarding/) — generic onboarding material and templates.
+- [`compiler/`](compiler/) — prompt generation, response parsing, and structural validation.
+- [`runtime/`](runtime/) — orchestration, provisioning, skill resolution, state, policy, and verification boundaries.
+- [`profiles/`](profiles/) — repository reference material only; not a customer-domain team catalog.
+- [`tests/`](tests/) — deterministic compatibility and lifecycle coverage.
 
-The repository contains the main conceptual building blocks:
+## Safety rules
 
-- specialist profile definitions;
-- onboarding documentation and workflow artifacts;
-- tenant and bundle schemas;
-- platform/catalog primitives;
-- deterministic planning and rendering concepts;
-- Hermes adapter and solo-founder compatibility path;
-- golden compatibility and adapter tests;
-- runtime enforcement concepts for policy, audit, confirmation, isolation, and secrets;
-- **Sprint 4 bootstrap discovery contract** (`bootstrap.manifest.json`, schema, loader, tests).
+- No customer-domain mappings or predefined customer teams.
+- No guessed skill identifiers.
+- No shell interpolation or `shell=True`.
+- No secrets in prompts, plans, generated assets, or logs.
+- No unbounded model, command, or repair loops.
+- No silent overwrites of existing profile assets.
+- No claim of completion without verification.
+- Live Hermes tests are opt-in and isolated; ordinary CI remains deterministic.
 
-The remaining product-level goal is to connect these pieces into the user experience described above: repository-triggered bootstrap, adaptive onboarding, team recommendation, explicit approval, team provisioning, and immediate interaction through the orchestrator.
+## Current status
 
-The existence of a profile, schema, example, or runtime module must not be presented as proof that the complete end-to-end onboarding is already available. The README, `BOOTSTRAP.md`, schemas, tests, and actual runtime behaviour must stay aligned.
+PR #43 wired the generic onboarding lifecycle into the canonical installer path. The next implementation phase is the bootstrap controller: main-profile preparation, evidence-based skill verification, durable approval/state binding, bounded recovery, and administrator escalation.
 
-## Definition of done
+Live Hermes provisioning has not been claimed as validated until the opt-in acceptance suite passes against the installed Hermes version.
 
-The project reaches its primary goal when a user can:
+## Validation
 
-1. give Hermes the URL of this repository;
-2. have Hermes discover and read the bootstrap contract;
-3. complete an adaptive onboarding without hand-editing configuration;
-4. receive a proposed team tailored to the selected use case;
-5. review profiles, tools, permissions, isolation, and approval gates;
-6. approve the configuration;
-7. start the team;
-8. speak to the orchestrator;
-9. have isolated specialists collaborate on the selected workflow;
-10. connect a separate user project repository only when the workflow requires it;
-11. observe auditable, reviewable results and safely stop or reconfigure the team.
+Deterministic tests can be run with:
 
-The solo-founder SaaS/apps scenario should be the first complete acceptance test before expanding the catalogue to additional business use cases.
+```bash
+python -m unittest discover
+```
 
-## Repository map
+Live acceptance is deliberately opt-in:
 
-- `BOOTSTRAP.md` — bootstrap activation instructions.
-- `bootstrap.manifest.json` — machine-readable bootstrap discovery contract.
-- `onboarding/` — onboarding flow, templates, connector authorization, activation review, and examples.
-- `profiles/` — specialist agent profiles.
-- `schemas/` — machine-readable contracts.
-- `catalog/` — supported platform primitives.
-- `packs/` — reusable workflow packs.
-- `examples/` — reference tenant specifications.
-- `runtime/` — runtime policy, confirmation, audit, isolation, and secret-handling components.
-- `compiler/` — deterministic planning, rendering, and bootstrap discovery.
-- `tests/` — compatibility and enforcement expectations.
+```bash
+HERMES_LIVE_TESTS=1 python -m unittest discover
+```
 
-## Guiding principle
-
-Hermes Agent Forge should make the creation of a useful, safe, specialised agent team feel like onboarding a product—not like assembling a software repository by hand.
+Use an isolated Hermes home/profile root for live runs and review the resulting state ledger before treating the installation as complete.
