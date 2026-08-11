@@ -1,14 +1,23 @@
 """Adaptive installer with verified role-asset provisioning."""
 from __future__ import annotations
-import json, subprocess
+
+import json
+import subprocess
 from pathlib import Path
+from typing import Any
+
 from .hardening import write_managed_config, verify_profile, write_truthful_state
 from .profile_assets import provision_profile_assets
+from compiler.onboarding_prompt import (
+    generate_profile_discovery_prompt,
+    parse_hermes_response,
+    validate_team_structure,
+)
 
 PROFILES = {
-  3: ["orchestrator", "builder", "quality-guardian"],
-  5: ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
-  7: ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian", "self-improver", "devops-security"],
+    3: ["orchestrator", "builder", "quality-guardian"],
+    5: ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian"],
+    7: ["orchestrator", "product-strategist", "architect", "builder", "quality-guardian", "self-improver", "devops-security"],
 }
 FORGE_HOME = Path.home() / ".hermes-forge"
 HERMES_HOME = Path.home() / ".hermes"
@@ -26,11 +35,11 @@ def yaml_scalar(value):
 
 def config_yaml(provider, model, profile):
     lines = [
-      "_config_version: 34", "model:", f"  provider: {yaml_scalar(provider)}", f"  name: {yaml_scalar(model)}",
-      "toolsets:", "  - hermes-cli", "agent:", "  max_turns: 50", "  default_personality: bootstrap-coordinator", "  reasoning_effort: high",
-      "terminal:", "  backend: native", "  timeout: 120", "  home_mode: profile", "approvals:", "  mode: off",
-      "platform_toolsets:", "  - cli", "skills:", f"  - {yaml_scalar(profile + '-role')}", "  - hermes-cli",
-      "memory:", "  enabled: true", f"  namespace: {yaml_scalar('hermes-forge-' + profile)}", "delegation:", "  enabled: true", "  max_profiles: 7", ""
+        "_config_version: 34", "model:", f"  provider: {yaml_scalar(provider)}", f"  name: {yaml_scalar(model)}",
+        "toolsets:", "  - hermes-cli", "agent:", "  max_turns: 50", "  default_personality: bootstrap-coordinator", "  reasoning_effort: high",
+        "terminal:", "  backend: native", "  timeout: 120", "  home_mode: profile", "approvals:", "  mode: off",
+        "platform_toolsets:", "  - cli", "skills:", f"  - {yaml_scalar(profile + '-role')}", "  - hermes-cli",
+        "memory:", "  enabled: true", f"  namespace: {yaml_scalar('hermes-forge-' + profile)}", "delegation:", "  enabled: true", "  max_profiles: 7", "",
     ]
     return "\n".join(lines)
 
@@ -46,6 +55,25 @@ def provision_profile(root: Path, name: str, provider: str, model: str) -> dict:
     profile_evidence = verify_profile(home)
     verified = bool(assets["verified"] and profile_evidence["verified"])
     return {"name": name, "verified": verified, "home": str(home), "assets": assets, "checks": profile_evidence["checks"]}
+
+
+def collect_onboarding_answers() -> dict[str, Any]:
+    """Collect free-text onboarding answers; implemented in PR #37."""
+    raise NotImplementedError("dynamic onboarding collection is implemented in PR #37")
+
+
+def discover_profiles_via_hermes(use_case: str, user_role: str, goals: list[str]) -> dict[str, Any]:
+    """Prepare discovery; Hermes execution is implemented in PR #37."""
+    generate_profile_discovery_prompt(use_case, user_role, goals)
+    raise NotImplementedError("Hermes subprocess orchestration is implemented in PR #37")
+
+
+def create_profiles_from_team(team: dict[str, Any]) -> None:
+    """Validate a team; provisioning is implemented in PR #37."""
+    errors = validate_team_structure(team)
+    if errors:
+        raise ValueError("cannot provision invalid team: " + "; ".join(errors))
+    raise NotImplementedError("profile provisioning is implemented in PR #37")
 
 
 def main():
@@ -76,6 +104,7 @@ def main():
     print(f"Status: {status}")
     print(f"State: {STATE_FILE}")
     return 0 if status == "completed" else 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
