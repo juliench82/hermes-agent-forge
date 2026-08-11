@@ -4,11 +4,11 @@
   "kind": "BootstrapManifest",
   "manifestVersion": "1.0.0",
   "sourceType": "hermes-bootstrap",
-  "name": "hermes-agent-forge",
-  "displayName": "Hermes Agent Forge",
-  "description": "Bootstrap repository for Hermes Agent Forge. Read-only product activation source; not a user application repository.",
+  "name": "hermes-agents-forge",
+  "displayName": "Hermes Agents Forge",
+  "description": "Bootstrap repository for Hermes Agents Forge. Read-only product activation source; not a user application repository.",
   "repository": {
-    "url": "https://github.com/juliench82/hermes-agent-forge",
+    "url": "https://github.com/juliench82/hermes-agents-forge",
     "role": "bootstrap",
     "userProjectRepository": false
   },
