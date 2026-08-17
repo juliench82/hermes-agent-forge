@@ -1,16 +1,7 @@
 # Hermes Agents Forge
 
-Hermes Agents Forge is a Hermes-native bootstrap repository. It does not install a preselected business team or predict a customer’s domain. Instead, the fresh Hermes default profile prepares the Hermes environment, then Hermes discovers the customer-specific team from free-text goals.
+Open this repository in Hermes and start the agent in this folder. Hermes must immediately ask: **What do you want to accomplish with Hermes?** It must not summarize the architecture or offer a code tour.
 
-## The key idea
+The fresh Hermes default/main profile is the controller. Customer teams are discovered dynamically from free-text goals. Do not treat `profiles/` as the customer team. Do not run `install.sh` as the normal customer path.
 
-There are two different kinds of profiles:
-
-1. **Bootstrap controller** — the fresh Hermes default/main profile. This is the platform control plane that reads this repository, prepares and verifies its own assets, runs onboarding, supervises provisioning, and escalates unresolved failures to the human administrator.
-2. **Customer team** — profiles designed dynamically by Hermes after onboarding. Names, roles, descriptions, capabilities, and skills are generated from the customer’s objective and are never selected from a repository-side domain catalog.
-
-## Release readiness
-
-The deterministic implementation phases are complete through PR #49. See [`RELEASE_READINESS.md`](RELEASE_READINESS.md) for the live-acceptance evidence checklist, administrator recovery procedure, Buzz integration boundaries, and explicit release limitations.
-
-Live Hermes and Buzz validation remain opt-in and are not claimed by ordinary CI.
+See [`HERMES.md`](HERMES.md) for the first-turn contract and [`RELEASE_READINESS.md`](RELEASE_READINESS.md) for live-validation limits.

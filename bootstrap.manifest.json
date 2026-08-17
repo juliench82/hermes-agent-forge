@@ -12,10 +12,10 @@
     "role": "bootstrap",
     "userProjectRepository": false
   },
-  "entrypoint": "BOOTSTRAP.md",
+  "entrypoint": "HERMES.md",
   "machineReadableEntrypoint": "bootstrap.manifest.json",
   "discoveryOrder": [
-    "BOOTSTRAP.md",
+    "HERMES.md",
     "bootstrap.manifest.json",
     "README.md",
     "onboarding/",
@@ -58,15 +58,15 @@
   "tests": {"directory": "tests/"},
   "capabilities": {
     "recogniseBootstrapSource": true,
-    "startOnboarding": false,
+    "startOnboarding": true,
     "provisionTeam": false,
     "connectUserProjectRepository": false
   },
   "nextStep": "onboarding",
   "notes": [
     "Discovery is read-only.",
-    "Provisioning is performed only by the explicit installer command after onboarding.",
-    "Optional profiles remain disabled by default unless adaptive onboarding selects them."
+    "HERMES.md is the first-turn activation contract.",
+    "Provisioning happens only after an exact approved plan."
   ],
   "default_team": {
     "name": "solo-founder",

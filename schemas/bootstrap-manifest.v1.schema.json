@@ -1,151 +1,46 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://hermes-bootstrapper.dev/schemas/bootstrap-manifest.v1.schema.json",
-  "title": "BootstrapManifest v1",
-  "description": "Machine-readable contract that identifies a repository as a Hermes bootstrap source and declares the discovery order for onboarding, profiles, schemas, and examples.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/juliench82/hermes-agents-forge/schemas/bootstrap-manifest.v1.schema.json",
+  "title": "Bootstrap Manifest v1",
+  "description": "Schema for bootstrap.manifest.json in Hermes Agents Forge repositories",
   "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "apiVersion",
-    "kind",
-    "manifestVersion",
-    "sourceType",
-    "name",
-    "entrypoint",
-    "discoveryOrder",
-    "onboarding",
-    "profiles",
-    "schemas",
-    "examples"
-  ],
+  "required": ["sourceType", "entrypoint", "machineReadableEntrypoint", "discoveryOrder"],
   "properties": {
-    "$schema": {"type": "string"},
-    "apiVersion": {"const": "hermes.bootstrap/v1"},
-    "kind": {"const": "BootstrapManifest"},
-    "manifestVersion": {
+    "sourceType": {
       "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "const": "hermes-bootstrap",
+      "description": "Identifies this repository as a Hermes bootstrap source"
     },
-    "sourceType": {"const": "hermes-bootstrap"},
-    "name": {
+    "entrypoint": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]{1,62}$"
+      "const": "HERMES.md",
+      "description": "Canonical human-readable activation entrypoint"
     },
-    "displayName": {"type": "string", "minLength": 1},
-    "description": {"type": "string", "minLength": 1},
-    "repository": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["role", "userProjectRepository"],
-      "properties": {
-        "url": {"type": "string", "minLength": 1},
-        "role": {"const": "bootstrap"},
-        "userProjectRepository": {"const": false}
-      }
+    "machineReadableEntrypoint": {
+      "type": "string",
+      "const": "bootstrap.manifest.json",
+      "description": "Machine-readable manifest file"
     },
-    "entrypoint": {"const": "BOOTSTRAP.md"},
-    "machineReadableEntrypoint": {"const": "bootstrap.manifest.json"},
     "discoveryOrder": {
       "type": "array",
-      "minItems": 1,
-      "items": {"type": "string", "minLength": 1}
+      "items": {"type": "string"},
+      "description": "Ordered list of paths for bootstrap discovery"
     },
-    "onboarding": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["entrypoints"],
-      "properties": {
-        "directory": {"type": "string"},
-        "entrypoints": {
-          "type": "array",
-          "minItems": 1,
-          "items": {"type": "string", "minLength": 1}
-        }
-      }
+    "userProjectRepository": {
+      "type": "boolean",
+      "const": false,
+      "description": "Must be false for bootstrap sources"
     },
     "profiles": {
       "type": "object",
-      "additionalProperties": false,
-      "required": ["directory", "required", "defaultEnabled"],
       "properties": {
-        "directory": {"type": "string"},
-        "required": {
-          "type": "array",
-          "minItems": 1,
-          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
-        },
-        "optional": {
-          "type": "array",
-          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
-        },
-        "defaultEnabled": {
-          "type": "array",
-          "minItems": 1,
-          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"}
-        }
-      }
-    },
-    "schemas": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["directory", "required"],
-      "properties": {
-        "directory": {"type": "string"},
-        "required": {
-          "type": "array",
-          "minItems": 1,
-          "items": {"type": "string", "minLength": 1}
-        }
-      }
-    },
-    "examples": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["directory", "required"],
-      "properties": {
-        "directory": {"type": "string"},
-        "required": {
-          "type": "array",
-          "minItems": 1,
-          "items": {"type": "string", "minLength": 1}
-        }
-      }
-    },
-    "catalog": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "directory": {"type": "string"}
-      }
-    },
-    "packs": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "directory": {"type": "string"}
-      }
-    },
-    "runtime": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "directory": {"type": "string"},
-        "components": {
-          "type": "array",
-          "items": {"type": "string"}
-        }
-      }
-    },
-    "tests": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "directory": {"type": "string"}
+        "required": {"type": "array", "items": {"type": "string"}},
+        "defaultEnabled": {"type": "array", "items": {"type": "string"}},
+        "optional": {"type": "array", "items": {"type": "string"}}
       }
     },
     "capabilities": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recogniseBootstrapSource": {"type": "boolean"},
         "startOnboarding": {"type": "boolean"},
@@ -153,13 +48,7 @@
         "connectUserProjectRepository": {"type": "boolean"}
       }
     },
-    "nextStep": {
-      "type": "string",
-      "enum": ["onboarding", "team-proposal", "provisioning", "idle"]
-    },
-    "notes": {
-      "type": "array",
-      "items": {"type": "string"}
-    }
+    "nextStep": {"type": "string"},
+    "notes": {"type": "array", "items": {"type": "string"}}
   }
 }
