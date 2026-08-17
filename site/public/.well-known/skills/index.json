@@ -1,0 +1,18 @@
+{
+  "schema": "forge/skills-index@1",
+  "name": "Hermes Agents Forge",
+  "version": "0.1.0",
+  "updated": "2026-08-17",
+  "skills": [
+    {
+      "name": "forge",
+      "description": "Design and activate a focused team of Hermes agent profiles from your goals.",
+      "url": "https://hermes-agents-forge.vercel.app/SKILL.md",
+      "install": "hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md",
+      "sha256": null,
+      "license": "MIT",
+      "homepage": "https://hermes-agents-forge.vercel.app",
+      "source": "https://github.com/juliench82/hermes-agents-forge"
+    }
+  ]
+}
