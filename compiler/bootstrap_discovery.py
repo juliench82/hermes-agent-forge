@@ -1,23 +1,14 @@
-"""Read-only bootstrap discovery for Hermes Agent Forge.
-
-Sprint 4: recognise this repository as a hermes-bootstrap source.
-Does not start onboarding, provision teams, or connect user project repos.
-"""
+"""Bootstrap repository discovery and validation."""
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, NamedTuple
 
-MANIFEST_FILENAME = "bootstrap.manifest.json"
-CANONICAL_ENTRYPOINT = "BOOTSTRAP.md"
-SOURCE_TYPE = "hermes-bootstrap"
-API_VERSION = "hermes.bootstrap/v1"
-KIND = "BootstrapManifest"
+CANONICAL_ENTRYPOINT = "HERMES.md"
 
-DEFAULT_DISCOVERY_ORDER: List[str] = [
-    "BOOTSTRAP.md",
+DEFAULT_DISCOVERY_ORDER = [
+    "HERMES.md",
     "bootstrap.manifest.json",
     "README.md",
     "onboarding/",
@@ -31,19 +22,18 @@ DEFAULT_DISCOVERY_ORDER: List[str] = [
 ]
 
 
-class BootstrapDiscoveryError(ValueError):
-    """Raised when bootstrap discovery or validation fails."""
+class BootstrapDiscoveryError(Exception):
+    """Raised when bootstrap discovery validation fails."""
 
 
-@dataclass(frozen=True)
-class BootstrapDiscovery:
-    """Structured result of a successful bootstrap discovery."""
+class BootstrapDiscoveryResult(NamedTuple):
+    """Result of successful bootstrap discovery."""
 
-    root: Path
+    is_bootstrap_source: bool
     source_type: str
-    name: str
     entrypoint: str
     discovery_order: List[str]
+    manifest: Dict[str, Any]
     onboarding_entrypoints: List[str]
     required_profiles: List[str]
     default_enabled_profiles: List[str]
@@ -52,224 +42,124 @@ class BootstrapDiscovery:
     required_examples: List[str]
     capabilities: Dict[str, bool]
     next_step: str
-    manifest: Dict[str, Any] = field(repr=False)
-    user_project_repository: bool = False
-
-    @property
-    def is_bootstrap_source(self) -> bool:
-        return self.source_type == SOURCE_TYPE and not self.user_project_repository
+    user_project_repository: bool
 
 
-def _fail(message: str) -> None:
-    raise BootstrapDiscoveryError(message)
-
-
-def _as_list(value: Any, path: str) -> List[Any]:
-    if not isinstance(value, list) or not value:
-        _fail(f"{path}: expected a non-empty list")
-    return value
-
-
-def _as_str_list(value: Any, path: str) -> List[str]:
-    items = _as_list(value, path)
-    result: List[str] = []
-    for index, item in enumerate(items):
-        if not isinstance(item, str) or not item.strip():
-            _fail(f"{path}[{index}]: expected a non-empty string")
-        result.append(item)
-    return result
-
-
-def _require_keys(data: Dict[str, Any], keys: Sequence[str], path: str = "$") -> None:
-    missing = [key for key in keys if key not in data]
-    if missing:
-        _fail(f"{path}: missing required fields: {sorted(missing)}")
-
-
-def load_bootstrap_manifest(root: Path | str) -> Dict[str, Any]:
-    """Load bootstrap.manifest.json from a repository root."""
-    root_path = Path(root).resolve()
-    manifest_path = root_path / MANIFEST_FILENAME
+def load_bootstrap_manifest(root: Path) -> Dict[str, Any]:
+    """Load and return the bootstrap manifest from the repository root."""
+    manifest_path = root / "bootstrap.manifest.json"
     if not manifest_path.is_file():
-        _fail(f"bootstrap manifest not found: {manifest_path}")
-    try:
-        data = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        _fail(f"invalid JSON in {manifest_path}: {exc}")
-    if not isinstance(data, dict):
-        _fail(f"{manifest_path}: root value must be an object")
-    return data
+        raise BootstrapDiscoveryError("bootstrap manifest not found at bootstrap.manifest.json")
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
 def validate_bootstrap_manifest(manifest: Dict[str, Any]) -> None:
-    """Validate the semantic bootstrap-manifest contract (pure Python)."""
-    _require_keys(
-        manifest,
-        [
-            "apiVersion",
-            "kind",
-            "manifestVersion",
-            "sourceType",
-            "name",
-            "entrypoint",
-            "discoveryOrder",
-            "onboarding",
-            "profiles",
-            "schemas",
-            "examples",
-        ],
-    )
-    if manifest.get("apiVersion") != API_VERSION:
-        _fail(f"unsupported apiVersion: {manifest.get('apiVersion')!r}")
-    if manifest.get("kind") != KIND:
-        _fail(f"unsupported kind: {manifest.get('kind')!r}")
-    if manifest.get("sourceType") != SOURCE_TYPE:
-        _fail(f"sourceType must be {SOURCE_TYPE!r}")
-    if manifest.get("entrypoint") != CANONICAL_ENTRYPOINT:
-        _fail(f"entrypoint must be {CANONICAL_ENTRYPOINT!r}")
-
-    repository = manifest.get("repository")
-    if repository is not None:
-        if not isinstance(repository, dict):
-            _fail("repository: expected an object")
-        if repository.get("role") != "bootstrap":
-            _fail("repository.role must be 'bootstrap'")
-        if repository.get("userProjectRepository") is not False:
-            _fail("repository.userProjectRepository must be false")
-
-    _as_str_list(manifest["discoveryOrder"], "discoveryOrder")
-
-    onboarding = manifest["onboarding"]
-    if not isinstance(onboarding, dict):
-        _fail("onboarding: expected an object")
-    _as_str_list(onboarding.get("entrypoints"), "onboarding.entrypoints")
-
-    profiles = manifest["profiles"]
-    if not isinstance(profiles, dict):
-        _fail("profiles: expected an object")
-    _require_keys(profiles, ["directory", "required", "defaultEnabled"], "profiles")
-    _as_str_list(profiles["required"], "profiles.required")
-    _as_str_list(profiles["defaultEnabled"], "profiles.defaultEnabled")
-    if "optional" in profiles:
-        optional = profiles["optional"]
-        if not isinstance(optional, list):
-            _fail("profiles.optional: expected a list")
-        for index, item in enumerate(optional):
-            if not isinstance(item, str) or not item.strip():
-                _fail(f"profiles.optional[{index}]: expected a non-empty string")
-
-    schemas = manifest["schemas"]
-    if not isinstance(schemas, dict):
-        _fail("schemas: expected an object")
-    _require_keys(schemas, ["directory", "required"], "schemas")
-    _as_str_list(schemas["required"], "schemas.required")
-
-    examples = manifest["examples"]
-    if not isinstance(examples, dict):
-        _fail("examples: expected an object")
-    _require_keys(examples, ["directory", "required"], "examples")
-    _as_str_list(examples["required"], "examples.required")
-
-    capabilities = manifest.get("capabilities") or {}
-    if capabilities.get("provisionTeam") is True:
-        _fail("capabilities.provisionTeam must not be true in Sprint 4 discovery")
-    if capabilities.get("connectUserProjectRepository") is True:
-        _fail("capabilities.connectUserProjectRepository must not be true for bootstrap source")
+    """Validate the bootstrap manifest structure and constraints."""
+    if manifest.get("sourceType") != "hermes-bootstrap":
+        raise BootstrapDiscoveryError("sourceType must be 'hermes-bootstrap'")
+    
+    entrypoint = manifest.get("entrypoint")
+    if entrypoint != CANONICAL_ENTRYPOINT:
+        raise BootstrapDiscoveryError(f"entrypoint must be '{CANONICAL_ENTRYPOINT}'")
+    
+    caps = manifest.get("capabilities", {})
+    if caps.get("provisionTeam", False):
+        raise BootstrapDiscoveryError("capabilities.provisionTeam must be false during discovery")
+    if caps.get("connectUserProjectRepository", False):
+        raise BootstrapDiscoveryError("capabilities.connectUserProjectRepository must be false during discovery")
 
 
-def _resolve_path(root: Path, relative: str) -> Path:
-    rel = relative.rstrip("/")
-    return root / rel
+def validate_referenced_paths(root: Path, manifest: Dict[str, Any]) -> None:
+    """Validate that all paths referenced in the manifest exist."""
+    entrypoint_path = root / manifest.get("entrypoint", "")
+    if not entrypoint_path.is_file():
+        raise BootstrapDiscoveryError(f"required file missing: {manifest.get('entrypoint')}")
+    
+    manifest_path = root / "bootstrap.manifest.json"
+    if not manifest_path.is_file():
+        raise BootstrapDiscoveryError("required file missing: bootstrap.manifest.json")
+    
+    discovery_order = manifest.get("discoveryOrder", [])
+    for relative_path in discovery_order:
+        full_path = root / relative_path
+        if not full_path.exists():
+            raise BootstrapDiscoveryError(f"required path missing: {relative_path}")
+    
+    onboarding_dir = root / "onboarding"
+    if onboarding_dir.is_dir():
+        for entry in ["START.md", "manifest.md"]:
+            if not (onboarding_dir / entry).is_file():
+                raise BootstrapDiscoveryError(f"required file missing: onboarding/{entry}")
+    
+    profiles_dir = root / "profiles"
+    if profiles_dir.is_dir():
+        required_profiles = manifest.get("profiles", {}).get("required", [])
+        for profile_id in required_profiles:
+            if not (profiles_dir / profile_id).is_dir():
+                raise BootstrapDiscoveryError(f"required profile not discoverable: profiles/{profile_id}")
 
 
-def _assert_path_exists(root: Path, relative: str, *, expect_dir: Optional[bool] = None) -> Path:
-    path = _resolve_path(root, relative)
-    if expect_dir is True:
-        if not path.is_dir():
-            _fail(f"required directory missing: {relative}")
-    elif expect_dir is False:
-        if not path.is_file():
-            _fail(f"required file missing: {relative}")
-    else:
-        if relative.endswith("/"):
-            if not path.is_dir():
-                _fail(f"required directory missing: {relative}")
-        elif not path.exists():
-            _fail(f"required path missing: {relative}")
-    return path
-
-
-def validate_referenced_paths(root: Path | str, manifest: Dict[str, Any]) -> None:
-    """Confirm every discovery path and required reference exists on disk."""
-    root_path = Path(root).resolve()
-    if not root_path.is_dir():
-        _fail(f"repository root is not a directory: {root_path}")
-
-    _assert_path_exists(root_path, CANONICAL_ENTRYPOINT, expect_dir=False)
-    _assert_path_exists(root_path, MANIFEST_FILENAME, expect_dir=False)
-
-    for relative in _as_str_list(manifest["discoveryOrder"], "discoveryOrder"):
-        _assert_path_exists(root_path, relative)
-
-    onboarding = manifest["onboarding"]
-    for relative in _as_str_list(onboarding["entrypoints"], "onboarding.entrypoints"):
-        _assert_path_exists(root_path, relative, expect_dir=False)
-
-    profiles = manifest["profiles"]
-    profiles_dir = _assert_path_exists(root_path, profiles["directory"], expect_dir=True)
-    for profile_id in _as_str_list(profiles["required"], "profiles.required"):
-        profile_path = profiles_dir / profile_id
-        if not profile_path.is_dir():
-            _fail(f"required profile not discoverable: profiles/{profile_id}")
-
-    for relative in _as_str_list(manifest["schemas"]["required"], "schemas.required"):
-        _assert_path_exists(root_path, relative, expect_dir=False)
-
-    for relative in _as_str_list(manifest["examples"]["required"], "examples.required"):
-        _assert_path_exists(root_path, relative, expect_dir=False)
-
-    examples_dir = manifest["examples"].get("directory")
-    if examples_dir:
-        _assert_path_exists(root_path, examples_dir, expect_dir=True)
-
-
-def discover_bootstrap(root: Path | str) -> BootstrapDiscovery:
-    """Discover and validate a Hermes bootstrap repository. Read-only."""
-    root_path = Path(root).resolve()
-    manifest = load_bootstrap_manifest(root_path)
+def discover_bootstrap(root: Path) -> BootstrapDiscoveryResult:
+    """Discover and validate a bootstrap repository."""
+    manifest = load_bootstrap_manifest(root)
     validate_bootstrap_manifest(manifest)
-    validate_referenced_paths(root_path, manifest)
-
-    onboarding = manifest["onboarding"]
-    profiles = manifest["profiles"]
-    schemas = manifest["schemas"]
-    examples = manifest["examples"]
-    repository = manifest.get("repository") or {}
-    capabilities = dict(manifest.get("capabilities") or {})
-
-    return BootstrapDiscovery(
-        root=root_path,
-        source_type=str(manifest["sourceType"]),
-        name=str(manifest["name"]),
-        entrypoint=str(manifest["entrypoint"]),
-        discovery_order=list(manifest["discoveryOrder"]),
-        onboarding_entrypoints=list(onboarding["entrypoints"]),
-        required_profiles=list(profiles["required"]),
-        default_enabled_profiles=list(profiles["defaultEnabled"]),
-        optional_profiles=list(profiles.get("optional") or []),
-        required_schemas=list(schemas["required"]),
-        required_examples=list(examples["required"]),
-        capabilities=capabilities,
-        next_step=str(manifest.get("nextStep") or "onboarding"),
+    validate_referenced_paths(root, manifest)
+    
+    entrypoint = manifest.get("entrypoint", CANONICAL_ENTRYPOINT)
+    discovery_order = manifest.get("discoveryOrder", DEFAULT_DISCOVERY_ORDER)
+    
+    onboarding_entrypoints = []
+    onboarding_dir = root / "onboarding"
+    if onboarding_dir.is_dir():
+        for entry in onboarding_dir.iterdir():
+            if entry.is_file() and entry.suffix == ".md":
+                onboarding_entrypoints.append(f"onboarding/{entry.name}")
+    
+    profiles_config = manifest.get("profiles", {})
+    required_profiles = profiles_config.get("required", [])
+    default_enabled = profiles_config.get("defaultEnabled", required_profiles)
+    optional_profiles = profiles_config.get("optional", [])
+    
+    required_schemas = []
+    schemas_dir = root / "schemas"
+    if schemas_dir.is_dir():
+        for entry in schemas_dir.iterdir():
+            if entry.is_file() and entry.suffix == ".json":
+                required_schemas.append(f"schemas/{entry.name}")
+    
+    required_examples = []
+    examples_dir = root / "examples"
+    if examples_dir.is_dir():
+        for entry in examples_dir.iterdir():
+            if entry.is_file() and entry.suffix == ".json":
+                required_examples.append(f"examples/{entry.name}")
+    
+    capabilities = manifest.get("capabilities", {})
+    next_step = manifest.get("nextStep", "onboarding")
+    user_project_repo = manifest.get("userProjectRepository", False)
+    
+    return BootstrapDiscoveryResult(
+        is_bootstrap_source=True,
+        source_type=manifest.get("sourceType", "hermes-bootstrap"),
+        entrypoint=entrypoint,
+        discovery_order=discovery_order,
         manifest=manifest,
-        user_project_repository=bool(repository.get("userProjectRepository", False)),
+        onboarding_entrypoints=onboarding_entrypoints,
+        required_profiles=required_profiles,
+        default_enabled_profiles=default_enabled,
+        optional_profiles=optional_profiles,
+        required_schemas=required_schemas,
+        required_examples=required_examples,
+        capabilities=capabilities,
+        next_step=next_step,
+        user_project_repository=user_project_repo,
     )
 
 
-def is_bootstrap_repository(root: Path | str) -> bool:
-    """Return True when root contains a valid hermes-bootstrap manifest."""
+def is_bootstrap_repository(root: Path) -> bool:
+    """Check if a repository is a valid bootstrap source."""
     try:
-        result = discover_bootstrap(root)
+        discover_bootstrap(root)
+        return True
     except BootstrapDiscoveryError:
         return False
-    return result.is_bootstrap_source
