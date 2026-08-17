@@ -163,3 +163,7 @@ def is_bootstrap_repository(root: Path) -> bool:
         return True
     except BootstrapDiscoveryError:
         return False
+
+
+# Backward compatibility alias
+BootstrapDiscovery = BootstrapDiscoveryResult
