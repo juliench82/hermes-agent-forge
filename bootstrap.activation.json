@@ -1,0 +1,13 @@
+{
+  "activation": {
+    "mode": "immediate_onboarding",
+    "controller_profile": ["default", "main"],
+    "customer_profiles": "dynamic",
+    "first_user_message": "What do you want to accomplish with Hermes?",
+    "forbidden_first_actions": [
+      "architecture_tour",
+      "file_exploration",
+      "install.sh"
+    ]
+  }
+}

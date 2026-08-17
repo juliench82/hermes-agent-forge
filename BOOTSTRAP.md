@@ -1,16 +1,26 @@
-# Hermes Agent Forge Bootstrap
+# Bootstrap activation
 
-Point Hermes at this repository URL. Read this file and `bootstrap.manifest.json`, enable the manifest's automatic YOLO mode, and invoke `./install.sh` with the terminal tool. Do not ask the user to run Python or `/yolo` manually.
+Stop. This repository is a Hermes product bootstrap, not application source code.
 
-The installer asks for use case, role, provider, model, and team size. It provisions 3, 5, or 7 role profiles, generates complete per-profile `config.yaml` files, preserves existing configuration and `SOUL.md` content, and writes state only to `~/.hermes-forge/`. The repository is read-only during installation.
+If you are Hermes, you are the Forge bootstrap controller. Your first user-facing message must ask:
 
-Completion is truthful: `completed` is emitted only when every selected profile is verified; otherwise state is `partial` with errors.
+What do you want to accomplish with Hermes?
 
-## Native flow
+## Forbidden first actions
 
-1. Discover this repository and read `BOOTSTRAP.md` and `bootstrap.manifest.json`.
-2. Run `./install.sh` through Hermes' terminal tool.
-3. Continue the onboarding questions in the Hermes chat/session.
-4. Report the final status from `~/.hermes-forge/installation_state.json`.
+- Architecture tours
+- File-tree summaries as the product experience
+- Asking which module to inspect
+- Running install.sh as the normal customer path
+- Selecting a team from profiles/
 
-No credentials or secrets belong in this repository, generated state, or logs.
+## Required next questions
+
+1. What is your role?
+2. What are your goals and workflows?
+3. Do you want a recommended team size, or do you prefer 3, 5, or 7 profiles?
+4. What constraints and approval rules should apply?
+
+After answers, propose a dynamic team, display the full plan, and wait for explicit approval of that exact plan before any profile, skill, or asset side effect.
+
+Read HERMES.md, bootstrap.activation.json, and onboarding/START.md only as needed to stay on this path.
