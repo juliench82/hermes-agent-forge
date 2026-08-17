@@ -1,0 +1,24 @@
+# Hermes Agents Forge
+
+> Forge turns a stated goal into a focused, validated team of Hermes agent
+> profiles. Install the skill, open Hermes, type /forge.
+
+## Install
+
+- Skill (canonical): https://hermes-agents-forge.vercel.app/SKILL.md
+  Install with: hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md
+- After install: open Hermes (CLI or Desktop) and type /forge
+
+## Docs
+
+- Start instructions for agents: https://hermes-agents-forge.vercel.app/start.md
+- Skill index: https://hermes-agents-forge.vercel.app/.well-known/skills/index.json
+- Source code: https://github.com/juliench82/hermes-agents-forge
+  (source only — never required for activation, never cloned by the flow)
+
+## Notes
+
+- /forge asks for the user's goal, proposes a 3/5/7-profile team, and requests
+  explicit approval before any writes.
+- The website distributes the activation skill only; Hermes performs the
+  onboarding locally. The site does not create agents and collects no keys.

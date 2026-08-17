@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hermes Agents Forge — Forge your Hermes team</title>
+  <meta name="description" content="Turn a real workflow into a focused team of Hermes agents. Install the Forge skill, open Hermes, type /forge.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <span class="brand">Hermes Agents <span class="accent">Forge</span></span>
+      <nav aria-label="Primary">
+        <a href="#how-it-works">How it works</a>
+        <a href="#security">Security</a>
+        <a href="https://github.com/juliench82/hermes-agents-forge" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap">
+      <p class="eyebrow">Hermes team activation</p>
+      <h1>Forge your Hermes team.</h1>
+      <p class="lede">
+        Turn a real workflow into a focused team of Hermes agents.
+        Describe what you want to accomplish. Forge designs the team,
+        configures the profiles, and validates the setup.
+      </p>
+
+      <div class="command-panel" role="group" aria-label="Installation command">
+        <pre class="command-block"><code id="install-command" data-command>hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md</code></pre>
+        <button id="copy-button" class="cta" type="button" aria-describedby="copy-status">
+          Copy activation command
+        </button>
+        <p id="copy-status" class="visually-hidden" role="status" aria-live="polite"></p>
+      </div>
+
+      <p class="post-install">
+        Already installed? Open Hermes and type
+        <code class="inline-command">/forge</code>
+      </p>
+    </section>
+
+    <section id="how-it-works" class="wrap section">
+      <h2>Three steps</h2>
+      <ol class="steps">
+        <li>
+          <span class="step-number" aria-hidden="true">1</span>
+          <div><h3>Install Forge</h3>
+          <p>Run the activation command. Hermes fetches a single signed <code>SKILL.md</code> over HTTPS — nothing is cloned, nothing is executed by a shell.</p></div>
+        </li>
+        <li>
+          <span class="step-number" aria-hidden="true">2</span>
+          <div><h3>Open Hermes</h3>
+          <p>CLI or Desktop — the installed skill registers itself as the <code>/forge</code> slash command automatically.</p></div>
+        </li>
+        <li>
+          <span class="step-number" aria-hidden="true">3</span>
+          <div><h3>Type /forge</h3>
+          <p>Describe your goal. Forge proposes a team of 3, 5, or 7 profiles, shows the full plan, and waits for your approval before changing anything.</p></div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="wrap section">
+      <h2>What Forge does</h2>
+      <p>
+        Forge is an onboarding skill, not a hosted service. This website distributes the activation
+        artifact only — Hermes performs the onboarding locally on your machine. Inside the
+        <code>/forge</code> session, Hermes analyzes your use case, proposes profile names,
+        responsibilities, skills, and collaboration boundaries, then — only after you approve —
+        creates the profiles, generates each role's <code>SOUL.md</code>, installs the agreed
+        skills, updates <code>config.yaml</code> with values you accepted, and validates the
+        result before reporting what was created.
+      </p>
+      <p>
+        Your existing main/orchestrator profile stays the single hard-coded baseline.
+        Every other profile is generated dynamically from your goals — no industry presets,
+        no fixed mappings.
+      </p>
+    </section>
+
+    <section id="security" class="wrap section">
+      <h2>Security &amp; trust</h2>
+      <ul class="trust-list">
+        <li>No repository cloning. The GitHub repository is source code, not the installer. A fresh Hermes never needs to point at a repo URL.</li>
+        <li>Plan before writes. <code>/forge</code> always shows the complete team plan and asks for explicit approval before creating or modifying profiles, files, or configuration.</li>
+        <li>No API keys collected here. This site never asks for credentials, and Forge never embeds secrets in generated files.</li>
+        <li>User-space only. Installation lives under <code>~/.hermes</code>. No <code>sudo</code>, no privileged shell, no <code>curl | bash</code> requirement.</li>
+        <li>Scoped side effects. Third-party skills and external services are called out individually and approved separately.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>Forge v0.1.0 — activation artifact: <a href="/SKILL.md">SKILL.md</a></span>
+      <span>Source: <a href="https://github.com/juliench82/hermes-agents-forge" rel="noopener noreferrer">github.com/juliench82/hermes-agents-forge</a></span>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
