@@ -10,6 +10,18 @@ const ACTIVATION_COMMAND = `hermes skills install https://${FORGE_DOMAIN}/SKILL.
     el.textContent = ACTIVATION_COMMAND;
   });
 
+  // Hide the hero logo gracefully if hero.jpg has not been uploaded yet.
+  const logo = document.querySelector(".hero-logo");
+  if (logo) {
+    if (logo.complete && logo.naturalWidth === 0) {
+      logo.style.display = "none";
+    } else {
+      logo.addEventListener("error", function () {
+        logo.style.display = "none";
+      });
+    }
+  }
+
   const button = document.getElementById("copy-button");
   const status = document.getElementById("copy-status");
   const commandEl = document.getElementById("install-command");
