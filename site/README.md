@@ -11,10 +11,13 @@ Production domain: **hermes-agents-forge.vercel.app** (configured in `script.js`
 
 The page has two copy actions:
 
-- **Desktop prompt** — paste into Hermes Desktop chat. Forces `hermes skills install` via the terminal tool and forbids browser automation.
+- **Desktop prompt** — paste into Hermes Desktop chat. Must not contain a raw
+  `https://…/SKILL.md` link. Desktop rewrites those as `@url:` and may wrap
+  them in backticks, which bash treats as command substitution. The prompt
+  builds the URL with `printf` and forbids browser automation.
 - **Terminal command** — `hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge`
 
-Do not present a bare `hermes skills install …` command as the Desktop CTA. Desktop users paste it into chat and the agent may open Chrome.
+Do not present a bare `hermes skills install …` URL command as the Desktop CTA.
 
 After install, the customer describes their goal in plain language. `/forge` is optional and must not be required. `/goal` is never an alias.
 
