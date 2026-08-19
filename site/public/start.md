@@ -6,12 +6,16 @@ guidance for agents; it is not marketing material.
 
 Fetch this file with `web_extract` or `curl` only. Never use browser automation
 or Chrome remote debugging to read it.
+Never treat an `@url:` prefix as part of a command. If Desktop rewrote a URL
+as `@url:https://...`, strip `@url:` and any backticks before calling hermes.
 
 ## Canonical activation
 
 Customer path, in order:
 
 1. Hermes Desktop: paste the website Desktop prompt into a new chat.
+   That prompt builds the skill URL in the shell. It must not contain a raw
+   https link, because Desktop rewrites those as `@url:`.
    Hermes Terminal: run the install command below.
 2. Hermes installs the skill with the terminal tool, not the browser.
 3. Hermes asks what the user wants to accomplish and follows `SKILL.md`.
@@ -23,8 +27,26 @@ never needs to be cloned.
 
 ## Install
 
+Terminal:
+
 ```bash
 hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge
+```
+
+Desktop (no raw URL in the chat):
+
+```bash
+HOST=hermes-agents-forge.vercel.app
+REL=/SKILL.md
+URL=$(printf '%s://%s%s' https "$HOST" "$REL")
+hermes skills install "$URL" --name forge
+```
+
+If that fetch fails:
+
+```bash
+mkdir -p "$HOME/.hermes/skills/software-development/forge"
+curl -fsSL "$URL" -o "$HOME/.hermes/skills/software-development/forge/SKILL.md"
 ```
 
 The installed leaf must be:

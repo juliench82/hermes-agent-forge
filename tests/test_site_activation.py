@@ -11,6 +11,15 @@ TERMINAL_COMMAND = f"hermes skills install {SKILL_URL} --name forge"
 QUESTION = "What do you want Hermes to accomplish for you?"
 
 
+def desktop_prompt_from_script(script: str) -> str:
+    match = re.search(r"const DESKTOP_PROMPT = \[(.*?)\]\.join", script, re.S)
+    self_assert = match is not None
+    if not self_assert:
+        return ""
+    parts = re.findall(r'"((?:\\.|[^"\\])*)"', match.group(1))
+    return "\n".join(part.encode("utf-8").decode("unicode_escape") for part in parts)
+
+
 class SiteActivationTests(unittest.TestCase):
     def test_canonical_skill_files_match(self):
         public = (SITE / "public" / "SKILL.md").read_text(encoding="utf-8")
@@ -24,15 +33,20 @@ class SiteActivationTests(unittest.TestCase):
         self.assertIn("Never treat `/goal` as an alias", text)
         self.assertIn("Do not require `/forge`", text)
         self.assertIn("browser_use", text)
-        self.assertIn(TERMINAL_COMMAND, text)
+        self.assertIn("@url:", text)
         self.assertIn("~/.hermes/skills/<category>/forge/SKILL.md", text)
 
-    def test_desktop_prompt_forbids_browser(self):
+    def test_desktop_prompt_avoids_raw_url_and_backticks(self):
         script = (SITE / "script.js").read_text(encoding="utf-8")
-        self.assertIn("TERMINAL_COMMAND", script)
-        self.assertIn("DESKTOP_PROMPT", script)
-        self.assertIn("browser_use", script)
-        self.assertIn("--name forge", script)
+        prompt = desktop_prompt_from_script(script)
+        self.assertTrue(prompt)
+        self.assertNotIn(SKILL_URL, prompt)
+        self.assertNotIn("`https://", prompt)
+        self.assertIn("@url:", prompt)
+        self.assertIn("printf", prompt)
+        self.assertIn("hermes-agents-forge.vercel.app", prompt)
+        self.assertIn("--name forge", prompt)
+        self.assertIn("browser_use", prompt)
         self.assertIn(SKILL_URL, script)
 
     def test_landing_page_has_two_ctas(self):
@@ -48,6 +62,7 @@ class SiteActivationTests(unittest.TestCase):
         index = json.loads((SITE / "public" / ".well-known" / "skills" / "index.json").read_text(encoding="utf-8"))
         self.assertIn(TERMINAL_COMMAND, start)
         self.assertIn("Do not require `/forge`", start)
+        self.assertIn("@url:", start)
         self.assertEqual(index["skills"][0]["name"], "forge")
         self.assertEqual(index["skills"][0]["install"], TERMINAL_COMMAND)
         self.assertLessEqual(len(index["skills"][0]["description"]), 60)

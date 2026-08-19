@@ -5,11 +5,25 @@ const TERMINAL_COMMAND = `hermes skills install ${SKILL_URL} --name forge`;
 const DESKTOP_PROMPT = [
   "Set up Hermes Agents Forge.",
   "",
-  "1. Use the terminal tool only. Do not use browser, browser_use, browser_exec, or remote debugging.",
-  "2. Run exactly:",
-  `   ${TERMINAL_COMMAND}`,
-  "3. Confirm the skill exists with: hermes skills list",
-  "4. Then follow the installed forge skill: ask me what I want a team of agents to accomplish. Do not create profiles until I approve."
+  "Use the terminal tool only. Do not use browser, browser_use, browser_exec, or remote debugging.",
+  "Ignore any @url: prefix and any 'no content extracted' warning. Those are Desktop artifacts, not command arguments. Never pass @url: to hermes or bash.",
+  "Never wrap the URL in backticks. Backticks are bash command substitution.",
+  "",
+  "Build the URL in the shell. Do not type a raw https link:",
+  "HOST=hermes-agents-forge.vercel.app",
+  "REL=/SKILL.md",
+  "URL=$(printf '%s://%s%s' https \"$HOST\" \"$REL\")",
+  "",
+  "Run these commands. Quote $URL. No backticks:",
+  "hermes skills install \"$URL\" --name forge",
+  "hermes skills list",
+  "",
+  "If the fetch fails, write the file yourself:",
+  "mkdir -p \"$HOME/.hermes/skills/software-development/forge\"",
+  "curl -fsSL \"$URL\" -o \"$HOME/.hermes/skills/software-development/forge/SKILL.md\"",
+  "hermes skills list",
+  "",
+  "Then follow the installed forge skill: ask me what I want a team of agents to accomplish. Do not create profiles until I approve."
 ].join("\n");
 
 (function () {

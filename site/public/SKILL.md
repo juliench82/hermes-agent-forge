@@ -28,13 +28,23 @@ Never present `/bootstrap` to the user.
 6. Gate every external side effect (third-party skill installs, network services, messages, purchases) behind its own explicit approval.
 7. Never pipe downloaded content into a shell. Skills are installed through `hermes skills install` only.
 8. Never use `browser`, `browser_use`, `browser_exec`, or Chrome remote debugging to fetch Forge artifacts. Use the terminal (`hermes skills install` or `curl`) or `web_extract` only.
+9. Never pass `@url:` to hermes or bash. If Desktop rewrote a URL as `@url:https://...` or wrapped it in backticks, strip those artifacts first. Backticks are command substitution.
 
 ## Install target
 
-Canonical command:
+Canonical terminal command:
 
 ```bash
 hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge
+```
+
+Desktop-safe construction (no raw URL in chat):
+
+```bash
+HOST=hermes-agents-forge.vercel.app
+REL=/SKILL.md
+URL=$(printf '%s://%s%s' https "$HOST" "$REL")
+hermes skills install "$URL" --name forge
 ```
 
 After install, the skill must live at:
@@ -50,7 +60,7 @@ A lone `forge.md` file is invalid. If you find one, move it into that directory 
 ### 1. Detect environment
 - Determine whether the user runs Hermes CLI or Hermes Desktop: probe for the `hermes` binary on PATH and config under `~/.hermes`; if ambiguous, ask.
 - Inspect the current profile and capabilities (`hermes profile show`, `hermes skills list`). Summarize what you found in one or two lines before proceeding.
-- If this skill is not installed yet, install it with the canonical command above using the terminal tool, then continue.
+- If this skill is not installed yet, install it with the Desktop-safe construction above using the terminal tool, then continue.
 
 ### 2. Collect the goal
 Ask: "What do you want Hermes to accomplish for you?" Accept free-form text.
