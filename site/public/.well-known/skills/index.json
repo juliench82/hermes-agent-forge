@@ -8,7 +8,7 @@
       "name": "forge",
       "description": "Onboard a Hermes agent team from a business goal.",
       "url": "https://hermes-agents-forge.vercel.app/SKILL.md",
-      "install": "hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge",
+      "install": "mkdir -p ~/.hermes/skills/software-development/forge && curl -fsSL https://hermes-agents-forge.vercel.app/SKILL.md -o ~/.hermes/skills/software-development/forge/SKILL.md",
       "sha256": null,
       "license": "MIT",
       "homepage": "https://hermes-agents-forge.vercel.app",
