@@ -40,6 +40,16 @@ class SiteActivationTests(unittest.TestCase):
         self.assertNotIn("privileged", text.lower())
         self.assertIn("Do not use `hermes skills install`", text)
 
+    def test_skill_finishes_after_approval(self):
+        text = (SITE / "public" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Do not ask a second time", text)
+        self.assertIn("One product per team", text)
+        self.assertIn("hermes skills list", text)
+        self.assertIn("hermes kanban init", text)
+        self.assertIn("do not get live trading keys", text)
+        self.assertIn("Then stop", text)
+        self.assertIn("Do not run `hermes profile setup`", text)
+
     def test_desktop_prompt_uses_local_curl(self):
         script = (SITE / "script.js").read_text(encoding="utf-8")
         prompt = desktop_prompt_from_script(script)
@@ -65,6 +75,7 @@ class SiteActivationTests(unittest.TestCase):
         index = json.loads((SITE / "public" / ".well-known" / "skills" / "index.json").read_text(encoding="utf-8"))
         self.assertIn("curl -fsSL", start)
         self.assertIn("Do not use `hermes skills install`", start)
+        self.assertIn("Do not ask a second time", start)
         self.assertEqual(index["skills"][0]["name"], "forge")
         self.assertEqual(index["skills"][0]["install"], TERMINAL_COMMAND)
         self.assertLessEqual(len(index["skills"][0]["description"]), 60)
