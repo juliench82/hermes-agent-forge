@@ -21,7 +21,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.wrap { max-width: 880px; margin: 0 auto; padding: 0 1.25rem; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
 
 a { color: var(--text); text-underline-offset: 3px; }
 a:hover { color: var(--accent); }
@@ -103,26 +103,48 @@ h1 {
   margin: 0 auto 2.25rem;
 }
 
-.command-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  max-width: 44rem;
-  margin: 0 auto;
+.activation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  text-align: left;
 }
-.command-block {
-  margin: 0;
+.activation-card {
   background: var(--bg-raised);
   border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.activation-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.activation-card p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+}
+.activation-card .cta { align-self: flex-start; }
+
+.command-block {
+  margin: 0;
+  background: #0a0a0b;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 1rem 1.25rem;
+  padding: 0.9rem 1rem;
   overflow-x: auto;
   font-family: var(--mono);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   white-space: nowrap;
   text-align: left;
   max-width: 100%;
+}
+.command-block.wrap-block {
+  white-space: pre-wrap;
+  overflow-x: hidden;
 }
 .command-block code { font-family: inherit; }
 
@@ -140,6 +162,12 @@ h1 {
 .cta:hover { filter: brightness(1.08); }
 .cta:active { transform: translateY(1px); }
 .cta.copied { background: #3fb950; color: #fff; }
+.cta-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.cta-secondary:hover { border-color: var(--accent); color: var(--accent); filter: none; }
 
 .post-install { margin-top: 1.75rem; color: var(--text-dim); }
 .inline-command {
@@ -203,6 +231,10 @@ h2 { font-size: 1.5rem; margin: 0 0 1.25rem; letter-spacing: -0.01em; }
   clip-path: inset(50%);
   overflow: hidden;
   white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .activation-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {
