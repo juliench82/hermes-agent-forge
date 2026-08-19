@@ -1,13 +1,16 @@
 # Hermes Agents Forge
 
 > Forge turns a stated goal into a focused, validated team of Hermes agent
-> profiles. Install the skill, open Hermes, type /forge.
+> profiles. Install the skill, then tell Hermes what you want accomplished.
 
 ## Install
 
 - Skill (canonical): https://hermes-agents-forge.vercel.app/SKILL.md
-  Install with: hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md
-- After install: open Hermes (CLI or Desktop) and type /forge
+- Desktop: paste the website Desktop prompt. Use the terminal tool only.
+  Do not use browser automation or Chrome remote debugging.
+- Terminal: hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge
+- After install: ask the user what they want Hermes to accomplish.
+  Do not require /forge. Never alias /goal.
 
 ## Docs
 
@@ -18,7 +21,7 @@
 
 ## Notes
 
-- /forge asks for the user's goal, proposes a 3/5/7-profile team, and requests
+- Forge asks for the user's goal, proposes a 3/5/7-profile team, and requests
   explicit approval before any writes.
 - The website distributes the activation skill only; Hermes performs the
   onboarding locally. The site does not create agents and collects no keys.

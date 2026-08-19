@@ -7,6 +7,19 @@ Production domain: **hermes-agents-forge.vercel.app** (configured in `script.js`
 `public/SKILL.md`, `public/start.md`, `public/llms.txt`,
 `public/.well-known/skills/index.json` — one constant per file).
 
+## Customer activation
+
+The page has two copy actions:
+
+- **Desktop prompt** — paste into Hermes Desktop chat. Forces `hermes skills install` via the terminal tool and forbids browser automation.
+- **Terminal command** — `hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge`
+
+Do not present a bare `hermes skills install …` command as the Desktop CTA. Desktop users paste it into chat and the agent may open Chrome.
+
+After install, the customer describes their goal in plain language. `/forge` is optional and must not be required. `/goal` is never an alias.
+
+The installable skill is also mirrored at `skills/forge/SKILL.md` for GitHub tap layout.
+
 ## Layout
 
 - `index.html`, `styles.css`, `script.js` — the landing page.

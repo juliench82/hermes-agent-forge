@@ -1,16 +1,27 @@
 // Forge landing page — single configuration point for the deployment domain.
 const FORGE_DOMAIN = "hermes-agents-forge.vercel.app";
-const ACTIVATION_COMMAND = `hermes skills install https://${FORGE_DOMAIN}/SKILL.md`;
+const SKILL_URL = `https://${FORGE_DOMAIN}/SKILL.md`;
+const TERMINAL_COMMAND = `hermes skills install ${SKILL_URL} --name forge`;
+const DESKTOP_PROMPT = [
+  "Set up Hermes Agents Forge.",
+  "",
+  "1. Use the terminal tool only. Do not use browser, browser_use, browser_exec, or remote debugging.",
+  "2. Run exactly:",
+  `   ${TERMINAL_COMMAND}`,
+  "3. Confirm the skill exists with: hermes skills list",
+  "4. Then follow the installed forge skill: ask me what I want a team of agents to accomplish. Do not create profiles until I approve."
+].join("\n");
 
 (function () {
   "use strict";
 
-  // Keep every rendered copy of the command in sync with FORGE_DOMAIN.
   document.querySelectorAll("[data-command]").forEach(function (el) {
-    el.textContent = ACTIVATION_COMMAND;
+    el.textContent = TERMINAL_COMMAND;
+  });
+  document.querySelectorAll("[data-desktop-prompt]").forEach(function (el) {
+    el.textContent = DESKTOP_PROMPT;
   });
 
-  // Hide the hero logo gracefully if hero.jpg has not been uploaded yet.
   const logo = document.querySelector(".hero-logo");
   if (logo) {
     if (logo.complete && logo.naturalWidth === 0) {
@@ -22,32 +33,31 @@ const ACTIVATION_COMMAND = `hermes skills install https://${FORGE_DOMAIN}/SKILL.
     }
   }
 
-  const button = document.getElementById("copy-button");
   const status = document.getElementById("copy-status");
+  const desktopButton = document.getElementById("copy-desktop");
+  const terminalButton = document.getElementById("copy-terminal");
+  const desktopEl = document.getElementById("desktop-prompt");
   const commandEl = document.getElementById("install-command");
-  if (!button || !commandEl) return;
-
-  const defaultLabel = button.textContent;
-  let resetTimer = null;
 
   function announce(message) {
     if (status) status.textContent = message;
   }
 
-  function showCopied() {
+  function showCopied(button, defaultLabel) {
     button.textContent = "Copied";
     button.classList.add("copied");
-    announce("Command copied to clipboard.");
-    if (resetTimer) clearTimeout(resetTimer);
-    resetTimer = setTimeout(function () {
+    announce("Copied to clipboard.");
+    if (button._resetTimer) clearTimeout(button._resetTimer);
+    button._resetTimer = setTimeout(function () {
       button.textContent = defaultLabel;
       button.classList.remove("copied");
     }, 2000);
   }
 
-  function selectCommandText() {
+  function selectText(el) {
+    if (!el) return;
     const range = document.createRange();
-    range.selectNodeContents(commandEl);
+    range.selectNodeContents(el);
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
@@ -71,33 +81,34 @@ const ACTIVATION_COMMAND = `hermes skills install https://${FORGE_DOMAIN}/SKILL.
     return ok;
   }
 
-  async function copyCommand() {
-    const text = ACTIVATION_COMMAND;
-
-    if (navigator.clipboard && window.isSecureContext) {
-      try {
-        await navigator.clipboard.writeText(text);
-        showCopied();
-        return;
-      } catch (err) {
-        // Fall through to legacy path (e.g. permission denied).
+  function bindCopy(button, getText, previewEl) {
+    if (!button) return;
+    const defaultLabel = button.textContent;
+    button.addEventListener("click", async function () {
+      const text = getText();
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          showCopied(button, defaultLabel);
+          return;
+        } catch (err) {
+          // Fall through to legacy path.
+        }
       }
-    }
-
-    if (legacyCopy(text)) {
-      showCopied();
-      return;
-    }
-
-    // Last resort: select the command so the user can press Ctrl/Cmd+C.
-    selectCommandText();
-    announce("Clipboard unavailable. The command is selected — press Ctrl+C or Cmd+C to copy.");
-    button.textContent = "Select + Ctrl+C";
-    if (resetTimer) clearTimeout(resetTimer);
-    resetTimer = setTimeout(function () {
-      button.textContent = defaultLabel;
-    }, 4000);
+      if (legacyCopy(text)) {
+        showCopied(button, defaultLabel);
+        return;
+      }
+      selectText(previewEl);
+      announce("Clipboard unavailable. The text is selected — press Ctrl+C or Cmd+C to copy.");
+      button.textContent = "Select + Ctrl+C";
+      if (button._resetTimer) clearTimeout(button._resetTimer);
+      button._resetTimer = setTimeout(function () {
+        button.textContent = defaultLabel;
+      }, 4000);
+    });
   }
 
-  button.addEventListener("click", copyCommand);
+  bindCopy(desktopButton, function () { return DESKTOP_PROMPT; }, desktopEl);
+  bindCopy(terminalButton, function () { return TERMINAL_COMMAND; }, commandEl);
 })();

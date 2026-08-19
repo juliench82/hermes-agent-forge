@@ -2,7 +2,7 @@
 # Hermes Agents Forge — compatibility installer.
 #
 # The canonical install path is:
-#     hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md
+#     hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md --name forge
 #
 # This wrapper exists only for environments where a script is expected. It:
 #   - requires no sudo and never escalates privileges,
@@ -36,15 +36,15 @@ if [ -n "$PINNED_SHA256" ]; then
   fi
   [ "$actual" = "$PINNED_SHA256" ] \
     || fail "checksum mismatch for SKILL.md v${FORGE_VERSION} (expected $PINNED_SHA256, got $actual)"
-  # Install the verified copy into the user-space skills library.
-  skill_dir="${HERMES_HOME:-$HOME/.hermes}/skills/forge"
+  skill_dir="${HERMES_HOME:-$HOME/.hermes}/skills/software-development/forge"
   mkdir -p "$skill_dir"
   cp "$tmp" "$skill_dir/SKILL.md"
   info "Forge v${FORGE_VERSION} installed to $skill_dir (checksum verified)."
 else
   info "note: no pinned checksum configured for this release; delegating to hermes."
-  hermes skills install "$SKILL_URL" || fail "hermes skills install failed"
+  hermes skills install "$SKILL_URL" --name forge || fail "hermes skills install failed"
 fi
 
 info ""
-info "Next step: open Hermes and type /forge"
+info "Next step: open Hermes and say what you want a team of agents to accomplish."
+info "If Chrome asks for remote debugging, cancel it and use the Desktop prompt on the website."

@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hermes Agents Forge — Forge your Hermes team</title>
-  <meta name="description" content="Turn a real workflow into a focused team of Hermes agents. Install the Forge skill, open Hermes, type /forge.">
+  <meta name="description" content="Turn a real workflow into a focused team of Hermes agents. Paste one prompt into Hermes Desktop, or run one terminal command.">
   <link rel="icon" href="/public/hero.jpg">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Hermes Agents Forge">
-  <meta property="og:description" content="Turn a real workflow into a focused team of Hermes agents. Install the skill, open Hermes, type /forge.">
+  <meta property="og:description" content="Turn a real workflow into a focused team of Hermes agents. Paste one prompt into Hermes Desktop, or run one terminal command.">
   <meta property="og:url" content="https://hermes-agents-forge.vercel.app/">
   <meta property="og:image" content="https://hermes-agents-forge.vercel.app/public/hero.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -35,21 +35,34 @@
       <h1>Forge your Hermes team.</h1>
       <p class="lede">
         Turn a real workflow into a focused team of Hermes agents.
-        Describe what you want to accomplish. Forge designs the team,
-        configures the profiles, and validates the setup.
+        Copy the path that matches how you use Hermes. Then tell it
+        what you want done — Forge designs the team and waits for your approval.
       </p>
 
-      <div class="command-panel" role="group" aria-label="Installation command">
-        <pre class="command-block"><code id="install-command" data-command>hermes skills install https://hermes-agents-forge.vercel.app/SKILL.md</code></pre>
-        <button id="copy-button" class="cta" type="button" aria-describedby="copy-status">
-          Copy activation command
-        </button>
-        <p id="copy-status" class="visually-hidden" role="status" aria-live="polite"></p>
+      <div class="activation-grid" role="group" aria-label="Installation options">
+        <article class="activation-card">
+          <h2>I use Hermes Desktop</h2>
+          <p>Paste this into a new Hermes chat. It installs Forge with the terminal tool and never opens a browser.</p>
+          <pre class="command-block wrap-block"><code id="desktop-prompt" data-desktop-prompt></code></pre>
+          <button id="copy-desktop" class="cta" type="button" aria-describedby="copy-status">
+            Copy Desktop prompt
+          </button>
+        </article>
+
+        <article class="activation-card">
+          <h2>I use Terminal</h2>
+          <p>Run this in a real terminal. Then open Hermes and say what you want your agents to do.</p>
+          <pre class="command-block"><code id="install-command" data-command></code></pre>
+          <button id="copy-terminal" class="cta cta-secondary" type="button" aria-describedby="copy-status">
+            Copy terminal command
+          </button>
+        </article>
       </div>
 
+      <p id="copy-status" class="visually-hidden" role="status" aria-live="polite"></p>
       <p class="post-install">
-        Already installed? Open Hermes and type
-        <code class="inline-command">/forge</code>
+        After install, tell Hermes what you want your agents to do.
+        If Chrome asks to allow remote debugging, click Cancel and use the Desktop prompt instead.
       </p>
     </section>
 
@@ -58,13 +71,13 @@
       <ol class="steps">
         <li>
           <span class="step-number" aria-hidden="true">1</span>
-          <div><h3>Open Hermes (desktop or CLI) and install Forge</h3>
-          <p>Run the activation command above. Hermes fetches a single <code>SKILL.md</code> file over HTTPS — nothing else is downloaded or executed.</p></div>
+          <div><h3>Install Forge</h3>
+          <p>Desktop users paste the prompt. Terminal users run the command. Hermes fetches one <code>SKILL.md</code> over HTTPS — no clone, no browser, no extra software.</p></div>
         </li>
         <li>
           <span class="step-number" aria-hidden="true">2</span>
-          <div><h3>Type /forge</h3>
-          <p>The installed skill registers itself as the <code>/forge</code> command automatically. Describe your goal — Forge proposes a team of 3, 5, or 7 profiles, shows you the full plan, and waits for your approval before changing anything.</p></div>
+          <div><h3>Describe your goal</h3>
+          <p>Tell Hermes what you want accomplished. Forge proposes a team of 3, 5, or 7 profiles, shows the full plan, and waits for your approval before changing anything.</p></div>
         </li>
       </ol>
     </section>
@@ -91,7 +104,8 @@
     <section id="security" class="wrap section">
       <h2>Security &amp; trust</h2>
       <ul class="trust-list">
-        <li>Plan before writes. <code>/forge</code> always shows the complete team plan and asks for explicit approval before creating or modifying profiles, files, or configuration.</li>
+        <li>Plan before writes. Forge always shows the complete team plan and asks for explicit approval before creating or modifying profiles, files, or configuration.</li>
+        <li>No browser required. Installation uses the Hermes terminal / <code>hermes skills install</code>. Cancel any Chrome remote-debugging prompt.</li>
         <li>No API keys collected here. This site never asks for credentials, and Forge never embeds secrets in generated files.</li>
         <li>User-space only. Installation lives under <code>~/.hermes</code>. No <code>sudo</code>, no privileged shell, no <code>curl | bash</code> requirement.</li>
         <li>Scoped side effects. Third-party skills and external services are called out individually and approved separately.</li>
