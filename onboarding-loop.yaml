@@ -1,10 +1,10 @@
-# Hermes Onboarding Loop v1.1 — Immediate Wins
+# Hermes Onboarding Loop v2.0 — Goal Engine + Kanban + Bundles
 # Run: hermes -p default skills install onboarding-loop team-designer
-# Then: hermes -p default chat "Start onboarding"
+# Then: hermes -p default chat "/goal Start onboarding"
 
 name: onboarding-loop
-version: 1.1.0
-description: Dynamic team discovery with hermes -z, config set, usage tracking, and hermes send
+version: 2.0.0
+description: Onboarding with /goal engine, kanban board for workflow, and skill bundles
 
 context:
   use_case: ""
@@ -14,8 +14,17 @@ context:
   adjustments: ""
   buzz_optional: true
   usage_file: "/tmp/onboarding-usage.json"
+  kanban_board: "onboarding-workflow"
 
 steps:
+  - name: create_kanban_board
+    action: shell
+    command: >
+      hermes kanban create "Onboard new user: {{context.use_case}}"
+      --assignee orchestrator
+      --goal
+    store: context.kanban_id
+
   - name: welcome
     action: chat
     prompt: |
@@ -23,6 +32,8 @@ steps:
 
       I'll help you build a multi-agent team tailored to your goals.
       This will create 3–7 specialist bots (Bot Mode) with their own roles, skills, and memory.
+
+      **Kanban board created:** {{context.kanban_id}}
 
       Let's start: **What would you like to accomplish with Hermes?**
       (e.g., "Launch a music album", "Run an e-commerce store", "Automate client onboarding")
@@ -144,24 +155,12 @@ steps:
         command: hermes gateway setup buzz
       - action: chat
         prompt: |
-          Buzz gateway configured. You can now:
-          - Join your Buzz community
-          - Invite humans to agent channels
-          - Use `hermes gateway status` to check connections
-
+          Buzz gateway configured.
           Proceeding to profile creation...
     else:
       - action: chat
         prompt: |
-          Skipped Buzz. You can add any messenger later:
-
-          ```bash
-          hermes gateway setup telegram
-          hermes gateway setup discord
-          hermes gateway setup slack
-          # etc.
-          ```
-
+          Skipped Buzz. You can add any messenger later.
           Proceeding to profile creation...
 
   - name: create_profiles
@@ -179,31 +178,36 @@ steps:
         path: "~/.hermes/profiles/{{item.name}}/SOUL.md"
         content: |
           # {{item.name}}
-
           ## Role
           {{item.description}}
-
           ## Skills
           {{item.skills | join(', ')}}
-
           ## Responsibilities
           - Execute tasks in your domain
           - Collaborate with other bots via @mentions and group chat
           - Escalate complex cases to the orchestrator or human
-
           ## Collaboration
           This profile works with:
           - Other bots in the team via Bot Mode group chat
           - Humans via configured messenger (optional)
 
-      - name: install_skills
+      - name: install_bundles
         action: shell
         command: >
-          hermes -p "{{item.name}}" skills install {{item.skills | join(' ')}}
+          hermes -p "{{item.name}}" bundles install {{item.bundle | default('default')}}
+          || hermes -p "{{item.name}}" skills install {{item.skills | join(' ')}}
 
       - name: enable_bot_mode
         action: shell
         command: hermes -p "{{item.name}}" config set bot_mode true
+
+      - name: add_kanban_task
+        action: shell
+        command: >
+          hermes kanban add-task {{context.kanban_id}}
+          "Create profile {{item.name}} with skills: {{item.skills | join(', ')}}"
+          --assignee "{{item.name}}"
+          --status done
 
   - name: create_group_chat
     action: shell
@@ -238,22 +242,27 @@ steps:
          hermes bots
          ```
 
-      2. **Chat with a specific bot**:
+      2. **View kanban board**:
+         ```bash
+         hermes kanban list
+         ```
+
+      3. **Chat with a specific bot**:
          ```bash
          hermes -p <bot-name> chat "Your task"
          ```
 
-      3. **Add a messenger for human access** (optional):
+      4. **Add a messenger for human access** (optional):
          ```bash
          hermes gateway setup telegram
          hermes gateway setup discord
          hermes gateway setup buzz
          ```
 
-      4. **Start working**:
+      5. **Start working**:
          - Bots can @mention each other in group chat
          - Assign tasks via the orchestrator bot
-         - Monitor progress in the Bot Mode roster
+         - Monitor progress in the kanban board
 
       **Usage tracking:** Token/cost breakdown saved to `{{context.usage_file}}`
 
