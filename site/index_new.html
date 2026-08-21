@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hermes Agents Forge — build, deploy, and orchestrate AI-powered agent systems.">
+  <meta name="theme-color" content="#6366f1">
+  <title>Hermes Agents Forge | AI Agent Orchestration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles_new.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar" aria-label="Primary navigation">
+    <div class="nav-container">
+      <a href="#top" class="nav-logo" aria-label="Hermes Forge home"><span class="logo-icon" aria-hidden="true">⚡</span><span class="logo-text">Hermes Forge</span></a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <div class="nav-menu" id="nav-menu">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#workflow" class="nav-link">Workflow</a>
+        <a href="#demo" class="nav-link">Demo</a>
+        <a href="#install" class="nav-link">Install</a>
+        <a href="https://github.com/juliench82/hermes-agents-forge" class="nav-link nav-cta" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-bg" aria-hidden="true"><div class="hero-gradient"></div><div class="hero-grid"></div></div>
+      <div class="container hero-content">
+        <p class="hero-badge animate-fade-in"><span class="badge-dot"></span> Agent systems, forged for production</p>
+        <h1 class="hero-title animate-fade-in-up">Build AI Agents<br><span class="gradient-text">That Actually Work.</span></h1>
+        <p class="hero-subtitle animate-fade-in-up delay-1">A practical framework for creating, deploying, and orchestrating AI agents—from focused automations to durable multi-agent workflows.</p>
+        <div class="hero-cta animate-fade-in-up delay-2">
+          <a class="btn btn-primary" href="#install">Get started <span aria-hidden="true">→</span></a>
+          <a class="btn btn-secondary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">View on GitHub</a>
+        </div>
+        <div class="hero-stats animate-fade-in-up delay-3" aria-label="Project highlights">
+          <div class="stat-item"><strong class="stat-value">100%</strong><span class="stat-label">Open source</span></div>
+          <span class="stat-divider" aria-hidden="true"></span>
+          <div class="stat-item"><strong class="stat-value">Multi-LLM</strong><span class="stat-label">Support</span></div>
+          <span class="stat-divider" aria-hidden="true"></span>
+          <div class="stat-item"><strong class="stat-value">Production</strong><span class="stat-label">Focused</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <header class="section-header"><h2 class="section-title">A solid base for agent engineering.</h2><p class="section-subtitle">Ship the orchestration layer without starting from scratch.</p></header>
+        <div class="features-grid">
+          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">⚡</span><h3>Rapid development</h3><p>Composable foundations and clear conventions for turning experiments into operational systems.</p></article>
+          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">◌</span><h3>Multi-agent orchestration</h3><p>Coordinate specialized agents, task handoffs, and workflow states for complex work.</p></article>
+          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">⌘</span><h3>Provider flexibility</h3><p>Use the models and endpoints that fit your stack while preserving a consistent agent layer.</p></article>
+          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">↗</span><h3>GitHub-native</h3><p>Designed for real repository workflows, automation, review loops, and CI/CD.</p></article>
+          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">◈</span><h3>Security-minded</h3><p>Keep secrets, access boundaries, and observability in the design from the beginning.</p></article>
+          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">◎</span><h3>Observable by default</h3><p>Give operators the context they need to understand agent decisions and failures.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="workflow" id="workflow">
+      <div class="container">
+        <header class="section-header"><h2 class="section-title">From intent to deployment.</h2><p class="section-subtitle">A disciplined, repeatable path for agent-powered products.</p></header>
+        <ol class="steps">
+          <li class="step" data-animate="fade-right"><span class="step-number">01</span><div><h3>Define the agent</h3><p>Set the role, model, tools, memory, and constraints around a clear task boundary.</p><pre><code>agent:
+  name: research-assistant
+  model: your-provider-model
+  tools: [web_search, file_read]</code></pre></div></li>
+          <li class="step" data-animate="fade-right"><span class="step-number">02</span><div><h3>Compose the workflow</h3><p>Chain specialist agents together, condition transitions, and retain the right execution context.</p><pre><code>workflow:
+  - researcher: gather_context
+  - analyst: synthesize
+  - writer: produce_output</code></pre></div></li>
+          <li class="step" data-animate="fade-right"><span class="step-number">03</span><div><h3>Operate with confidence</h3><p>Deploy, monitor, evaluate, and evolve the system in the same engineering loop as the rest of your product.</p><pre><code>hermes deploy production
+hermes monitor --realtime</code></pre></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="demo" id="demo">
+      <div class="container demo-layout">
+        <div class="demo-copy" data-animate="fade-right"><p class="eyebrow">LIVE WORKFLOW</p><h2>Make the system visible.</h2><p>Show developers what the framework feels like: concrete actions, transparent execution, and clear outcomes.</p><ul><li>Repository and code-review automation</li><li>Research and analysis pipelines</li><li>Support and operations agents</li><li>Data and event-driven workflows</li></ul></div>
+        <div class="terminal" data-animate="zoom-in"><div class="terminal-top"><span></span><span></span><span></span><code>hermes-cli</code></div><pre id="terminal-content"><span class="prompt">$</span> hermes run --agent code-reviewer --pr 42
+<span class="output">→ checking changed files</span>
+<span class="output">→ reviewing implementation details</span>
+<span class="success">✓ review complete: 2 suggestions, 0 blockers</span>
+<span class="prompt">$</span> <span class="cursor">_</span></pre></div>
+      </div>
+    </section>
+
+    <section class="install" id="install">
+      <div class="container install-layout">
+        <div data-animate="fade-up"><p class="eyebrow">QUICK START</p><h2>Start with the repository.</h2><p>Clone Hermes Agents Forge, follow the project documentation, and adapt the included building blocks to your stack.</p><a class="btn btn-primary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">Open repository <span aria-hidden="true">→</span></a></div>
+        <div class="install-code" data-animate="fade-up"><div class="code-header"><span>Terminal</span><button class="code-copy" type="button" data-copy-target="install-command">Copy</button></div><pre><code id="install-command">git clone https://github.com/juliench82/hermes-agents-forge.git
+cd hermes-agents-forge
+# Follow the repository README to configure and run</code></pre></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="container footer-content"><a href="#top" class="nav-logo"><span class="logo-icon">⚡</span><span class="logo-text">Hermes Forge</span></a><p>Build, deploy, and orchestrate AI-powered agent systems.</p><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
+  <script src="script_new.js"></script>
+</body>
+</html>
