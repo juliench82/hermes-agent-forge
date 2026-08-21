@@ -1,7 +1,11 @@
-# Hermes Onboarding Loop v1
+# Hermes Onboarding Loop v1.1 — Immediate Wins
+# Run: hermes -p default skills install onboarding-loop team-designer
+# Then: hermes -p default chat "Start onboarding"
+
 name: onboarding-loop
-version: 1.0.0
-description: Dynamic team discovery and profile creation using Bot Mode
+version: 1.1.0
+description: Dynamic team discovery with hermes -z, config set, usage tracking, and hermes send
+
 context:
   use_case: ""
   user_role: ""
@@ -9,41 +13,56 @@ context:
   team_json: {}
   adjustments: ""
   buzz_optional: true
+  usage_file: "/tmp/onboarding-usage.json"
+
 steps:
   - name: welcome
     action: chat
     prompt: |
       Welcome to Hermes Team Setup.
+
       I'll help you build a multi-agent team tailored to your goals.
-      This will create 3-7 specialist bots (Bot Mode) with their own roles, skills, and memory.
+      This will create 3–7 specialist bots (Bot Mode) with their own roles, skills, and memory.
+
       Let's start: **What would you like to accomplish with Hermes?**
-      (e.g., Launch a music album, Run an e-commerce store, Automate client onboarding)
+      (e.g., "Launch a music album", "Run an e-commerce store", "Automate client onboarding")
     store: context.use_case
+
   - name: collect_role
     action: chat
     prompt: |
       Great. Next: **What's your role in this project?**
-      (e.g., Founder, Lead singer, Solo consultant, Marketing manager)
+      (e.g., "Founder", "Lead singer", "Solo consultant", "Marketing manager")
     store: context.user_role
+
   - name: collect_goals
     action: chat
     prompt: |
-      Now list **3-5 main goals** (one per line). Be specific.
+      Now list **3–5 main goals** (one per line). Be specific.
+
       Examples:
       - Release album on Spotify/Apple Music
       - Grow Instagram to 10k followers in 90 days
-      - Book 5-10 live shows
-      - Sell EUR 5k in merchandise
+      - Book 5–10 live shows
+      - Sell €5k in merchandise
+
       Your goals:
     store: context.goals_raw
+
   - name: design_team
+    action: shell
+    command: >
+      hermes -z "Design a multi-agent team for: Use case={{context.use_case}}, Role={{context.user_role}}, Goals={{context.goals_raw}}. Output JSON with 3-7 profiles array."
+      --usage-file {{context.usage_file}}
+    store: context.team_raw
+
+  - name: parse_team_json
     action: skill
-    skill: team-designer
+    skill: json-parser
     input:
-      use_case: "{{context.use_case}}"
-      user_role: "{{context.user_role}}"
-      goals: "{{context.goals_raw}}"
+      text: "{{context.team_raw}}"
     store: context.team_json
+
   - name: validate_team_size
     action: if
     condition: "{{context.team_json.profiles | length >= 3 and context.team_json.profiles | length <= 7}}"
@@ -52,12 +71,15 @@ steps:
     else:
       - action: chat
         prompt: |
-          I need 3-7 profiles. Here's what I got:
+          I need 3–7 profiles. Here's what I got:
+
           {{context.team_json | to_yaml}}
-          Can you adjust the team (add/remove/merge roles) so it's 3-7 profiles?
-          Or say regenerate to try again.
+
+          Can you adjust the team (add/remove/merge roles) so it's 3–7 profiles?
+          Or say "regenerate" to try again.
         store: context.team_json
       - goto: validate_team_size
+
   - name: validate_team_content
     action: if
     condition: "{{context.team_json.profiles | length > 0}}"
@@ -65,46 +87,55 @@ steps:
       - goto: confirm_team
     else:
       - action: chat
-        prompt: Something went wrong. Say regenerate to try again.
+        prompt: "Something went wrong. Say 'regenerate' to try again."
         store: context.team_json
       - goto: design_team
+
   - name: confirm_team
     action: chat
     prompt: |
       Here's your proposed team:
+
       {% for p in context.team_json.profiles %}
       **{{p.name}}**
       - Role: {{p.description}}
       - Skills: {{p.skills | join(', ')}}
+
       {% endfor %}
-      Want to adjust anything? (e.g., rename X to Y, add a data analyst, remove merch-manager)
-      Or say create to proceed.
+      Want to adjust anything? (e.g., "rename X to Y", "add a data analyst", "remove merch-manager")
+      Or say "create" to proceed.
     store: context.adjustments
+
   - name: branch_adjustments
     action: if
     condition: "{{context.adjustments != 'create' and context.adjustments != '' and 'create' not in context.adjustments}}"
     then:
       - action: chat
         prompt: |
-          Got it. Applying your changes: {{context.adjustments}}
-          (In a full implementation, I'd re-run the team designer with these constraints.)
-          For now, please confirm the updated team or say create to proceed.
+          Got it. Applying your changes: "{{context.adjustments}}"
+
+          For now, please confirm the updated team or say "create" to proceed.
         store: context.team_json
       - goto: confirm_team
     else:
       - goto: ask_buzz
+
   - name: ask_buzz
     action: chat
     prompt: |
       Team confirmed. Next: **Messaging**
+
       Your bots can talk to each other automatically (Bot Mode).
       For human access, you can connect a messenger later (Telegram, Discord, Slack, WhatsApp, Buzz, etc.).
+
       **Buzz** is Block's open-source human+agent workspace (Nostr-based).
       It's optional. Do you want to set up Buzz now?
+
       Reply:
-      - buzz to set up Buzz
-      - skip to skip and configure later
+      - "buzz" to set up Buzz
+      - "skip" to skip and configure later
     store: context.buzz_choice
+
   - name: setup_buzz
     action: if
     condition: "{{context.buzz_choice == 'buzz'}}"
@@ -116,60 +147,114 @@ steps:
           Buzz gateway configured. You can now:
           - Join your Buzz community
           - Invite humans to agent channels
-          - Use hermes gateway status to check connections
+          - Use `hermes gateway status` to check connections
+
           Proceeding to profile creation...
     else:
       - action: chat
         prompt: |
           Skipped Buzz. You can add any messenger later:
+
+          ```bash
           hermes gateway setup telegram
           hermes gateway setup discord
           hermes gateway setup slack
+          # etc.
+          ```
+
           Proceeding to profile creation...
+
   - name: create_profiles
     action: foreach
     over: "{{context.team_json.profiles}}"
     steps:
       - name: create_profile
         action: shell
-        command: hermes profile create {{item.name}} --description {{item.description}}
+        command: >
+          hermes profile create "{{item.name}}"
+          --description "{{item.description}}"
+
       - name: write_soul
         action: file
-        path: ~/.hermes/profiles/{{item.name}}/SOUL.md
+        path: "~/.hermes/profiles/{{item.name}}/SOUL.md"
         content: |
           # {{item.name}}
+
           ## Role
           {{item.description}}
+
           ## Skills
           {{item.skills | join(', ')}}
+
           ## Responsibilities
           - Execute tasks in your domain
           - Collaborate with other bots via @mentions and group chat
           - Escalate complex cases to the orchestrator or human
+
           ## Collaboration
           This profile works with:
           - Other bots in the team via Bot Mode group chat
           - Humans via configured messenger (optional)
+
       - name: install_skills
         action: shell
-        command: hermes -p {{item.name}} skills install {{item.skills | join(' ')}}
+        command: >
+          hermes -p "{{item.name}}" skills install {{item.skills | join(' ')}}
+
       - name: enable_bot_mode
         action: shell
-        command: hermes -p {{item.name}} config set bot_mode true
+        command: hermes -p "{{item.name}}" config set bot_mode true
+
   - name: create_group_chat
     action: shell
-    command: hermes group-chat create team-main --members {{context.team_json.profiles | map(attribute='name') | join(',')}} --description Main team coordination channel
+    command: >
+      hermes group-chat create team-main
+      --members "{{context.team_json.profiles | map(attribute='name') | join(',')}}"
+      --description "Main team coordination channel"
+
+  - name: send_completion_notification
+    action: shell
+    command: >
+      hermes send --to default
+      "✅ Team created successfully! You now have {{context.team_json.profiles | length}} bots:
+      {% for p in context.team_json.profiles %}{{p.name}}{% if not loop.last %}, {% endif %}{% endfor %}.
+      Run 'hermes bots' to see your roster."
+
   - name: completion
     action: chat
     prompt: |
-      Team created successfully!
+      ✅ **Team created successfully!**
+
       You now have {{context.team_json.profiles | length}} bots:
+
       {% for p in context.team_json.profiles %}
-      - {{p.name}}
+      - `{{p.name}}`
       {% endfor %}
-      Next steps:
-      1. View your team (Bot Mode roster): hermes bots
-      2. Chat with a specific bot: hermes -p bot-name chat Your task
-      3. Add a messenger for human access (optional): hermes gateway setup telegram/discord/buzz
-      4. Start working: Bots can @mention each other in group chat
+
+      **Next steps:**
+
+      1. **View your team** (Bot Mode roster):
+         ```bash
+         hermes bots
+         ```
+
+      2. **Chat with a specific bot**:
+         ```bash
+         hermes -p <bot-name> chat "Your task"
+         ```
+
+      3. **Add a messenger for human access** (optional):
+         ```bash
+         hermes gateway setup telegram
+         hermes gateway setup discord
+         hermes gateway setup buzz
+         ```
+
+      4. **Start working**:
+         - Bots can @mention each other in group chat
+         - Assign tasks via the orchestrator bot
+         - Monitor progress in the Bot Mode roster
+
+      **Usage tracking:** Token/cost breakdown saved to `{{context.usage_file}}`
+
       Want to customize anything or start your first task?
