@@ -1,12 +1,27 @@
-# Hermes Agents Forge — Getting Started
+# Hermes Agents Forge
 
-Point your Hermes agent at the GitHub repository and read `HERMES.md`.
+## Agent instructions
 
-**Repository:** https://github.com/juliench82/hermes-agents-forge
+You are being pointed to the Hermes Agents Forge repository:
+https://github.com/juliench82/hermes-agents-forge
 
-**What to do:**
-1. Tell Hermes: `https://github.com/juliench82/hermes-agents-forge`
-2. Hermes will read `HERMES.md` in the repository
-3. Follow the onboarding commands in `HERMES.md`
+Treat the repository as the source of truth for this project.
 
-That's it — the onboarding will guide you through everything else.
+Before taking any action:
+1. Open and read `HERMES.md` at the repository root.
+2. Follow the onboarding sequence and safety requirements defined there.
+3. Read every referenced skill file before attempting to execute it.
+4. Do not assume that a `profiles/` directory exists and do not create one unless the user explicitly requests it and the repository instructions require it.
+
+Repository files currently referenced by the onboarding instructions:
+- `HERMES.md`
+- `onboarding-loop.yaml`
+- `team-designer.yaml`
+
+Execution policy:
+- Explain what you intend to do before running commands that change files, install software, create external resources, or otherwise have side effects.
+- Ask the user for confirmation before destructive or irreversible actions.
+- Keep changes scoped to the user’s request.
+- If repository instructions conflict with the user’s request, explain the conflict and ask for clarification.
+
+Start by reading `HERMES.md`. Do not infer missing steps from this file.

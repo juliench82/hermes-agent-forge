@@ -3,42 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Hermes Agents Forge — build, deploy, and orchestrate AI-powered agent systems.">
-  <meta name="theme-color" content="#6366f1">
+  <meta name="description" content="Hermes Agents Forge — open-source, isolated, multi-profile agent teams.">
+  <meta name="theme-color" content="#111214">
   <title>Hermes Agents Forge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#090a10;--text:#f7f7fb;--muted:#a1a5b9;--line:rgba(255,255,255,.1);--primary:#6971ff;--max:900px}
-    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#101114;--paper:#151619;--gold:#d9ad68;--gold-light:#f1ce8c;--muted:#aaa7a0;--line:rgba(217,173,104,.42);--max:980px}
+    *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;display:grid;place-items:center}
-    .container{width:min(var(--max),calc(100% - 40px));margin:auto;text-align:center}
-    .logo{font-size:3rem;margin-bottom:1.5rem;background:linear-gradient(105deg,#91a0ff,#c084fc);background-clip:text;-webkit-background-clip:text;color:transparent}
-    h1{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:700;letter-spacing:-.04em;margin:0 0 1rem}
-    p{color:var(--muted);font-size:1.05rem;max-width:520px;margin:0 auto 2.5rem}
-    .cta{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap}
-    .btn{font-weight:600;border-radius:.7rem;padding:.85rem 1.35rem;display:inline-flex;gap:.6rem;align-items:center;transition:transform .2s,box-shadow .2s;text-decoration:none}
-    .btn:hover{transform:translateY(-2px)}
-    .btn-primary{background:linear-gradient(105deg,var(--primary),#a855f7);color:#fff;box-shadow:0 12px 35px rgba(111,104,255,.3)}
-    .btn-secondary{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text)}
-    footer{position:fixed;bottom:1.5rem;left:0;right:0;text-align:center;color:var(--muted);font-size:.85rem}
-    footer a{color:#cbd0ff}
+    body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 25%,#202125 0,#111214 46%,#090a0c 100%);color:#f3eee5;font-family:DM Mono,monospace;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:4px 4px;mix-blend-mode:screen}
+    main{width:min(var(--max),calc(100% - 40px));margin:auto;min-height:100vh;display:grid;place-items:center;padding:5rem 0 7rem;text-align:center}
+    .hero{width:100%;display:flex;flex-direction:column;align-items:center}
+    .crest{width:min(360px,70vw);aspect-ratio:1/1;object-fit:cover;object-position:top center;filter:saturate(.85) contrast(1.08) sepia(.12);mix-blend-mode:screen;margin-bottom:-2.5rem;mask-image:linear-gradient(to bottom,#000 75%,transparent 100%)}
+    .wordmark{font-family:Libre Baskerville,serif;font-size:clamp(3.4rem,10vw,7rem);letter-spacing:.14em;line-height:1;color:var(--gold-light);text-shadow:0 2px 20px rgba(217,173,104,.18);margin-left:.14em}
+    .subtitle{margin-top:1.2rem;color:#dedbd3;letter-spacing:.42em;text-transform:uppercase;font-size:clamp(.68rem,1.7vw,.95rem)}
+    .rule{width:min(700px,80%);height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:2.4rem auto}
+    .descriptor{color:#d8d1c5;letter-spacing:.22em;text-transform:uppercase;font-size:.72rem}
+    .descriptor span{color:var(--gold)}
+    .cta{margin-top:2.4rem;display:flex;justify-content:center;gap:.9rem;flex-wrap:wrap}
+    a{color:inherit;text-decoration:none}
+    .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.9rem 1.2rem;border:1px solid var(--line);font:500 .78rem DM Mono,monospace;letter-spacing:.08em;text-transform:uppercase;transition:all .2s}
+    .btn:hover{transform:translateY(-2px);border-color:var(--gold-light);box-shadow:0 10px 30px rgba(217,173,104,.15)}
+    .btn-primary{background:linear-gradient(135deg,#c79750,#e0b875);color:#171310;border-color:#e0b875}
+    .btn-secondary{background:rgba(255,255,255,.025);color:#eee8dc}
+    footer{position:fixed;bottom:1.2rem;left:0;right:0;text-align:center;color:#817d74;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase}
+    footer a{color:var(--gold)}
+    @media(max-width:560px){main{width:min(100% - 28px);padding-top:3rem}.crest{margin-bottom:-1.8rem}.wordmark{font-size:3rem;letter-spacing:.1em}.subtitle{letter-spacing:.24em}.descriptor{font-size:.62rem;letter-spacing:.12em}.btn{width:100%;justify-content:center}}
   </style>
 </head>
 <body>
-  <main class="container">
-    <div class="logo" aria-hidden="true">⚡</div>
-    <h1>Hermes Agents Forge</h1>
-    <p>Build, deploy, and orchestrate AI-powered agent systems. Start by reading the instructions.</p>
-    <div class="cta">
-      <a class="btn btn-primary" href="llms.txt">View Instructions (llms.txt) <span aria-hidden="true">→</span></a>
-      <a class="btn btn-secondary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">View on GitHub</a>
-    </div>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <img class="crest" src="/hero.jpg" alt="Hermes Agents Forge emblem" onerror="this.src='/public/hero.jpg'">
+      <div id="title" class="wordmark">HERMES</div>
+      <div class="subtitle">Agents for Forge</div>
+      <div class="rule" aria-hidden="true"></div>
+      <div class="descriptor"><span>&lt;/&gt;</span> &nbsp; Open source &nbsp;•&nbsp; Isolated &nbsp;•&nbsp; Multi-profile agent teams</div>
+      <div class="cta">
+        <a class="btn btn-primary" href="/llms.txt">Read agent instructions <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-secondary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">GitHub repository <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
   </main>
-  <footer>
-    <p><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">GitHub ↗</a></p>
-  </footer>
+  <footer><a href="/llms.txt">llms.txt</a> &nbsp;•&nbsp; Hermes Agents Forge</footer>
 </body>
 </html>

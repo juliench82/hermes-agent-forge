@@ -1,32 +1,50 @@
-# Hermes Agents Forge — Onboarding
+# Hermes Agents Forge
 
-Welcome! This file contains the exact commands to get started with Hermes Agents Forge.
+This file is the source of truth for an Hermes agent onboarding this repository.
 
-## Quick Start
+## Repository
 
-Run these commands in your Hermes desktop chat:
+- Repository: https://github.com/juliench82/hermes-agents-forge
+- Default branch: `main`
 
-```bash
-hermes -p default skills install onboarding-loop team-designer && hermes -p default chat "Start onboarding"
-```
+## Required reading
 
-## What This Does
+Before running any command or changing any file, read:
 
-1. **Installs onboarding skills** — `onboarding-loop.yaml` and `team-designer.yaml` from the `site/public/` directory
-2. **Starts guided onboarding** — A chat session that walks you through setup
-3. **Configures your first agent** — Step-by-step guidance to build and deploy
+1. `HERMES.md` (this file)
+2. `onboarding-loop.yaml`
+3. `team-designer.yaml`
 
-## Files
+The two YAML files are repository-root skills. Do not look for them under `site/public/` and do not invent alternate paths.
 
-- `onboarding-loop.yaml` — Core onboarding workflow skill
-- `team-designer.yaml` — Team and agent design skill
-- Both located in `site/public/`
+## Onboarding sequence
 
-## Next Steps
+1. Inspect the repository and read the required skill files.
+2. Explain the proposed onboarding actions to the user in plain language.
+3. Ask for confirmation before any action with external side effects or any destructive change.
+4. Run the onboarding loop defined by `onboarding-loop.yaml`.
+5. Use `team-designer.yaml` when the flow requires designing or configuring an agent team.
+6. Report what was completed, what remains, and any files changed.
 
-After onboarding completes, you'll have:
-- A configured agent ready to use
-- Understanding of the workflow system
-- Access to the full documentation in the repository
+## Path and state rules
 
-**Questions?** Check the repository README or open an issue on GitHub.
+- Do not assume a `profiles/` directory exists.
+- Do not create a hardcoded `profiles/` directory.
+- Discover paths from the repository and the referenced skills.
+- Do not overwrite, delete, or migrate existing files unless the user explicitly asks for that change and confirms it.
+- Keep onboarding changes scoped to this repository.
+
+## Safety
+
+- Never expose secrets, credentials, or private configuration in chat or committed files.
+- Do not run destructive commands without explicit user confirmation.
+- If an instruction is ambiguous, stop and ask a focused clarification question.
+
+## Completion
+
+When onboarding is complete, summarize:
+
+- The team or agent configuration created or updated.
+- The exact files changed.
+- Any commands the user must run manually.
+- Any unresolved setup or integration requirements.
