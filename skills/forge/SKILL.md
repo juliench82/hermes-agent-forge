@@ -1,7 +1,7 @@
 ---
 name: forge
 description: Onboard a focused Hermes agent team from the user's goal. Use when the user wants to set up, configure, activate, or design a team of Hermes agents, or mentions Forge.
-version: 0.1.1
+version: 0.1.2
 author: juliench82
 license: MIT
 compatibility: Hermes CLI or Hermes Desktop. Installs only under the user's Hermes home directory.
@@ -17,6 +17,26 @@ Forge turns one stated goal into a validated team of Hermes profiles.
 This skill is the procedure. Run it whenever it is loaded or the user asks to set up a team.
 Do not require `/forge`. Never treat `/goal` as an alias — that is a built-in Hermes Ralph loop.
 Never present `/bootstrap` to the user.
+
+## Quick checklist — scan this first
+
+- [ ] One product per team. Park extra apps.
+- [ ] Skills from `hermes skills list` only. Drop the rest.
+- [ ] No live trading keys; do not promise zero loss.
+- [ ] After approval: finish writes (thinking mode) or step-by-step (low-effort mode).
+- [ ] After validation: stop. No extra questions about assets, work, or next steps.
+
+## Model capability check (Flow 0)
+
+Before Flow 1, classify your own capability:
+
+- **Thinking model**: can hold multi-step plans, remember rules across turns, and recover from errors.
+- **Low-effort model**: needs short, explicit steps; may forget rules after a few turns.
+
+Then choose an execution mode:
+
+- **Thinking mode**: run Flows 1–5 as written.
+- **Low-effort mode**: run the step-by-step variant below.
 
 ## Hard rules — never violate
 
@@ -55,7 +75,7 @@ After install, the skill must live at:
 
 A lone `forge.md` file is invalid. If you find one, move it into that directory layout, then continue.
 
-## Flow
+## Flow — thinking mode
 
 ### 1. Start immediately
 If this conversation just wrote the skill file, skip environment probes. Ask the goal now.
@@ -101,6 +121,21 @@ On approval, do all of the following now. Do not ask whether to continue.
 - Run `hermes profile list`.
 - Report: profiles created and paths, `SOUL.md` files written, kanban yes/no, skill names skipped because they do not exist, anything failed.
 - Then stop. Do not ask if you should generate assets, start work, or anything else. That work is already done or listed as failed.
+
+## Flow — low-effort mode (step-by-step)
+
+If you classified yourself as a low-effort model, run this variant instead of the full Flows 1–5.
+
+1. **Goal**: ask "What do you want Hermes to accomplish for you?" Then stop.
+2. **Scope**: if multiple products are named, ask which one is in scope for this team. Then stop.
+3. **Team size**: propose 3, 5, or 7 profiles with one-sentence why. Wait for approval.
+4. **Table**: present the full table (profile name, responsibility, skills, boundaries). Wait for approval.
+5. **Create one profile**: `hermes profile create <kebab-name> --description "<role>"`. Write its `SOUL.md`. Then ask "continue?".
+6. **Repeat** step 5 until all profiles are done.
+7. **Kanban**: if high-autonomy was requested, run `hermes kanban init` for the in-scope product. Then ask "continue?".
+8. **Validate**: run `hermes profile list`, report files and any failures, then stop. Do not ask about assets, work, or next steps.
+
+In low-effort mode, keep every message short and explicit. Do not assume the user remembers earlier context; restate the in-scope product and team size when you ask to continue.
 
 ## Trust boundaries
 Before the first write, remind the user once, in one sentence: this skill came from a stable public file; what happens next creates local profiles and configuration; any third-party skills or external services will be named and approved separately.
