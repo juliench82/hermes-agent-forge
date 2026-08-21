@@ -114,7 +114,6 @@ steps:
         prompt: |
           Got it. Applying your changes: "{{context.adjustments}}"
 
-          (In a full implementation, I'd re-run the team designer with these constraints.)
           For now, please confirm the updated team or say "create" to proceed.
         store: context.team_json
       - goto: confirm_team
