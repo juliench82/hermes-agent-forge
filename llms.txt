@@ -1,0 +1,42 @@
+# Hermes Agents Forge — Machine-Readable Index
+
+## Quick Start
+
+When a user points Hermes at this repo, do this:
+
+1. Install skills: `hermes -p default skills install onboarding-loop team-designer`
+2. Run onboarding: `hermes -p default chat "Start onboarding"`
+
+That's it. The onboarding loop handles everything else.
+
+## Files
+
+- `/onboarding-loop.yaml` — Main onboarding loop (v3.0.0)
+- `/team-designer.yaml` — Team design skill
+- `/onboarding/START.md` — User quick start guide
+- `/BOOTSTRAP.md` — Full setup documentation
+- `/README.md` — Project overview
+
+## What Hermes Does
+
+1. Reads this file
+2. Installs `onboarding-loop` and `team-designer` skills
+3. Runs `hermes -p default chat "Start onboarding"`
+4. Loop collects: use case, role, goals
+5. Generates 3-7 specialist bot profiles
+6. Creates profiles with SOUL.md
+7. Installs skills per profile
+8. Enables Bot Mode
+9. Creates team group chat
+10. Sets up cron follow-ups (v3)
+
+## Version
+
+- onboarding-loop: v3.0.0
+- team-designer: v1.0.0
+
+## Features
+
+- v1: hermes -z, config set, usage-file, hermes send
+- v2: kanban board, skill bundles
+- v3: peer gateway, cron follow-ups, delegate_task parallelization
