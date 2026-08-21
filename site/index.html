@@ -33,16 +33,34 @@
         <p class="hero-badge animate-fade-in"><span class="badge-dot"></span> Agent systems, forged for production</p>
         <h1 class="hero-title animate-fade-in-up">Build AI Agents<br><span class="gradient-text">That Actually Work.</span></h1>
         <p class="hero-subtitle animate-fade-in-up delay-1">A practical framework for creating, deploying, and orchestrating AI agents—from focused automations to durable multi-agent workflows.</p>
+        
         <div class="hero-cta animate-fade-in-up delay-2">
-          <a class="btn btn-primary" href="#install">Get started <span aria-hidden="true">→</span></a>
-          <a class="btn btn-secondary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">View on GitHub</a>
+          <div class="command-box">
+            <p class="command-label">1. Copy this command</p>
+            <div class="command-code-wrapper">
+              <code id="onboarding-command" class="command-code">hermes -p default skills install onboarding-loop team-designer && hermes -p default chat "Start onboarding"</code>
+              <button class="code-copy-btn" type="button" data-copy-target="onboarding-command" aria-label="Copy command">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <p class="command-hint">2. Paste it into your Hermes desktop chat and hit Enter</p>
+          </div>
         </div>
-        <div class="hero-stats animate-fade-in-up delay-3" aria-label="Project highlights">
-          <div class="stat-item"><strong class="stat-value">100%</strong><span class="stat-label">Open source</span></div>
-          <span class="stat-divider" aria-hidden="true"></span>
-          <div class="stat-item"><strong class="stat-value">Multi-LLM</strong><span class="stat-label">Support</span></div>
-          <span class="stat-divider" aria-hidden="true"></span>
-          <div class="stat-item"><strong class="stat-value">Production</strong><span class="stat-label">Focused</span></div>
+        
+        <div class="hero-next-steps animate-fade-in-up delay-3">
+          <div class="next-step">
+            <span class="step-bullet">✓</span>
+            <span>Onboarding starts automatically</span>
+          </div>
+          <div class="next-step">
+            <span class="step-bullet">✓</span>
+            <span>Follow the guided setup</span>
+          </div>
+          <div class="next-step">
+            <span class="step-bullet">✓</span>
+            <span>Start building your first agent</span>
+          </div>
         </div>
       </div>
     </section>
@@ -92,10 +110,26 @@ hermes monitor --realtime</code></pre></div></li>
 
     <section class="install" id="install">
       <div class="container install-layout">
-        <div data-animate="fade-up"><p class="eyebrow">QUICK START</p><h2>Start with the repository.</h2><p>Clone Hermes Agents Forge, follow the project documentation, and adapt the included building blocks to your stack.</p><a class="btn btn-primary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">Open repository <span aria-hidden="true">→</span></a></div>
-        <div class="install-code" data-animate="fade-up"><div class="code-header"><span>Terminal</span><button class="code-copy" type="button" data-copy-target="install-command">Copy</button></div><pre><code id="install-command">git clone https://github.com/juliench82/hermes-agents-forge.git
-cd hermes-agents-forge
-# Follow the repository README to configure and run</code></pre></div>
+        <div data-animate="fade-up">
+          <p class="eyebrow">QUICK START</p>
+          <h2>One command to get started.</h2>
+          <p>Copy the command above, paste it into your Hermes desktop chat, and press Enter. The onboarding will guide you through everything you need.</p>
+          <p style="color:var(--muted);font-size:.95rem;margin-top:1.2rem"><strong>That's it.</strong> No complex setup, no configuration files to edit manually. Just run the command and follow the prompts.</p>
+          <div style="margin-top:1.6rem;padding:1.2rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.02)">
+            <p style="margin:0 0 .6rem;font-weight:600;color:#c5c8e0">What happens next?</p>
+            <ul style="margin:0;padding:0 0 0 1.2rem;color:var(--muted);line-height:1.8">
+              <li>Hermes installs the onboarding skills</li>
+              <li>A guided chat session starts automatically</li>
+              <li>You'll configure your first agent step-by-step</li>
+              <li>Ready to deploy and use in minutes</li>
+            </ul>
+          </div>
+        </div>
+        <div class="install-code" data-animate="fade-up">
+          <div class="code-header"><span>Onboarding command</span><button class="code-copy" type="button" data-copy-target="install-command">Copy</button></div>
+          <pre><code id="install-command">hermes -p default skills install onboarding-loop team-designer && hermes -p default chat "Start onboarding"</code></pre>
+          <p style="margin:.8rem 0 0;padding:0 1rem .8rem;color:var(--muted);font-size:.85rem">Paste this into your Hermes desktop chat</p>
+        </div>
       </div>
     </section>
   </main>
