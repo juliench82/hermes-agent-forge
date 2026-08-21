@@ -1,7 +1,7 @@
 ---
 name: forge
 description: Onboard a focused Hermes agent team from the user's goal. Use when the user wants to set up, configure, activate, or design a team of Hermes agents, or mentions Forge.
-version: 0.1.0
+version: 0.1.1
 author: juliench82
 license: MIT
 compatibility: Hermes CLI or Hermes Desktop. Installs only under the user's Hermes home directory.
@@ -33,6 +33,7 @@ Never present `/bootstrap` to the user.
 11. One product per team. If the user names two unrelated apps, scope v1 to the first named product (or ask which is first). Do not staff one shared department for both.
 12. Never invent skill names. Every skill in the plan must exist in `hermes skills list`. Drop the rest.
 13. Live funds, trading, payments: say plainly that v1 agents do not get live trading keys and cannot promise zero financial loss.
+14. After validation (Flow 5), stop. Do not ask whether to generate assets, start work, or anything else. That work is already done or listed as failed.
 
 ## Install target
 
@@ -99,7 +100,7 @@ On approval, do all of the following now. Do not ask whether to continue.
 ### 5. Validate and stop
 - Run `hermes profile list`.
 - Report: profiles created and paths, `SOUL.md` files written, kanban yes/no, skill names skipped because they do not exist, anything failed.
-- Then stop. Do not ask if you should generate assets next. That work is already done or listed as failed.
+- Then stop. Do not ask if you should generate assets, start work, or anything else. That work is already done or listed as failed.
 
 ## Trust boundaries
 Before the first write, remind the user once, in one sentence: this skill came from a stable public file; what happens next creates local profiles and configuration; any third-party skills or external services will be named and approved separately.
