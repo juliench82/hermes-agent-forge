@@ -1,140 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Hermes Agents Forge — build, deploy, and orchestrate AI-powered agent systems.">
-  <meta name="theme-color" content="#6366f1">
-  <title>Hermes Agents Forge | AI Agent Orchestration</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermes Agents Forge</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Hermes-native multi-agent team setup">
 </head>
 <body>
-  <nav class="navbar" id="navbar" aria-label="Primary navigation">
-    <div class="nav-container">
-      <a href="#top" class="nav-logo" aria-label="Hermes Forge home"><span class="logo-icon" aria-hidden="true">⚡</span><span class="logo-text">Hermes Forge</span></a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
-      <div class="nav-menu" id="nav-menu">
-        <a href="#features" class="nav-link">Features</a>
-        <a href="#workflow" class="nav-link">Workflow</a>
-        <a href="#demo" class="nav-link">Demo</a>
-        <a href="#install" class="nav-link">Install</a>
-        <a href="https://github.com/juliench82/hermes-agents-forge" class="nav-link nav-cta" target="_blank" rel="noreferrer">GitHub</a>
-      </div>
-    </div>
-  </nav>
+    <header>
+        <h1>Hermes Agents Forge</h1>
+        <p class="subtitle">Provision isolated multi-profile agent teams that implement real-world workflows</p>
+    </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-bg" aria-hidden="true"><div class="hero-gradient"></div><div class="hero-grid"></div></div>
-      <div class="container hero-content">
-        <p class="hero-badge animate-fade-in"><span class="badge-dot"></span> Agent systems, forged for production</p>
-        <h1 class="hero-title animate-fade-in-up">Build AI Agents<br><span class="gradient-text">That Actually Work.</span></h1>
-        <p class="hero-subtitle animate-fade-in-up delay-1">A practical framework for creating, deploying, and orchestrating AI agents—from focused automations to durable multi-agent workflows.</p>
-        
-        <div class="hero-cta animate-fade-in-up delay-2">
-          <div class="command-box">
-            <p class="command-label">1. Copy this command</p>
-            <div class="command-code-wrapper">
-              <code id="onboarding-command" class="command-code">hermes -p default skills install onboarding-loop team-designer && hermes -p default chat "Start onboarding"</code>
-              <button class="code-copy-btn" type="button" data-copy-target="onboarding-command" aria-label="Copy command">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <span>Copy</span>
-              </button>
+    <main>
+        <section class="hero">
+            <h2>Quick Start</h2>
+            
+            <h3>For Hermes Agents</h3>
+            <p class="note">If you're a Hermes agent reading this page, do this automatically:</p>
+            <div class="code-block">
+                <pre><code># 1. Install the onboarding skills
+hermes -p default skills install onboarding-loop team-designer
+
+# 2. Run onboarding
+hermes -p default chat "Start onboarding"</code></pre>
             </div>
-            <p class="command-hint">2. Paste it into your Hermes desktop chat and hit Enter</p>
-          </div>
-        </div>
-        
-        <div class="hero-next-steps animate-fade-in-up delay-3">
-          <div class="next-step">
-            <span class="step-bullet">✓</span>
-            <span>Onboarding starts automatically</span>
-          </div>
-          <div class="next-step">
-            <span class="step-bullet">✓</span>
-            <span>Follow the guided setup</span>
-          </div>
-          <div class="next-step">
-            <span class="step-bullet">✓</span>
-            <span>Start building your first agent</span>
-          </div>
-        </div>
-      </div>
-    </section>
+            <p class="note">Then follow the interactive onboarding flow. It will ask 3 questions and set up your team automatically.</p>
 
-    <section class="features" id="features">
-      <div class="container">
-        <header class="section-header"><h2 class="section-title">A solid base for agent engineering.</h2><p class="section-subtitle">Ship the orchestration layer without starting from scratch.</p></header>
-        <div class="features-grid">
-          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">⚡</span><h3>Rapid development</h3><p>Composable foundations and clear conventions for turning experiments into operational systems.</p></article>
-          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">◌</span><h3>Multi-agent orchestration</h3><p>Coordinate specialized agents, task handoffs, and workflow states for complex work.</p></article>
-          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">⌘</span><h3>Provider flexibility</h3><p>Use the models and endpoints that fit your stack while preserving a consistent agent layer.</p></article>
-          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">↗</span><h3>GitHub-native</h3><p>Designed for real repository workflows, automation, review loops, and CI/CD.</p></article>
-          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">◈</span><h3>Security-minded</h3><p>Keep secrets, access boundaries, and observability in the design from the beginning.</p></article>
-          <article class="feature-card" data-animate="fade-up"><span class="feature-icon">◎</span><h3>Observable by default</h3><p>Give operators the context they need to understand agent decisions and failures.</p></article>
-        </div>
-      </div>
-    </section>
+            <h3>For Humans</h3>
+            <p>Point your Hermes agent at this URL or the GitHub repo, and it will automatically set up your team.</p>
+            <p>Or run the commands above manually in your terminal.</p>
+        </section>
 
-    <section class="workflow" id="workflow">
-      <div class="container">
-        <header class="section-header"><h2 class="section-title">From intent to deployment.</h2><p class="section-subtitle">A disciplined, repeatable path for agent-powered products.</p></header>
-        <ol class="steps">
-          <li class="step" data-animate="fade-right"><span class="step-number">01</span><div><h3>Define the agent</h3><p>Set the role, model, tools, memory, and constraints around a clear task boundary.</p><pre><code>agent:
-  name: research-assistant
-  model: your-provider-model
-  tools: [web_search, file_read]</code></pre></div></li>
-          <li class="step" data-animate="fade-right"><span class="step-number">02</span><div><h3>Compose the workflow</h3><p>Chain specialist agents together, condition transitions, and retain the right execution context.</p><pre><code>workflow:
-  - researcher: gather_context
-  - analyst: synthesize
-  - writer: produce_output</code></pre></div></li>
-          <li class="step" data-animate="fade-right"><span class="step-number">03</span><div><h3>Operate with confidence</h3><p>Deploy, monitor, evaluate, and evolve the system in the same engineering loop as the rest of your product.</p><pre><code>hermes deploy production
-hermes monitor --realtime</code></pre></div></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="demo" id="demo">
-      <div class="container demo-layout">
-        <div class="demo-copy" data-animate="fade-right"><p class="eyebrow">LIVE WORKFLOW</p><h2>Make the system visible.</h2><p>Show developers what the framework feels like: concrete actions, transparent execution, and clear outcomes.</p><ul><li>Repository and code-review automation</li><li>Research and analysis pipelines</li><li>Support and operations agents</li><li>Data and event-driven workflows</li></ul></div>
-        <div class="terminal" data-animate="zoom-in"><div class="terminal-top"><span></span><span></span><span></span><code>hermes-cli</code></div><pre id="terminal-content"><span class="prompt">$</span> hermes run --agent code-reviewer --pr 42
-<span class="output">→ checking changed files</span>
-<span class="output">→ reviewing implementation details</span>
-<span class="success">✓ review complete: 2 suggestions, 0 blockers</span>
-<span class="prompt">$</span> <span class="cursor">_</span></pre></div>
-      </div>
-    </section>
-
-    <section class="install" id="install">
-      <div class="container install-layout">
-        <div data-animate="fade-up">
-          <p class="eyebrow">QUICK START</p>
-          <h2>One command to get started.</h2>
-          <p>Copy the command above, paste it into your Hermes desktop chat, and press Enter. The onboarding will guide you through everything you need.</p>
-          <p style="color:var(--muted);font-size:.95rem;margin-top:1.2rem"><strong>That's it.</strong> No complex setup, no configuration files to edit manually. Just run the command and follow the prompts.</p>
-          <div style="margin-top:1.6rem;padding:1.2rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.02)">
-            <p style="margin:0 0 .6rem;font-weight:600;color:#c5c8e0">What happens next?</p>
-            <ul style="margin:0;padding:0 0 0 1.2rem;color:var(--muted);line-height:1.8">
-              <li>Hermes installs the onboarding skills</li>
-              <li>A guided chat session starts automatically</li>
-              <li>You'll configure your first agent step-by-step</li>
-              <li>Ready to deploy and use in minutes</li>
+        <section class="features">
+            <h2>What You Get</h2>
+            <ul>
+                <li>A roster of 3-7 specialist bots (Bot Mode)</li>
+                <li>Each bot has its own role, skills, memory, and SOUL.md</li>
+                <li>Bots can @mention each other and hand off work</li>
+                <li>Add any messenger later for human access (Telegram, Discord, Slack, WhatsApp, Buzz, etc.)</li>
+                <li>Kanban board for workflow tracking (v2+)</li>
+                <li>Weekly cron follow-ups to check if you're using your team (v3+)</li>
+                <li>Cross-machine peer messaging for distributed teams (v3+)</li>
             </ul>
-          </div>
-        </div>
-        <div class="install-code" data-animate="fade-up">
-          <div class="code-header"><span>Onboarding command</span><button class="code-copy" type="button" data-copy-target="install-command">Copy</button></div>
-          <pre><code id="install-command">hermes -p default skills install onboarding-loop team-designer && hermes -p default chat "Start onboarding"</code></pre>
-          <p style="margin:.8rem 0 0;padding:0 1rem .8rem;color:var(--muted);font-size:.85rem">Paste this into your Hermes desktop chat</p>
-        </div>
-      </div>
-    </section>
-  </main>
+        </section>
 
-  <footer class="footer"><div class="container footer-content"><a href="#top" class="nav-logo"><span class="logo-icon">⚡</span><span class="logo-text">Hermes Forge</span></a><p>Build, deploy, and orchestrate AI-powered agent systems.</p><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
-  <script src="script.js"></script>
+        <section class="features">
+            <h2>Features</h2>
+            <ul>
+                <li><strong>Dynamic team creation</strong> — Hermes analyzes your use case and proposes an optimal team</li>
+                <li><strong>Bot Mode wired in</strong> — Every profile gets <code>bot_mode: true</code>, group chat created automatically</li>
+                <li><strong>Buzz optional</strong> — Use any messenger or skip entirely</li>
+                <li><strong>Hermes-native</strong> — Everything runs as Hermes loop skills, no external orchestrator</li>
+                <li><strong>Secure skill installs</strong> — Skills are scanned with NVIDIA SkillEvaluator before install</li>
+                <li><strong>Usage tracking</strong> — Token/cost breakdown saved to file for billing</li>
+                <li><strong>Kanban board</strong> — Durable workflow state with tasks and assignees (v2+)</li>
+                <li><strong>Skill bundles</strong> — Install pre-defined skill sets instead of individual skills (v2+)</li>
+                <li><strong>Peer gateway</strong> — Cross-machine bot-to-bot messaging (v3+)</li>
+                <li><strong>Cron follow-ups</strong> — Scheduled weekly check-ins (v3+)</li>
+                <li><strong>Parallel creation</strong> — Profiles created concurrently with worktree isolation (v3+)</li>
+            </ul>
+        </section>
+
+        <section class="links">
+            <h2>Documentation</h2>
+            <ul>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge/blob/main/llms.txt" target="_blank">llms.txt</a> — Machine-readable index (for LLMs)</li>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge/blob/main/HERMES.md" target="_blank">HERMES.md</a> — Instructions for Hermes agents</li>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge/blob/main/onboarding/START.md" target="_blank">onboarding/START.md</a> — User quick start</li>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge/blob/main/BOOTSTRAP.md" target="_blank">BOOTSTRAP.md</a> — Full setup guide</li>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank">GitHub Repo</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built with Hermes Agent by Nous Research</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
