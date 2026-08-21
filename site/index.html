@@ -1,125 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hermes Agents Forge — Forge your Hermes team</title>
-  <meta name="description" content="Turn a real workflow into a focused team of Hermes agents. Paste one prompt into Hermes Desktop, or run one terminal command.">
-  <link rel="icon" href="/public/hero.jpg">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Hermes Agents Forge">
-  <meta property="og:description" content="Turn a real workflow into a focused team of Hermes agents. Paste one prompt into Hermes Desktop, or run one terminal command.">
-  <meta property="og:url" content="https://hermes-agents-forge.vercel.app/">
-  <meta property="og:image" content="https://hermes-agents-forge.vercel.app/public/hero.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermes Agents Forge</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Hermes-native multi-agent team setup">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+    <header>
+        <h1>Hermes Agents Forge</h1>
+        <p class="subtitle">Provision isolated multi-profile agent teams that implement real-world workflows</p>
+    </header>
 
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <span class="brand">Hermes Agents <span class="accent">Forge</span></span>
-      <nav aria-label="Primary">
-        <a href="#how-it-works">How it works</a>
-        <a href="#security">Security</a>
-        <a href="https://github.com/juliench82/hermes-agents-forge" rel="noopener noreferrer">GitHub</a>
-      </nav>
-    </div>
-  </header>
+    <main>
+        <section class="hero">
+            <h2>Quick Start</h2>
+            <div class="code-block">
+                <pre><code># 1. Install the onboarding skills
+hermes -p default skills install onboarding-loop team-designer
 
-  <main id="main">
-    <section class="hero wrap">
-      <img class="hero-logo" src="/public/hero.jpg" alt="Hermes Agents Forge emblem — winged herald, caduceus and anvil">
-      <p class="eyebrow">Hermes team activation</p>
-      <h1>Forge your Hermes team.</h1>
-      <p class="lede">
-        Turn a real workflow into a focused team of Hermes agents.
-        Copy the path that matches how you use Hermes. Then tell it
-        what you want done — Forge designs the team and waits for your approval.
-      </p>
+# 2. Run onboarding
+hermes -p default chat "Start onboarding"</code></pre>
+            </div>
+            <p class="note">That's it. Hermes will ask what you want to accomplish, design a custom team of 3–7 specialist bots, create profiles with SOUL.md, install skills, and set up Bot Mode group chat.</p>
+        </section>
 
-      <div class="activation-grid" role="group" aria-label="Installation options">
-        <article class="activation-card">
-          <h2>I use Hermes Desktop</h2>
-          <p>Paste this into a new Hermes chat. It installs Forge with the terminal tool and never opens a browser.</p>
-          <pre class="command-block wrap-block"><code id="desktop-prompt" data-desktop-prompt></code></pre>
-          <button id="copy-desktop" class="cta" type="button" aria-describedby="copy-status">
-            Copy Desktop prompt
-          </button>
-        </article>
+        <section class="features">
+            <h2>What You Get</h2>
+            <ul>
+                <li>A roster of specialist bots (Bot Mode)</li>
+                <li>Each bot has its own role, skills, and memory</li>
+                <li>Bots can @mention each other and hand off work</li>
+                <li>Add any messenger later for human access (Telegram, Discord, Slack, WhatsApp, Buzz, etc.)</li>
+            </ul>
+        </section>
 
-        <article class="activation-card">
-          <h2>I use Terminal</h2>
-          <p>Run this in a real terminal. Then open Hermes and say what you want your agents to do.</p>
-          <pre class="command-block"><code id="install-command" data-command></code></pre>
-          <button id="copy-terminal" class="cta cta-secondary" type="button" aria-describedby="copy-status">
-            Copy terminal command
-          </button>
-        </article>
-      </div>
+        <section class="features">
+            <h2>Features</h2>
+            <ul>
+                <li><strong>Dynamic team creation</strong> — Hermes analyzes your use case and proposes an optimal team</li>
+                <li><strong>Bot Mode wired in</strong> — Every profile gets <code>bot_mode: true</code>, group chat created automatically</li>
+                <li><strong>Buzz optional</strong> — Use any messenger or skip entirely</li>
+                <li><strong>Hermes-native</strong> — Everything runs as Hermes loop skills, no external orchestrator</li>
+                <li><strong>Secure skill installs</strong> — Skills are scanned with NVIDIA SkillEvaluator before install</li>
+            </ul>
+        </section>
 
-      <p id="copy-status" class="visually-hidden" role="status" aria-live="polite"></p>
-      <p class="post-install">
-        After install, tell Hermes what you want your agents to do.
-        If Chrome asks to allow remote debugging, click Cancel and use the Desktop prompt instead.
-      </p>
-    </section>
+        <section class="links">
+            <h2>Documentation</h2>
+            <ul>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge/blob/main/BOOTSTRAP.md" target="_blank">BOOTSTRAP.md</a> — Full setup guide</li>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge/blob/main/onboarding/START.md" target="_blank">onboarding/START.md</a> — Onboarding quickstart</li>
+                <li><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank">GitHub Repo</a></li>
+            </ul>
+        </section>
+    </main>
 
-    <section id="how-it-works" class="wrap section">
-      <h2>Two steps</h2>
-      <ol class="steps">
-        <li>
-          <span class="step-number" aria-hidden="true">1</span>
-          <div><h3>Install Forge</h3>
-          <p>Desktop users paste the prompt. Terminal users run the command. Hermes fetches one <code>SKILL.md</code> over HTTPS — no clone, no browser, no extra software.</p></div>
-        </li>
-        <li>
-          <span class="step-number" aria-hidden="true">2</span>
-          <div><h3>Describe your goal</h3>
-          <p>Tell Hermes what you want accomplished. Forge proposes a team of 3, 5, or 7 profiles, shows the full plan, and waits for your approval before changing anything.</p></div>
-        </li>
-      </ol>
-    </section>
+    <footer>
+        <p>Built with Hermes Agent by Nous Research</p>
+    </footer>
 
-    <section class="wrap section">
-      <h2>What Forge does</h2>
-      <p>
-        Forge is a setup assistant for Hermes — not a hosted service. This website only hands
-        you the installer; everything else happens on your own machine, inside Hermes.
-      </p>
-      <p>
-        Tell Forge, in plain language, what you want to get done. It designs a small team of
-        specialized Hermes assistants around your goal: what each one is responsible for,
-        which tools it may use, and how they hand work to each other. You review the full
-        team first, adjust anything you don't like, and approve it — only then does Forge
-        set everything up and check that it works.
-      </p>
-      <p>
-        One coordinator comes built in. Every other assistant is designed around your
-        situation — no presets, no one-size-fits-all templates.
-      </p>
-    </section>
-
-    <section id="security" class="wrap section">
-      <h2>Security &amp; trust</h2>
-      <ul class="trust-list">
-        <li>Plan before writes. Forge always shows the complete team plan and asks for explicit approval before creating or modifying profiles, files, or configuration.</li>
-        <li>No browser required. Installation uses the Hermes terminal / <code>hermes skills install</code>. Cancel any Chrome remote-debugging prompt.</li>
-        <li>No API keys collected here. This site never asks for credentials, and Forge never embeds secrets in generated files.</li>
-        <li>User-space only. Installation lives under <code>~/.hermes</code>. No <code>sudo</code>, no privileged shell, no <code>curl | bash</code> requirement.</li>
-        <li>Scoped side effects. Third-party skills and external services are called out individually and approved separately.</li>
-      </ul>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <span>Forge v0.1.0 — activation artifact: <a href="/SKILL.md">SKILL.md</a></span>
-      <span>Source: <a href="https://github.com/juliench82/hermes-agents-forge" rel="noopener noreferrer">github.com/juliench82/hermes-agents-forge</a></span>
-    </div>
-  </footer>
-
-  <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
