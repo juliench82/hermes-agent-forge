@@ -1,0 +1,12 @@
+# Hermes Agents Forge — Getting Started
+
+Point your Hermes agent at the GitHub repository and read `HERMES.md`.
+
+**Repository:** https://github.com/juliench82/hermes-agents-forge
+
+**What to do:**
+1. Tell Hermes: `https://github.com/juliench82/hermes-agents-forge`
+2. Hermes will read `HERMES.md` in the repository
+3. Follow the onboarding commands in `HERMES.md`
+
+That's it — the onboarding will guide you through everything else.

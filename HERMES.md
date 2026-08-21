@@ -1,46 +1,32 @@
-# Hermes Agents Forge
+# Hermes Agents Forge — Onboarding
 
-> Point your Hermes agent at this repo and it will automatically set up a multi-agent team for you.
+Welcome! This file contains the exact commands to get started with Hermes Agents Forge.
 
-## What to Do
+## Quick Start
 
-When a user points you at this repo:
+Run these commands in your Hermes desktop chat:
 
-1. **Read `/llms.txt`** — It has the exact commands to run
-2. **Install the skills:**
-   ```bash
-   hermes -p default skills install onboarding-loop team-designer
-   ```
-3. **Run onboarding:**
-   ```bash
-   hermes -p default chat "Start onboarding"
-   ```
+```bash
+hermes -p default skills install onboarding-loop team-designer && hermes -p default chat "Start onboarding"
+```
 
-## Do NOT
+## What This Does
 
-- Do NOT clone the repo manually
-- Do NOT ask the user to run commands themselves
-- Do NOT run `hermes skills install` from a URL (community scans block that)
+1. **Installs onboarding skills** — `onboarding-loop.yaml` and `team-designer.yaml` from the `site/public/` directory
+2. **Starts guided onboarding** — A chat session that walks you through setup
+3. **Configures your first agent** — Step-by-step guidance to build and deploy
 
-## What Happens Next
+## Files
 
-The `onboarding-loop` skill will:
-1. Ask the user 3 questions (use case, role, goals)
-2. Generate a custom team of 3-7 specialist bots
-3. Create profiles with `hermes profile create`
-4. Write `SOUL.md` files
-5. Install skills per profile
-6. Enable Bot Mode
-7. Create a team group chat
-8. Set up cron follow-ups (v3)
+- `onboarding-loop.yaml` — Core onboarding workflow skill
+- `team-designer.yaml` — Team and agent design skill
+- Both located in `site/public/`
 
-## Files to Read
+## Next Steps
 
-- `/llms.txt` — Machine-readable instructions (start here)
-- `/onboarding/START.md` — User quick start
-- `/BOOTSTRAP.md` — Full documentation
+After onboarding completes, you'll have:
+- A configured agent ready to use
+- Understanding of the workflow system
+- Access to the full documentation in the repository
 
-## Version
-
-- onboarding-loop: v3.0.0 (latest)
-- Features: peer gateway, cron follow-ups, kanban, bundles, usage tracking
+**Questions?** Check the repository README or open an issue on GitHub.

@@ -1,60 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hermes Agents Forge</title>
-    <link rel="stylesheet" href="styles.css">
-    <meta name="description" content="Hermes-native multi-agent team setup">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hermes Agents Forge — build, deploy, and orchestrate AI-powered agent systems.">
+  <meta name="theme-color" content="#6366f1">
+  <title>Hermes Agents Forge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#090a10;--text:#f7f7fb;--muted:#a1a5b9;--line:rgba(255,255,255,.1);--primary:#6971ff;--max:900px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;display:grid;place-items:center}
+    .container{width:min(var(--max),calc(100% - 40px));margin:auto;text-align:center}
+    .logo{font-size:3rem;margin-bottom:1.5rem;background:linear-gradient(105deg,#91a0ff,#c084fc);background-clip:text;-webkit-background-clip:text;color:transparent}
+    h1{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:700;letter-spacing:-.04em;margin:0 0 1rem}
+    p{color:var(--muted);font-size:1.05rem;max-width:520px;margin:0 auto 2.5rem}
+    .cta{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap}
+    .btn{font-weight:600;border-radius:.7rem;padding:.85rem 1.35rem;display:inline-flex;gap:.6rem;align-items:center;transition:transform .2s,box-shadow .2s;text-decoration:none}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:linear-gradient(105deg,var(--primary),#a855f7);color:#fff;box-shadow:0 12px 35px rgba(111,104,255,.3)}
+    .btn-secondary{border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--text)}
+    footer{position:fixed;bottom:1.5rem;left:0;right:0;text-align:center;color:var(--muted);font-size:.85rem}
+    footer a{color:#cbd0ff}
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Hermes Agents Forge</h1>
-        <p class="subtitle">Provision isolated multi-profile agent teams that implement real-world workflows</p>
-    </header>
-
-    <main>
-        <section class="hero">
-            <h2>Get Started</h2>
-            <p class="note">Point your Hermes agent at this page, then follow the instructions.</p>
-            <div class="cta">
-                <a href="/llms.txt" class="button">View Instructions (llms.txt)</a>
-            </div>
-        </section>
-
-        <section class="features">
-            <h2>What You Get</h2>
-            <ul>
-                <li>A roster of 3-7 specialist bots (Bot Mode)</li>
-                <li>Each bot has its own role, skills, memory, and SOUL.md</li>
-                <li>Bots can @mention each other and hand off work</li>
-                <li>Add any messenger later for human access (Telegram, Discord, Slack, WhatsApp, Buzz, etc.)</li>
-            </ul>
-        </section>
-
-        <section class="features">
-            <h2>Features</h2>
-            <ul>
-                <li><strong>Dynamic team creation</strong> — Hermes analyzes your use case and proposes an optimal team</li>
-                <li><strong>Bot Mode wired in</strong> — Every profile gets <code>bot_mode: true</code>, group chat created automatically</li>
-                <li><strong>Buzz optional</strong> — Use any messenger or skip entirely</li>
-                <li><strong>Hermes-native</strong> — Everything runs as Hermes loop skills, no external orchestrator</li>
-            </ul>
-        </section>
-
-        <section class="links">
-            <h2>Links</h2>
-            <ul>
-                <li><a href="/llms.txt">Instructions (llms.txt)</a></li>
-                <li><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank">GitHub Repo</a></li>
-            </ul>
-        </section>
-    </main>
-
-    <footer>
-        <p>Built with Hermes Agent by Nous Research</p>
-    </footer>
-
-    <script src="script.js"></script>
+  <main class="container">
+    <div class="logo" aria-hidden="true">⚡</div>
+    <h1>Hermes Agents Forge</h1>
+    <p>Build, deploy, and orchestrate AI-powered agent systems. Start by reading the instructions.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="llms.txt">View Instructions (llms.txt) <span aria-hidden="true">→</span></a>
+      <a class="btn btn-secondary" href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">View on GitHub</a>
+    </div>
+  </main>
+  <footer>
+    <p><a href="https://github.com/juliench82/hermes-agents-forge" target="_blank" rel="noreferrer">GitHub ↗</a></p>
+  </footer>
 </body>
 </html>
