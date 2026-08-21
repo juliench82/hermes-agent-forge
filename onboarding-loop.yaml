@@ -1,10 +1,10 @@
-# Hermes Onboarding Loop v2.0 — Goal Engine + Kanban + Bundles
+# Hermes Onboarding Loop v3.0 — Peer Messaging + Cron Follow-ups + Parallel Delegation
 # Run: hermes -p default skills install onboarding-loop team-designer
 # Then: hermes -p default chat "/goal Start onboarding"
 
 name: onboarding-loop
-version: 2.0.0
-description: Onboarding with /goal engine, kanban board for workflow, and skill bundles
+version: 3.0.0
+description: Enterprise onboarding with cross-machine peer messaging, scheduled cron follow-ups, and parallel profile creation via delegate_task
 
 context:
   use_case: ""
@@ -15,6 +15,8 @@ context:
   buzz_optional: true
   usage_file: "/tmp/onboarding-usage.json"
   kanban_board: "onboarding-workflow"
+  peer_gateway: ""
+  cron_followup: "hermes cron create \"Check if user has started using their team\" --skill onboarding-followup --delivery telegram --schedule '0 10 * * 1'"
 
 steps:
   - name: create_kanban_board
@@ -163,51 +165,14 @@ steps:
           Skipped Buzz. You can add any messenger later.
           Proceeding to profile creation...
 
-  - name: create_profiles
-    action: foreach
-    over: "{{context.team_json.profiles}}"
-    steps:
-      - name: create_profile
-        action: shell
-        command: >
-          hermes profile create "{{item.name}}"
-          --description "{{item.description}}"
-
-      - name: write_soul
-        action: file
-        path: "~/.hermes/profiles/{{item.name}}/SOUL.md"
-        content: |
-          # {{item.name}}
-          ## Role
-          {{item.description}}
-          ## Skills
-          {{item.skills | join(', ')}}
-          ## Responsibilities
-          - Execute tasks in your domain
-          - Collaborate with other bots via @mentions and group chat
-          - Escalate complex cases to the orchestrator or human
-          ## Collaboration
-          This profile works with:
-          - Other bots in the team via Bot Mode group chat
-          - Humans via configured messenger (optional)
-
-      - name: install_bundles
-        action: shell
-        command: >
-          hermes -p "{{item.name}}" bundles install {{item.bundle | default('default')}}
-          || hermes -p "{{item.name}}" skills install {{item.skills | join(' ')}}
-
-      - name: enable_bot_mode
-        action: shell
-        command: hermes -p "{{item.name}}" config set bot_mode true
-
-      - name: add_kanban_task
-        action: shell
-        command: >
-          hermes kanban add-task {{context.kanban_id}}
-          "Create profile {{item.name}} with skills: {{item.skills | join(', ')}}"
-          --assignee "{{item.name}}"
-          --status done
+  - name: create_profiles_parallel
+    action: skill
+    skill: delegate_task
+    input:
+      tasks: "{% for p in context.team_json.profiles %}{{p.name}}:{{p.description}}:{{p.skills | join(',')}};{% endfor %}"
+      worktree_isolation: true
+      max_concurrent_children: 3
+    store: context.profile_results
 
   - name: create_group_chat
     action: shell
@@ -215,6 +180,26 @@ steps:
       hermes group-chat create team-main
       --members "{{context.team_json.profiles | map(attribute='name') | join(',')}}"
       --description "Main team coordination channel"
+
+  - name: setup_peer_gateway
+    action: if
+    condition: "{{context.peer_gateway != ''}}"
+    then:
+      - action: shell
+        command: hermes peer add teammate --url {{context.peer_gateway}} --key abc123
+      - action: shell
+        command: hermes peer dm teammate/orchestrator "Team setup complete for {{context.use_case}}"
+    else:
+      - action: chat
+        prompt: "Skipped peer gateway setup. You can add peers later with `hermes peer add`."
+
+  - name: setup_cron_followup
+    action: shell
+    command: >
+      hermes cron create "Check if user has started using their team"
+      --skill onboarding-followup
+      --delivery telegram
+      --schedule "0 10 * * 1"
 
   - name: send_completion_notification
     action: shell
@@ -263,6 +248,11 @@ steps:
          - Bots can @mention each other in group chat
          - Assign tasks via the orchestrator bot
          - Monitor progress in the kanban board
+
+      **Advanced features:**
+      - **Peer gateway:** {{context.peer_gateway | default('Not configured')}}
+      - **Cron follow-up:** Weekly check-in scheduled (Mondays at 10am)
+      - **Parallel creation:** Profiles created with worktree isolation
 
       **Usage tracking:** Token/cost breakdown saved to `{{context.usage_file}}`
 
