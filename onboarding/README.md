@@ -1,46 +1,44 @@
-# Customer onboarding
+# Onboarding — Hermes Team Setup
 
-This package turns a customer's plain-language request into a reviewed, durable automation contract. It is provider-neutral: the same artifacts apply to a managed cloud runtime or a self-hosted deployment.
+This directory contains the Hermes-native onboarding flow for dynamic team creation.
 
-It also holds **install-time** vault onboarding (Obsidian shared brain path), which runs during `BOOTSTRAP.md` before customer automation discovery.
+## Files
 
-## Two entry points
+- `onboarding-loop.yaml` — Main loop that collects requirements, designs team, creates profiles
+- `team-designer.yaml` — Skill that generates JSON team spec from use case
+- `START.md` — Quick start for users
+- `README.md` — This file
+- `BOOTSTRAP.md` — Full setup guide (root)
 
-| Phase | Entry | Purpose |
-|-------|-------|---------|
-| Install | `workflows/vault-path.md` | Resolve local Obsidian vault path (prompt + OS suggestion, CREATE/SKIP) |
-| Customer automation | `START.md` | First useful automation after install |
+## How It Works
 
-## Read order
+1. User runs: `hermes -p default skills install onboarding-loop team-designer`
+2. User runs: `hermes -p default chat "Start onboarding"`
+3. Loop collects: use case, role, goals
+4. Calls `team-designer` to generate 3-7 profiles
+5. Creates profiles with `hermes profile create`
+6. Writes `SOUL.md` per profile
+7. Installs skills per profile
+8. Enables Bot Mode
+9. Creates team group chat
+10. Optionally configures Buzz gateway
 
-### Install-time (vault / shared brain)
+## Key Design Choices
 
-1. `workflows/vault-path.md` — resolve `OBSIDIAN_VAULT_PATH`
-2. `templates/vault-register.md` — record the choice
-3. `templates/hermes-md.md` — optional vault-root `.hermes.md` map
-4. Then `scripts/obsidian.sh` (from repo root) if not skipped
+- **Buzz is optional** — Users can skip and add any messenger later
+- **Bot Mode is wired in** — Every profile gets `bot_mode: true`
+- **Hermes-native** — No Python orchestrator; the loop is a skill
+- **Iterative** — Users can adjust the team before creation
 
-### Customer automation
+## Customization
 
-1. `START.md` — customer-facing activation entry point
-2. `manifest.md` — lifecycle, profile participation, and required artifacts
-3. `templates/customer-blueprint.md` — durable source of truth for one automation
-4. `templates/automation-brief.md` — Product Strategist handoff to Architect
-5. `templates/integration-register.md` — credential-free integration and scope register
-6. `templates/approval-policy.md` — approval modes and material-change rules
-7. `templates/acceptance-checklist.md` — Quality Guardian pre-activation verification
-8. `templates/activation-review-record.md` — customer activation decision record
-9. `workflows/connector-authorisation.md` — OAuth and credential authorisation flow
-10. `workflows/activation-review.md` — customer activation review workflow
+Edit `onboarding-loop.yaml` to:
+- Change prompts
+- Add validation steps
+- Customize SOUL.md template
+- Add post-creation tasks
 
-## Examples
-
-- `examples/invoice-summary.md` — safe weekly unpaid invoice summary
-
-## Rules
-
-- No secrets in any onboarding artifact.
-- No external action before the approval policy permits it.
-- The default Hermes profile owns all customer-facing communication.
-- The quality guardian must pass the acceptance checklist before activation is offered.
-- Vault path SKIP is allowed at install time; do not block the whole bootstrap solely for skipping Obsidian.
+Edit `team-designer.yaml` to:
+- Adjust the system prompt
+- Change skill recommendations
+- Enforce specific team patterns

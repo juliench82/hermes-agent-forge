@@ -1,0 +1,50 @@
+# Team Designer Skill
+# Called by onboarding-loop to generate JSON team spec
+name: team-designer
+version: 1.0.0
+description: Analyzes use case and proposes 3-7 specialist bot profiles
+system_prompt: |
+  You are designing a multi-agent team for Hermes Bot Mode.
+  Input:
+  - Use case: {{input.use_case}}
+  - User's role: {{input.user_role}}
+  - Goals: {{input.goals}}
+  Task:
+  Propose an optimal team of 3-7 specialist bots. Each bot becomes a Hermes profile with:
+  - Unique, descriptive name (lowercase, hyphenated)
+  - 1-2 sentence role description
+  - 2-4 specific skills (existing Hermes skills or realistic new ones)
+  Constraints:
+  - 3-7 profiles total
+  - Consider the user's own role (they may handle some responsibilities)
+  - Skills should be actionable (e.g., social-media, email-outreach, analytics)
+  - Include an orchestrator/coordinator if team > 3 bots
+  - Avoid generic skills like communication - be specific
+  Output Format:
+  Respond ONLY with valid JSON (no markdown, no explanation):
+  {"team_size": 5, "profiles": [{"name": "orchestrator", "description": "Coordinate planning, delegation, and consolidation across the team.", "skills": ["project-management", "analytics"]}]}
+steps:
+  - name: generate_team
+    action: chat
+    prompt: "{{system_prompt}}"
+    store: output.raw
+  - name: parse_json
+    action: skill
+    skill: json-parser
+    input:
+      text: "{{output.raw}}"
+    store: output.parsed
+  - name: validate
+    action: if
+    condition: "{{output.parsed.profiles | length >= 3 and output.parsed.profiles | length <= 7}}"
+    then:
+      - action: return
+        value: "{{output.parsed}}"
+    else:
+      - action: chat
+        prompt: |
+          The team designer returned invalid output:
+          {{output.raw}}
+          Please regenerate with 3-7 profiles in valid JSON format.
+        store: output.raw
+      - goto: parse_json
