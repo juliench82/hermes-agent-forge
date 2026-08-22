@@ -1,13 +1,29 @@
-apiVersion: hermes.platform/v1
-kind: ConnectorPrimitive
-metadata:
-  id: rest-api
-  version: 1.0.0
-capabilities: []
-requiredSecrets: [API_BASE_URL, API_TOKEN]
-configuration:
-  required: [operationAllowlist, egressHostAllowlist]
-toolContracts:
-  - {name: request, effect: delegated, requiredScope: operationAllowlist, policyProxyRequired: true}
-network:
-  egress: {defaultDeny: true, hostsFromConfiguration: [egressHostAllowlist]}
+# REST API Connector Primitive
+# Aligned with Hermes MCP server definitions
+# See: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp
+
+mcp_server:
+  name: rest-api-connector
+  type: http
+  url: "${REST_API_BASE_URL}"
+  headers:
+    Authorization: "Bearer ${REST_API_TOKEN}"
+    Content-Type: application/json
+
+tools:
+  - name: http_get
+    description: GET request to REST API endpoint
+  - name: http_post
+    description: POST request to REST API endpoint
+  - name: http_put
+    description: PUT request to REST API endpoint
+  - name: http_delete
+    description: DELETE request to REST API endpoint
+
+security:
+  credential_keys:
+    - REST_API_TOKEN
+  require_approval_for:
+    - http_post
+    - http_put
+    - http_delete

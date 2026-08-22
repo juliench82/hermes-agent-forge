@@ -1,44 +1,56 @@
-# Start Here — Hermes Team Setup
+# Onboarding Quick Start
 
-## One-Command Onboarding
+Welcome to Hermes Agents Forge!
 
-```bash
-hermes -p default skills install onboarding-loop team-designer
-hermes -p default chat "Start onboarding"
-```
+## Prerequisites
 
-That's it. Hermes will:
-1. Ask what you want to accomplish
-2. Design a custom team of 3-7 bots
-3. Create profiles with SOUL.md
-4. Install skills per profile
-5. Set up Bot Mode group chat
-6. Optionally configure Buzz (skip if you prefer Telegram/Discord/etc.)
+- Python 3.11+
+- Git
+- Hermes Agent
 
-## What You Get
-
-- A roster of specialist bots (Bot Mode)
-- Each bot has its own role, skills, and memory
-- Bots can @mention each other and hand off work
-- You can add any messenger later for human access
-
-## Next Steps
+## Step 1: Install Hermes
 
 ```bash
-# View your team
-hermes bots
-
-# Chat with a specific bot
-hermes -p <bot-name> chat "Your task"
-
-# Add a messenger (optional)
-hermes gateway setup telegram
-hermes gateway setup discord
-hermes gateway setup buzz
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 ```
 
-## Documentation
+## Step 2: Fast Setup (Recommended)
 
-- [BOOTSTRAP.md](../BOOTSTRAP.md) — Full setup guide
-- [onboarding-loop.yaml](../onboarding-loop.yaml) — Onboarding loop skill
-- [team-designer.yaml](../team-designer.yaml) — Team design skill
+```bash
+hermes setup --portal
+```
+
+This covers model provider + Tool Gateway in one OAuth.
+
+## Step 3: Clone and Trust Skills
+
+```bash
+git clone https://github.com/juliench82/hermes-agents-forge
+cd hermes-agents-forge
+hermes skills trust
+```
+
+**Why?** Hermes requires explicit trust for project-local skills.
+
+## Step 4: Run the Bootstrap
+
+```bash
+pip install -e ".[dev]"
+python -m compiler --manifest bootstrap.manifest.json
+```
+
+## Step 5: Follow Onboarding Workflows
+
+See `onboarding/workflows/` for details.
+
+## Troubleshooting
+
+- **Skills not loaded**: Run `hermes skills trust`
+- **Model not configured**: Run `hermes setup --portal`
+- **MCP connection failed**: Check `~/.hermes/.env`
+
+## Related Docs
+
+- `onboarding/README.md` — Full guide
+- `HERMES.md`, `AGENTS.md` — Context files
+- `CONTRIBUTING.md` — How to contribute

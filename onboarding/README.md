@@ -1,44 +1,41 @@
-# Onboarding — Hermes Team Setup
+# Onboarding Guide
 
-This directory contains the Hermes-native onboarding flow for dynamic team creation.
+This guide walks you through the complete onboarding flow.
 
-## Files
+## Pre-Onboarding Checklist
 
-- `onboarding-loop.yaml` — Main loop that collects requirements, designs team, creates profiles
-- `team-designer.yaml` — Skill that generates JSON team spec from use case
-- `START.md` — Quick start for users
-- `README.md` — This file
-- `BOOTSTRAP.md` — Full setup guide (root)
+- [ ] Hermes installed
+- [ ] Model configured (`hermes setup --portal`)
+- [ ] Skills trusted (`hermes skills trust`)
+- [ ] Python 3.11+ available
+- [ ] Dependencies installed
 
-## How It Works
+## Onboarding Workflows
 
-1. User runs: `hermes -p default skills install onboarding-loop team-designer`
-2. User runs: `hermes -p default chat "Start onboarding"`
-3. Loop collects: use case, role, goals
-4. Calls `team-designer` to generate 3-7 profiles
-5. Creates profiles with `hermes profile create`
-6. Writes `SOUL.md` per profile
-7. Installs skills per profile
-8. Enables Bot Mode
-9. Creates team group chat
-10. Optionally configures Buzz gateway
+1. **Activation Review** — Verify bootstrap activated correctly
+2. **Connector Authorization** — Authorize MCP servers
+3. **Vault Path** — Set up secrets management
 
-## Key Design Choices
+See `onboarding/workflows/` for detailed specs.
 
-- **Buzz is optional** — Users can skip and add any messenger later
-- **Bot Mode is wired in** — Every profile gets `bot_mode: true`
-- **Hermes-native** — No Python orchestrator; the loop is a skill
-- **Iterative** — Users can adjust the team before creation
+## Onboarding Templates
 
-## Customization
+Templates in `onboarding/templates/` generate profile assets.
 
-Edit `onboarding-loop.yaml` to:
-- Change prompts
-- Add validation steps
-- Customize SOUL.md template
-- Add post-creation tasks
+## Post-Onboarding
 
-Edit `team-designer.yaml` to:
-- Adjust the system prompt
-- Change skill recommendations
-- Enforce specific team patterns
+1. Test profiles: `hermes profile list`
+2. Explore skills: `hermes skills list`
+3. Review security: `shared/safety-enforcement.md`
+
+## Troubleshooting
+
+- **Onboarding fails**: Check Hermes version (2026.8.x+)
+- **Skills not loading**: Run `hermes skills trust`
+- **MCP not connecting**: Check credentials in `~/.hermes/.env`
+
+## Related Docs
+
+- `onboarding/START.md` — Quick start
+- `onboarding/manifest.md` — Manifest spec
+- `tests/test_onboarding.py` — Tests

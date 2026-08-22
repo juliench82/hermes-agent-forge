@@ -1,9 +1,48 @@
-apiVersion: hermes.platform/v1
-kind: MandatoryPolicy
-metadata: {id: mandatory-baseline, version: 1.0.0}
-enforcement: non_overridable
-requirements:
-  server: {nonRootUser: true, sshKeyOnly: true, permitRootLogin: false, fail2ban: true, firewallDefaultDenyIncoming: true}
-  agents: {leastPrivilege: true, readOnlyFilesystem: true, networkDefaultDeny: true, auditEveryToolCall: true}
-  secrets: {plaintextInGit: forbidden, providerRequired: true}
-  irreversibleActions: {confirmationRequired: true}
+# Mandatory Baseline Security Policy
+# Aligned with Hermes 8-layer security model
+# See: https://hermes-agent.nousresearch.com/docs/user-guide/security
+
+policy_version: "1.0.0"
+
+user_authorization:
+  required: true
+  allowed_platforms:
+    - telegram
+    - discord
+    - slack
+
+command_approval:
+  mode: smart
+  hardline_blocklist: true
+
+file_write_safety:
+  safe_root: "${HERMES_WRITE_SAFE_ROOT:-$HOME}"
+  require_approval_outside_safe_root: true
+
+container_isolation:
+  enabled: true
+  backend: docker
+
+mcp_credential_filtering:
+  enabled: true
+  redact_patterns:
+    - "password"
+    - "token"
+    - "secret"
+    - "api_key"
+
+context_file_scanning:
+  enabled: true
+  scan_paths:
+    - "AGENTS.md"
+    - "HERMES.md"
+    - ".hermes.md"
+    - "SOUL.md"
+
+session_isolation:
+  enabled: true
+  profile_boundaries: strict
+
+input_sanitization:
+  enabled: true
+  max_input_length: 100000

@@ -1,6 +1,0 @@
-const navbar=document.getElementById('navbar');const toggle=document.getElementById('nav-toggle');const menu=document.getElementById('nav-menu');
-window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>18),{passive:true});
-toggle?.addEventListener('click',()=>{const open=menu.classList.toggle('active');toggle.setAttribute('aria-expanded',String(open));});
-document.querySelectorAll('.nav-menu a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('active');toggle?.setAttribute('aria-expanded','false');}));
-const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('[data-animate]').forEach(el=>observer.observe(el));
-document.querySelectorAll('[data-copy-target]').forEach(button=>button.addEventListener('click',async()=>{const target=document.getElementById(button.dataset.copyTarget);if(!target)return;try{await navigator.clipboard.writeText(target.textContent);const original=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=original,1600)}catch{button.textContent='Copy failed';setTimeout(()=>button.textContent='Copy',1600)}}));

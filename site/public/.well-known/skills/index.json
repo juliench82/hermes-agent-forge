@@ -1,18 +1,16 @@
 {
-  "schema": "forge/skills-index@1",
-  "name": "Hermes Agents Forge",
-  "version": "0.1.0",
-  "updated": "2026-08-19",
   "skills": [
     {
       "name": "forge",
-      "description": "Onboard a Hermes agent team from a business goal.",
-      "url": "https://hermes-agents-forge.vercel.app/SKILL.md",
-      "install": "mkdir -p ~/.hermes/skills/software-development/forge && curl -fsSL https://hermes-agents-forge.vercel.app/SKILL.md -o ~/.hermes/skills/software-development/forge/SKILL.md",
-      "sha256": null,
-      "license": "MIT",
-      "homepage": "https://hermes-agents-forge.vercel.app",
-      "source": "https://github.com/juliench82/hermes-agents-forge"
+      "version": "1.0.0",
+      "description": "Hermes-native bootstrap skill for multi-profile agent team provisioning",
+      "path": "/skills/forge/SKILL.md",
+      "url": "https://github.com/juliench82/hermes-agents-forge/tree/main/skills/forge"
     }
-  ]
+  ],
+  "metadata": {
+    "generated": "2026-08-22T12:00:00Z",
+    "source": "hermes-agents-forge",
+    "version": "0.1.0"
+  }
 }
