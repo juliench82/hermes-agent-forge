@@ -1,50 +1,51 @@
-# Hermes Agents Forge
+# Hermes Agents Forge — Hermes-Specific Context
 
-This file is the source of truth for an Hermes agent onboarding this repository.
+> This file (`HERMES.md`) is the highest-priority context file for Hermes Agent.
 
-## Repository
+## Project Overview
 
-- Repository: https://github.com/juliench82/hermes-agents-forge
-- Default branch: `main`
+Hermes-native bootstrap repository for provisioning isolated multi-profile agent teams.
 
-## Required reading
+## Quick Start
 
-Before running any command or changing any file, read:
+```bash
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+hermes setup --portal
+hermes skills trust
+python -m compiler --manifest bootstrap.manifest.json
+```
 
-1. `HERMES.md` (this file)
-2. `onboarding-loop.yaml`
-3. `team-designer.yaml`
+## Key Hermes Features Used
 
-The two YAML files are repository-root skills. Do not look for them under `site/public/` and do not invent alternate paths.
+| Feature | Usage | Docs |
+|---------|-------|------|
+| Profiles | Multi-profile team provisioning | [Profiles](https://hermes-agent.nousresearch.com/docs/user-guide/profiles) |
+| Skills | `skills/forge/SKILL.md` | [Skills](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills) |
+| MCP | Connectors map to MCP servers | [MCP](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp) |
+| Cron | Triggers use native `cronjob` | [Cron](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron) |
+| Delegation | Orchestrator uses `delegate_task` | [Delegation](https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation) |
+| Context Files | `HERMES.md`, `AGENTS.md`, `SOUL.md` | [Context Files](https://hermes-agent.nousresearch.com/docs/user-guide/features/context-files) |
+| Security | All 8 layers enforced | [Security](https://hermes-agent.nousresearch.com/docs/user-guide/security) |
 
-## Onboarding sequence
+## Skills Trust (Important!)
 
-1. Inspect the repository and read the required skill files.
-2. Explain the proposed onboarding actions to the user in plain language.
-3. Ask for confirmation before any action with external side effects or any destructive change.
-4. Run the onboarding loop defined by `onboarding-loop.yaml`.
-5. Use `team-designer.yaml` when the flow requires designing or configuring an agent team.
-6. Report what was completed, what remains, and any files changed.
+This project uses project-local skills. **You must run**:
 
-## Path and state rules
+```bash
+hermes skills trust
+```
 
-- Do not assume a `profiles/` directory exists.
-- Do not create a hardcoded `profiles/` directory.
-- Discover paths from the repository and the referenced skills.
-- Do not overwrite, delete, or migrate existing files unless the user explicitly asks for that change and confirms it.
-- Keep onboarding changes scoped to this repository.
+Without this, the forge skill won't load.
 
-## Safety
+## Security Alignment
 
-- Never expose secrets, credentials, or private configuration in chat or committed files.
-- Do not run destructive commands without explicit user confirmation.
-- If an instruction is ambiguous, stop and ask a focused clarification question.
+All runtime operations reference Hermes's 8-layer security model.
 
-## Completion
+See: `shared/safety-enforcement.md`, `shared/safety-gates.md`
 
-When onboarding is complete, summarize:
+## Related Docs
 
-- The team or agent configuration created or updated.
-- The exact files changed.
-- Any commands the user must run manually.
-- Any unresolved setup or integration requirements.
+- `AGENTS.md` — Cross-tool agent instructions
+- `README.md` — User-facing overview
+- `BOOTSTRAP.md` — Bootstrap manifest spec
+- `CONTRIBUTING.md` — How to contribute

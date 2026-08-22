@@ -1,25 +1,51 @@
-# Safety Enforcement
+# Safety Enforcement Policy
 
-Shared safety guidance is enforced at the profile and workflow boundary.
+This document defines the safety enforcement boundaries for Hermes Agents Forge runtime operations.
 
-## Action classes
+## Alignment with Hermes 8-Layer Security Model
 
-| Class | Examples | Default policy |
-|---|---|---|
-| read-only | inspect files, git status, metadata queries | allowed |
-| local-write | edit files, create branch, install dependency | allowed within workspace |
-| external-write | push, issue comment, PR review, connector mutation | explicit approval |
-| high-impact | merge, delete, deploy, credential or production change | explicit approval plus review |
+All security primitives in this project reference Hermes Agent's comprehensive 8-layer defense-in-depth model:
 
-## Required controls
+1. **User Authorization** — Platform-level auth (Telegram, Discord, Slack OAuth)
+2. **Dangerous Command Approval** — Smart/manual/off modes with hardline blocklist
+3. **File Write Safety** — `HERMES_WRITE_SAFE_ROOT` boundaries
+4. **Container Isolation** — Docker backend for untrusted code execution
+5. **MCP Credential Filtering** — Automatic redaction of secrets in tool responses
+6. **Context File Scanning** — Prompt injection detection before loading
+7. **Cross-Session Isolation** — Profile-level session boundaries
+8. **Input Sanitization** — User input validation and length limits
 
-- Validate profile permissions before dispatching a tool.
-- Require explicit approval immediately before every external or high-impact write.
-- Run secret scanning over changed content before external writes.
-- Record the target, exact content, actor, approval, and result in the task audit log.
-- Fail closed when a tool, target, branch, or permission is ambiguous.
-- Never place tokens, passwords, or private keys in task records, skills, or handoffs.
+See: https://hermes-agent.nousresearch.com/docs/user-guide/security
 
-## Review gate
+## Runtime Enforcement Points
 
-The quality guardian verifies scope, acceptance criteria, tests, secret scan results, and approval evidence. It must return `review` or `done`; it cannot silently waive a failed gate.
+### Command Approval (`runtime/approval.py`)
+
+- Delegates to Hermes's native approval system via `approvals:` config
+- Supports smart/manual/off modes
+- Implements hardline blocklist for truly dangerous commands
+- Allows user-defined deny rules via config
+
+### File Write Safety (`runtime/hardening.py`)
+
+- Respects `HERMES_WRITE_SAFE_ROOT` environment variable
+- Requires explicit approval for writes outside safe root
+- Logs all write operations to audit trail
+
+### Isolation (`runtime/isolation.py`)
+
+- Provisions profiles in isolated Hermes home directories
+- Optional Docker backend for container isolation
+- Enforces profile boundaries
+
+### Secrets (`runtime/secrets.py`)
+
+- Writes secrets to `~/.hermes/.env` (Hermes-native location)
+- Non-secret settings to `~/.hermes/config.yaml`
+- References Hermes's protected paths
+
+## Related Docs
+
+- `shared/safety-gates.md` — Safety gate definitions
+- `shared/context-policy.md` — Context file handling
+- `catalog/policies/mandatory-baseline/1.0.0/policy.yaml` — Baseline policy config

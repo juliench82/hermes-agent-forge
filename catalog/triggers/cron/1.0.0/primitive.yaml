@@ -1,8 +1,10 @@
-apiVersion: hermes.platform/v1
-kind: TriggerPrimitive
-metadata: {id: cron, version: 1.0.0}
-contract:
-  requiredFields: [schedule, timezone]
-  timezoneRequired: true
-  maxFrequency: "* * * * *"
-  idempotencyRequired: true
+# Cron Trigger Primitive
+# Aligned with Hermes native cronjob tool
+# See: https://hermes-agent.nousresearch.com/docs/user-guide/features/cron
+
+cronjob:
+  schedule: "0 9 * * *"
+  skills:
+    - forge
+  description: "Daily scheduled task execution"
+  target_profile: null
